@@ -1,0 +1,82 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        MinHeight="430" MaxHeight="430" MinWidth="450" MaxWidth="450"
+        x:Class="TimeLoggerView.Views.LoginWindow"
+        Title="PEC Project Management - Login"
+        Icon="/Assets/icon.ico"
+        CanResize="False"
+        xmlns:i="https://github.com/projektanker/icons.avalonia"
+        xmlns:vm="clr-namespace:TimeLoggerView.ViewModels"
+        xmlns:suki="clr-namespace:SukiUI.Controls;assembly=SukiUI"
+        xmlns:sukiUi="clr-namespace:SukiUI.Controls;assembly=SukiUI"
+        xmlns:models="clr-namespace:SukiUI.Models;assembly=SukiUI"
+        xmlns:objectModel="clr-namespace:System.Collections.ObjectModel;assembly=System"
+        xmlns:theme="clr-namespace:SukiUI.Theme;assembly=SukiUI"
+        xmlns:views="using:TimeLoggerView.Views"
+        x:DataType="vm:LoginViewModel"
+        >
+  <Grid Margin="15">
+    <suki:GlassCard Width="350" Margin="0,0,0,25">
+      <Grid ColumnDefinitions="Auto,Auto">
+        <Image Grid.Column="0" VerticalAlignment="Center" Height="90" Margin="0" Source="avares://TimeLoggerView/Assets/Logo-Vertical.png"/>
+        <suki:BusyArea Grid.Column="1" Name="BusySignIn" Margin="25"
+                       BusyText="Signing In..."
+                       IsBusy="{Binding IsLoggingIn}">
+          <StackPanel>
+            <TextBlock Margin="0,5,0,27"
+                       HorizontalAlignment="Center"
+                       FontSize="18"
+                       FontWeight="DemiBold"
+                       Text="Sign-in to your account" />
+            <TextBlock Foreground="{DynamicResource ErrorBrush}" Text="{Binding ErrorText}" IsVisible="{Binding !IsSuccess}"/>
+            <StackPanel Orientation="Horizontal">
+              <Image>
+                <Image.Source>
+                  <i:IconImage Value="mdi-account" Brush="{DynamicResource ThemeAccentBrush}" />
+                </Image.Source>
+              </Image>
+              <TextBlock Margin="6,0,0,3"
+                         FontWeight="DemiBold"
+                         Text="Username" />
+            </StackPanel>
+            <TextBox theme:TextBoxExtensions.Prefix="" MinWidth="200"
+                     MaxWidth="200" Watermark="Username" Text="{Binding Username}" theme:TextBoxExtensions.AddDeleteButton="True" />
+            <StackPanel Margin="0 18 0 0" Orientation="Horizontal">
+              <Image>
+                <Image.Source>
+                  <i:IconImage Value="mdi-lock" Brush="{DynamicResource ThemeAccentBrush}" />
+                </Image.Source>
+              </Image>
+            <TextBlock Margin="6,0,0,3"
+                       FontWeight="DemiBold"
+                       Text="Password" />
+            </StackPanel>
+            <TextBox Name="PasswordTextBox"
+                     Margin="0,0,0,25"
+                     MinWidth="200"
+                     MaxWidth="200"
+                     Text="{Binding Password}"
+                     Watermark="Password"
+                     theme:TextBoxExtensions.AddDeleteButton="True"
+                     PasswordChar="*" />
+          </StackPanel>
+        </suki:BusyArea>
+      </Grid>
+    </suki:GlassCard>
+    <Button Name="ButtonSignIn"
+            Width="160"
+            Height="40"
+            Margin="0,0,0,7"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Bottom"
+            theme:ButtonExtensions.ShowProgress="{Binding IsLoggingIn}"
+            Classes="Flat"
+            Command="{Binding LoginCommand}"
+            FontWeight="DemiBold">
+      Sign In
+    </Button>
+  </Grid>
+</Window>

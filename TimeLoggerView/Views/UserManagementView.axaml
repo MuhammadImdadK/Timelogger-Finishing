@@ -1,0 +1,90 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:i="https://github.com/projektanker/icons.avalonia"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:TimeLoggerView.ViewModels"
+             xmlns:suki="clr-namespace:SukiUI.Controls;assembly=SukiUI"
+             xmlns:models="clr-namespace:SukiUI.Models;assembly=SukiUI"
+             xmlns:objectModel="clr-namespace:System.Collections.ObjectModel;assembly=System"
+             xmlns:theme="clr-namespace:SukiUI.Theme;assembly=SukiUI"
+             xmlns:views="using:TimeLoggerView.Views"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="TimeLoggerView.Views.UserManagementView"
+             x:DataType="vm:UserManagementViewModel">
+
+  <Design.DataContext>
+    <!-- This only sets the DataContext for the previewer in an IDE,
+         to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+    <vm:UserManagementViewModel />
+  </Design.DataContext>
+  <ScrollViewer VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+    <suki:GlassCard VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="5">
+      <suki:GroupBox Header="User Management" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+        <TabControl VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+          <TabItem Header="Users" VerticalAlignment="Stretch">
+            <Grid RowDefinitions="Auto,Auto,Auto,*" ColumnDefinitions="*, Auto, Auto">
+              
+              <TextBox Margin="0 10" HorizontalAlignment="Stretch" Watermark="Search"></TextBox>
+              <Button Grid.Column="1" Classes="Flat" Margin="5 15">
+                <Image>
+                  <Image.Source>
+                    <i:IconImage Value="mdi-magnify" Brush="White" />
+                  </Image.Source>
+                </Image>
+              </Button>
+              <Button Grid.Column="2" Classes="Flat" Margin="5 15" Background="#3a9c22" Command="{Binding AddUserCommand}">
+                <Image>
+                  <Image.Source>
+                    <i:IconImage Value="mdi-account-plus" Brush="White" />
+                  </Image.Source>
+                </Image>
+              </Button>
+              <suki:BusyArea Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Name="BusySignIn" Margin="10"
+                       BusyText="{Binding BusyText}"
+                       IsBusy="{Binding IsBusy}" VerticalAlignment="Stretch">
+              <DataGrid x:Name="UserTable" ItemsSource="{Binding Users}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MinHeight="300"
+                      IsReadOnly="True" AreRowDetailsFrozen="False">
+                <DataGrid.Columns>
+                  <DataGridTextColumn Header="Username" Binding="{Binding Username}"/>
+                  <DataGridTextColumn Header="First Name" Binding="{Binding FirstName}"/>
+                  <DataGridTextColumn Header="Last Name" Binding="{Binding LastName}"/>
+                  <DataGridTextColumn Header="Designation" Binding="{Binding Designation}"/>
+                  <DataGridTextColumn Header="Email" Binding="{Binding Email}"/>
+                  <DataGridTextColumn Header="Role" Binding="{Binding Role.Name}"/>
+                  <DataGridTextColumn Header="Team" Binding="{Binding TeamType}"/>
+                  <DataGridTemplateColumn Header="Action">
+                    <DataGridTemplateColumn.CellTemplate>
+                      <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                          <Button  Margin="5" Classes="Flat" Click="Edit_Click">
+                            <Image Height="16" PointerPressed="Image_PointerPressed" IsHitTestVisible="False">
+                              <Image.Source>
+                                <i:IconImage Value="mdi-pencil" Brush="White" />
+                              </Image.Source>
+                            </Image>
+                          </Button>
+                          <Button Margin="4" Background="{DynamicResource ErrorBrush}" Click="Delete_Click">
+                            <Image Height="16" PointerPressed="Image_PointerPressed" IsHitTestVisible="False">
+                              <Image.Source>
+                                <i:IconImage Value="mdi-delete" Brush="White" />
+                              </Image.Source>
+                            </Image>
+                          </Button>
+                        </StackPanel>
+                      </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                  </DataGridTemplateColumn>
+                </DataGrid.Columns>
+              </DataGrid>
+              </suki:BusyArea>
+            </Grid>
+          </TabItem>
+          <TabItem Header="Roles" IsVisible="True">
+            <TextBlock Margin="5">Roles</TextBlock>
+          </TabItem>
+        </TabControl>
+      </suki:GroupBox>
+    </suki:GlassCard>
+  </ScrollViewer>
+</UserControl>
