@@ -94,7 +94,7 @@
           <TextBlock>Foo</TextBlock>
         </suki:SukiSideMenuItem.PageContent>
       </suki:SukiSideMenuItem>
-      <suki:SukiSideMenuItem Header="Settings">
+      <!--<suki:SukiSideMenuItem Header="Settings">
         <suki:SukiSideMenuItem.Icon>
           <Image>
             <Image.Source>
@@ -102,7 +102,7 @@
             </Image.Source>
           </Image>
         </suki:SukiSideMenuItem.Icon>
-        <!--<suki:SukiSideMenuItem.PageContent>
+        <suki:SukiSideMenuItem.PageContent>
           <suki:SettingsLayout>
             <suki:SettingsLayout.Items>
               <objectModel:ObservableCollection x:TypeArguments="suki:SettingsLayoutItem">
