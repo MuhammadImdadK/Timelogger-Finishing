@@ -80,7 +80,7 @@
               </suki:BusyArea>
             </Grid>
           </TabItem>
-          <TabItem Header="Roles" IsVisible="True">
+          <TabItem Header="Roles" IsVisible="False">
             <TextBlock Margin="5">Roles</TextBlock>
           </TabItem>
         </TabControl>

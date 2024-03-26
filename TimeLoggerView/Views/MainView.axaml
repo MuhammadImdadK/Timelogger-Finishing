@@ -67,7 +67,7 @@
           </Image>
         </suki:SukiSideMenuItem.Icon>
         <suki:SukiSideMenuItem.PageContent>
-          <TextBlock>Foo</TextBlock>
+          <views:ProjectMainView DataContext="{Binding ProjectManagement}" />
         </suki:SukiSideMenuItem.PageContent>
       </suki:SukiSideMenuItem>
       <suki:SukiSideMenuItem Header="Requests">
@@ -87,6 +87,18 @@
           <Image>
             <Image.Source>
               <i:IconImage Value="mdi-calendar-clock" Brush="{DynamicResource ThemeAccentBrush}" />
+            </Image.Source>
+          </Image>
+        </suki:SukiSideMenuItem.Icon>
+        <suki:SukiSideMenuItem.PageContent>
+          <TextBlock>Foo</TextBlock>
+        </suki:SukiSideMenuItem.PageContent>
+      </suki:SukiSideMenuItem>
+      <suki:SukiSideMenuItem Header="Reports">
+        <suki:SukiSideMenuItem.Icon>
+          <Image>
+            <Image.Source>
+              <i:IconImage Value="mdi-chart-line" Brush="{DynamicResource ThemeAccentBrush}" />
             </Image.Source>
           </Image>
         </suki:SukiSideMenuItem.Icon>

@@ -1,4 +1,5 @@
-﻿using Model.EntityModel;
+﻿using Common.Enums;
+using Model.EntityModel;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -12,9 +13,11 @@ namespace Model.ModelSql
     {
         public string Name { get; set; }
         public string Description { get; set; }
-        public int ProjectId{ get; set; }
+        public int ProjectId { get; set; }
 
         [ForeignKey("ProjectID")]
         public virtual Project Project { get; set; }
     }
+
+
 }

@@ -24,7 +24,7 @@ public class UserManagementViewModel : ViewModelBase
     private int skip = 0;
     private int take = 50;
     private readonly IUserService userService;
-    private readonly User currentUser;
+    private User currentUser;
     private string busyText = "Loading Users";
     private bool isBusy = true;
     private bool isEditing = false;
@@ -42,7 +42,7 @@ public class UserManagementViewModel : ViewModelBase
         this.PerformEditCommand = ReactiveCommand.Create(this.PerformEdit);
         this.PerformDeleteCommand = ReactiveCommand.Create(this.PerformDelete);
         this.CloseDialogCommand = ReactiveCommand.Create(this.CloseDialog);
-        this.currentUser = currentUser;
+        this.CurrentUser = currentUser;
         this.LoadUsers();
     }
 
@@ -71,6 +71,7 @@ public class UserManagementViewModel : ViewModelBase
     public bool IsDeleting { get => this.isDeleting; set => this.RaiseAndSetIfChanged(ref this.isDeleting, value); }
 
     public User? ModifyingUser { get => this.modifyingUser; set => this.RaiseAndSetIfChanged(ref this.modifyingUser, value); }
+    public User CurrentUser { get => this.currentUser; set => this.RaiseAndSetIfChanged(ref this.currentUser, value); }
 
     private void AddUser()
     {

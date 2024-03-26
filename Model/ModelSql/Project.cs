@@ -1,4 +1,5 @@
-﻿using Model.EntityModel;
+﻿using Common.Enums;
+using Model.EntityModel;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -14,6 +15,8 @@ namespace Model.ModelSql
         public string? ProjectName { get; set; }
         public string? ERFNumber { get; set; }
         public string? Description { get; set; }
+        public float ManhourBudget { get; set; }
+        public ApprovalState? ApprovalState { get; set; }
         public ICollection<Drawing> Drawings { get; set; }
     }
 }

@@ -48,7 +48,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Views\ConfirmUserDeletionView.axaml.cs">
+    <Compile Update="Views\Projects\ProjectView.axaml.cs">
+      <DependentUpon>ProjectView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\UserManagement\ConfirmUserDeletionView.axaml.cs">
       <DependentUpon>ConfirmUserDeletionView.axaml</DependentUpon>
     </Compile>
   </ItemGroup>
@@ -57,5 +60,11 @@
     <None Update="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Views\Requests\" />
+    <Folder Include="Views\Reports\" />
+    <Folder Include="Views\Timesheet\" />
   </ItemGroup>
 </Project>

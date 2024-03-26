@@ -12,4 +12,10 @@ namespace Common.Enums
         CoreTeam=1,
         AdditionalTeam=2
     }
+    public enum ApprovalState
+    {
+        AwaitingApproval=0,
+        Accepted=1,
+        Rejected=2
+    }
 }

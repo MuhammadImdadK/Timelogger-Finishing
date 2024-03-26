@@ -88,7 +88,7 @@ public partial class App : Application
         if(ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             desktop.MainWindow?.Hide();
-            var vm = new MainViewModel() { CurrentUser = user };
+            var vm = new MainViewModel(user);
             WorkspaceInstance = new MainWindow()
             {
                 DataContext = vm
