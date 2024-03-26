@@ -13,125 +13,130 @@
              x:Class="TimeLoggerView.Views.UserEditorView"
              x:DataType="vm:UserManagementViewModel">
 
-  <Design.DataContext>
-    <!-- This only sets the DataContext for the previewer in an IDE,
+	<Design.DataContext>
+		<!-- This only sets the DataContext for the previewer in an IDE,
          to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-    <vm:UserManagementViewModel />
-  </Design.DataContext>
-  <suki:GroupBox>
-    <suki:GroupBox.Header>
-      <StackPanel Orientation="Horizontal">
-        <TextBlock MinWidth="200" MaxWidth="200" VerticalAlignment="Center" Margin="5 10 0 0" FontSize="16" FontWeight="Bold">User Editor</TextBlock>
-      </StackPanel>
-    </suki:GroupBox.Header>
-    <Grid>
-      <Grid.RowDefinitions>
-        <RowDefinition Height="Auto"/>
-        <RowDefinition Height="Auto"/>
-        <RowDefinition Height="Auto"/>
-        <RowDefinition Height="Auto"/>
-        <RowDefinition Height="*"/>
-        <RowDefinition Height="Auto"/>
-      </Grid.RowDefinitions>
-
-      <Grid Grid.Row="1">
-        <Grid.ColumnDefinitions>
-          <ColumnDefinition Width="*"/>
-          <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
-
-        <StackPanel Grid.Column="0" Margin="10">
-          <TextBlock MinWidth="200" MaxWidth="200" Text="Username"
+		<vm:UserManagementViewModel />
+	</Design.DataContext>
+	<suki:GroupBox>
+		<suki:GroupBox.Header>
+			<StackPanel Orientation="Horizontal">
+				<TextBlock MinWidth="200" MaxWidth="200" VerticalAlignment="Center" Margin="5 10 0 0" FontSize="16" FontWeight="Bold">User Editor</TextBlock>
+			</StackPanel>
+		</suki:GroupBox.Header>
+		<Grid RowDefinitions="Auto, Auto, Auto, Auto, *, Auto">
+			<Grid Grid.Row="0" ColumnDefinitions="*,*">
+				<StackPanel Grid.Column="0" Margin="10">
+					<TextBlock MinWidth="200" MaxWidth="200" Text="Employee Number"
                      />
-          <TextBox MinWidth="200" MaxWidth="200" Watermark="Username" Text="{Binding ModifyingUser.Username}"  x:Name="txtUsername"/>
-        </StackPanel>
+					<TextBox MinWidth="200" MaxWidth="200" Watermark="EmployeeNumber" Text="{Binding ModifyingUser.EmployeeNumber}"  x:Name="txtEmployeeNumber"/>
+				</StackPanel>
+				<StackPanel Grid.Column="1" Margin="10" VerticalAlignment="Center">
+					<CheckBox Background="DarkGray" Margin="10 20 10 10" VerticalAlignment="Center" IsChecked="{Binding ModifyingUser.IsActive}">
+						<TextBlock  Text="Active Employee">
+						</TextBlock>
+					</CheckBox>
+				</StackPanel>
+			</Grid>
 
-        <StackPanel Grid.Column="1" Margin="10">
-          <TextBlock MinWidth="200" MaxWidth="200" Text="Password"
+			<Grid Grid.Row="1">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*"/>
+					<ColumnDefinition Width="*"/>
+				</Grid.ColumnDefinitions>
+
+				<StackPanel Grid.Column="0" Margin="10">
+					<TextBlock MinWidth="200" MaxWidth="200" Text="Username"
                      />
-          <TextBox MinWidth="200" MaxWidth="200" x:Name="txtPassword" Text="{Binding ModifyingUser.Password}" Watermark="Password" PasswordChar="*" />
-        </StackPanel>
-      </Grid>
+					<TextBox MinWidth="200" MaxWidth="200" Watermark="Username" Text="{Binding ModifyingUser.Username}"  x:Name="txtUsername"/>
+				</StackPanel>
 
-      <Grid Grid.Row="2">
-
-        <Grid.ColumnDefinitions>
-          <ColumnDefinition Width="*"/>
-          <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
-        <StackPanel Grid.Column="0" Margin="10">
-          <TextBlock MinWidth="200" MaxWidth="200" Text="First Name"
+				<StackPanel Grid.Column="1" Margin="10">
+					<TextBlock MinWidth="200" MaxWidth="200" Text="Password"
                      />
-          <TextBox MinWidth="200" MaxWidth="200" Watermark="First Name" Text="{Binding ModifyingUser.FirstName}"  x:Name="txtFirstName"/>
-        </StackPanel>
+					<TextBox MinWidth="200" MaxWidth="200" x:Name="txtPassword" Text="{Binding ModifyingUser.Password}" Watermark="Password" PasswordChar="*" />
+				</StackPanel>
+			</Grid>
 
-        <StackPanel Grid.Column="1" Margin="10">
-          <TextBlock MinWidth="200" MaxWidth="200" Text="Last Name (Optional)"
+			<Grid Grid.Row="2">
+
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*"/>
+					<ColumnDefinition Width="*"/>
+				</Grid.ColumnDefinitions>
+				<StackPanel Grid.Column="0" Margin="10">
+					<TextBlock MinWidth="200" MaxWidth="200" Text="First Name"
                      />
-          <TextBox MinWidth="200" MaxWidth="200" Watermark="Last Name (Optional)" Text="{Binding ModifyingUser.LastName}" x:Name="txtLastName"/>
-        </StackPanel>
-      </Grid>
+					<TextBox MinWidth="200" MaxWidth="200" Watermark="First Name" Text="{Binding ModifyingUser.FirstName}"  x:Name="txtFirstName"/>
+				</StackPanel>
 
-      <Grid Grid.Row="3">
-
-        <Grid.ColumnDefinitions>
-          <ColumnDefinition Width="*"/>
-          <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
-        <StackPanel Grid.Column="0" Margin="10">
-          <TextBlock MinWidth="200" MaxWidth="200" Text="Designation"
+				<StackPanel Grid.Column="1" Margin="10">
+					<TextBlock MinWidth="200" MaxWidth="200" Text="Last Name (Optional)"
                      />
-          <TextBox MinWidth="200" MaxWidth="200" Watermark="Designation (Optional)" Text="{Binding ModifyingUser.Designation}" x:Name="txtDesignation"/>
-        </StackPanel>
+					<TextBox MinWidth="200" MaxWidth="200" Watermark="Last Name (Optional)" Text="{Binding ModifyingUser.LastName}" x:Name="txtLastName"/>
+				</StackPanel>
+			</Grid>
 
-        <StackPanel Grid.Column="1" Margin="10">
-          <TextBlock MinWidth="200" MaxWidth="200" Text="Email"
+			<Grid Grid.Row="3">
+
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*"/>
+					<ColumnDefinition Width="*"/>
+				</Grid.ColumnDefinitions>
+				<StackPanel Grid.Column="0" Margin="10">
+					<TextBlock MinWidth="200" MaxWidth="200" Text="Designation"
                      />
-          <TextBox MinWidth="200" MaxWidth="200" Watermark="Email" Text="{Binding ModifyingUser.Email}" x:Name="txtEmail"/>
-        </StackPanel>
-      </Grid>
+					<TextBox MinWidth="200" MaxWidth="200" Watermark="Designation (Optional)" Text="{Binding ModifyingUser.Designation}" x:Name="txtDesignation"/>
+				</StackPanel>
 
-      <Grid Grid.Row="4">
-
-        <Grid.ColumnDefinitions>
-          <ColumnDefinition Width="*"/>
-          <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
-
-        <StackPanel Grid.Column="0" Margin="10">
-          <TextBlock MinWidth="200" MaxWidth="200" Text="Role"
+				<StackPanel Grid.Column="1" Margin="10">
+					<TextBlock MinWidth="200" MaxWidth="200" Text="Email"
                      />
-          <ComboBox MinWidth="200" MaxWidth="200" x:Name="cmbRole"
-                    Height="30"
-                    Foreground="DarkGray" ItemsSource="{Binding AvailableRoles}" SelectedItem="{Binding ModifyingUser.Role}" >
-          </ComboBox>
-        </StackPanel>
+					<TextBox MinWidth="200" MaxWidth="200" Watermark="Email" Text="{Binding ModifyingUser.Email}" x:Name="txtEmail"/>
+				</StackPanel>
+			</Grid>
 
-        <StackPanel Grid.Column="1" Margin="10">
-          <TextBlock MinWidth="200" MaxWidth="200" Text="Team"
+			<Grid Grid.Row="4">
+
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*"/>
+					<ColumnDefinition Width="*"/>
+				</Grid.ColumnDefinitions>
+
+				<StackPanel Grid.Column="0" Margin="10">
+					<TextBlock MinWidth="200" MaxWidth="200" Text="Role"
                      />
-          <ComboBox MinWidth="200" MaxWidth="200" x:Name="cmbTeam"
-                    Height="30"
-                    Foreground="DarkGray" ItemsSource="{Binding AvailableTeams}" SelectedItem="{Binding ModifyingUser.TeamType}" >
-          </ComboBox>
-        </StackPanel>
+					<ComboBox MinWidth="200" MaxWidth="200" x:Name="cmbRole"
+							  Height="30"
+							  Foreground="DarkGray" ItemsSource="{Binding AvailableRoles}" SelectedItem="{Binding ModifyingUser.Role}" >
+					</ComboBox>
+				</StackPanel>
 
-        <!-- Add more StackPanels for additional fields -->
-      </Grid>
+				<StackPanel Grid.Column="1" Margin="10">
+					<TextBlock MinWidth="200" MaxWidth="200" Text="Team"
+                     />
+					<ComboBox MinWidth="200" MaxWidth="200" x:Name="cmbTeam"
+							  Height="30"
+							  Foreground="DarkGray" ItemsSource="{Binding AvailableTeams}" SelectedItem="{Binding ModifyingUser.TeamType}" >
+					</ComboBox>
+				</StackPanel>
 
-      <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,20,0,10">
-        <Button 
-          x:Name="btnCancel"
-          Content="Cancel"
-          Command="{Binding CloseDialogCommand}"/>
-        <Button
-          Classes="Flat"
-          x:Name="btnAdd"
-          Command="{Binding PerformEditCommand}"
-          Content="{Binding PrimaryActionText}"
-          Margin="5,0,5,0"/>
-      </StackPanel>
-    </Grid>
-  </suki:GroupBox>
+				<!-- Add more StackPanels for additional fields -->
+			</Grid>
+
+			<StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,20,0,10">
+				<Button
+				  x:Name="btnCancel"
+				  Content="Cancel"
+				  Command="{Binding CloseDialogCommand}"/>
+				<Button
+				  Classes="Flat"
+				  x:Name="btnAdd"
+				  Command="{Binding PerformEditCommand}"
+				  Content="{Binding PrimaryActionText}"
+				  Margin="5,0,5,0"/>
+			</StackPanel>
+		</Grid>
+	</suki:GroupBox>
 
 </UserControl>
