@@ -15,6 +15,7 @@ namespace Model.ModelSql
     public class User: BasicEntity, ICloneable
     {
         public int RoleID { get; set; }
+        public string EmployeeNumber { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
         public string FirstName { get; set; }

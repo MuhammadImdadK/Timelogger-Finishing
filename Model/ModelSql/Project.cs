@@ -10,13 +10,18 @@ using System.Threading.Tasks;
 namespace Model.ModelSql
 {
     // Project entity model
-    public class Project : BasicEntity
+    public class Project : BasicEntity, ICloneable
     {
         public string? ProjectName { get; set; }
         public string? ERFNumber { get; set; }
         public string? Description { get; set; }
         public float ManhourBudget { get; set; }
-        public ApprovalState? ApprovalState { get; set; }
+        public RequestStatus? ApprovalState { get; set; }
         public ICollection<Drawing> Drawings { get; set; }
+
+        public object Clone()
+        {
+            return base.MemberwiseClone();
+        }
     }
 }
