@@ -17,6 +17,7 @@
         xmlns:theme="clr-namespace:SukiUI.Theme;assembly=SukiUI"
         xmlns:views="using:TimeLoggerView.Views"
         x:DataType="vm:LoginViewModel"
+        WindowStartupLocation="CenterScreen"
         >
   <Grid Margin="15">
     <suki:GlassCard Width="350" Margin="0,0,0,25">

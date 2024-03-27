@@ -43,19 +43,3 @@ public class MainViewModel : ViewModelBase
         OnSignout?.Invoke(this, EventArgs.Empty);
     }
 }
-
-public class TimesheetViewModel : ViewModelBase
-{
-
-}
-
-public class ReportsViewModel : ViewModelBase
-{
-
-}
-
-public class RequestsViewModel : ViewModelBase
-{
-
-}
-

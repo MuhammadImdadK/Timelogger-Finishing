@@ -390,3 +390,17 @@ public class ProjectManagementViewModel : ModuleViewModel
     }
 }
 
+public class TimesheetViewModel : ViewModelBase
+{
+
+}
+
+public class ReportsViewModel : ViewModelBase
+{
+
+}
+
+public class RequestsViewModel : ViewModelBase
+{
+
+}
