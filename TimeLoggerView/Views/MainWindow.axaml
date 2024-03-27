@@ -10,6 +10,6 @@
         x:Class="TimeLoggerView.Views.MainWindow"
         Icon="/Assets/icon.ico"
         Title="PEC Project Management"
-        Closed="SukiWindow_Closed" >
+        Closed="SukiWindow_Closed">
   <views:MainView />
 </sukiUi:SukiWindow>

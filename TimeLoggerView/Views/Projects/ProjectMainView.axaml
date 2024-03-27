@@ -15,48 +15,50 @@
              xmlns:i="https://github.com/projektanker/icons.avalonia"
              x:Class="TimeLoggerView.Views.ProjectMainView">
   <ScrollViewer VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-    <suki:GlassCard VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="5">
-      <suki:GroupBox VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-        <suki:GroupBox.Header>
-          <Grid ColumnDefinitions="*, Auto">
-            <TextBlock VerticalAlignment="Center">Projects</TextBlock>
-            <Button Grid.Column="1" Classes="Flat">
-              <Image Height="16" IsHitTestVisible="False">
-                <Image.Source>
-                  <i:IconImage Value="mdi-plus" Brush="White" />
-                </Image.Source>
-              </Image>
-            </Button>
-          </Grid>
-        </suki:GroupBox.Header>
-        <ItemsControl x:Name="ProjectsPane" ItemsSource="{Binding Projects}">
-          <ItemsControl.ItemTemplate>
-            <DataTemplate x:DataType="sqlModels:Project">
-              <suki:GlassCard Margin="5">
-                <Grid ColumnDefinitions="*, Auto, Auto">
-                  <StackPanel HorizontalAlignment="Stretch">
-                    <TextBlock FontWeight="Bold" FontSize="16" Text="{Binding ProjectName}" Foreground="White"></TextBlock>
-                    <TextBlock FontWeight="Bold" Foreground="White" Text="{Binding ERFNumber}"></TextBlock>
-                  </StackPanel>
-                  <TextBlock Grid.Column="1" Foreground="{DynamicResource ThemeAccentBrush}" HorizontalAlignment="Left"  FontWeight="ExtraBold" Margin="5" VerticalAlignment="Center"  IsVisible="{Binding IsActive}">
-                    OPEN
-                  </TextBlock>
-                  <TextBlock Grid.Column="1" Foreground="Green" HorizontalAlignment="Left" FontWeight="ExtraBold" Margin="5" VerticalAlignment="Center" IsVisible="{Binding !IsActive}">
-                    CLOSED
-                  </TextBlock>
-                  <Button Grid.Column="2" Command="{Binding #ProjectsPane((vm:ProjectManagementViewModel)DataContext).ViewProjectCommand}" CommandParameter="{Binding}">
-                    <Image Height="16" IsHitTestVisible="False">
-                      <Image.Source>
-                        <i:IconImage Value="mdi-eye-outline" Brush="White" />
-                      </Image.Source>
-                    </Image>
-                  </Button>
-                </Grid>
-              </suki:GlassCard>
-            </DataTemplate>
-          </ItemsControl.ItemTemplate>
-        </ItemsControl>
-      </suki:GroupBox>
-    </suki:GlassCard>
+    <suki:BusyArea IsBusy="{Binding IsBusy}" BusyText="{Binding BusyText}">
+      <suki:GlassCard VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="5">
+        <suki:GroupBox VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+          <suki:GroupBox.Header>
+            <Grid ColumnDefinitions="*, Auto">
+              <TextBlock VerticalAlignment="Center">Projects</TextBlock>
+              <Button Grid.Column="1" Classes="Flat" Background="#3a9c22" Command="{Binding CreateProjectCommand}">
+                <Image Height="16" IsHitTestVisible="False">
+                  <Image.Source>
+                    <i:IconImage Value="mdi-plus" Brush="White" />
+                  </Image.Source>
+                </Image>
+              </Button>
+            </Grid>
+          </suki:GroupBox.Header>
+          <ItemsControl x:Name="ProjectsPane" ItemsSource="{Binding Projects}">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate x:DataType="sqlModels:Project">
+                <suki:GlassCard Margin="5">
+                  <Grid ColumnDefinitions="*, Auto, Auto">
+                    <StackPanel HorizontalAlignment="Stretch">
+                      <TextBlock FontWeight="Bold" FontSize="16" Text="{Binding ProjectName}" Foreground="White"></TextBlock>
+                      <TextBlock FontWeight="Bold" Foreground="White" Text="{Binding ERFNumber}"></TextBlock>
+                    </StackPanel>
+                    <TextBlock Grid.Column="1" Foreground="{DynamicResource ThemeAccentBrush}" HorizontalAlignment="Left"  FontWeight="ExtraBold" Margin="5" VerticalAlignment="Center"  IsVisible="{Binding IsActive}">
+                      OPEN
+                    </TextBlock>
+                    <TextBlock Grid.Column="1" Foreground="Green" HorizontalAlignment="Left" FontWeight="ExtraBold" Margin="5" VerticalAlignment="Center" IsVisible="{Binding !IsActive}">
+                      CLOSED
+                    </TextBlock>
+                    <Button Grid.Column="2" Command="{Binding #ProjectsPane((vm:ProjectManagementViewModel)DataContext).ViewProjectCommand}" CommandParameter="{Binding}">
+                      <Image Height="16" IsHitTestVisible="False">
+                        <Image.Source>
+                          <i:IconImage Value="mdi-eye-outline" Brush="White" />
+                        </Image.Source>
+                      </Image>
+                    </Button>
+                  </Grid>
+                </suki:GlassCard>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </suki:GroupBox>
+      </suki:GlassCard>
+    </suki:BusyArea>
   </ScrollViewer>
 </UserControl>

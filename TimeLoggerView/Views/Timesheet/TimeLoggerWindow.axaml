@@ -1,0 +1,56 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:i="https://github.com/projektanker/icons.avalonia"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="TimeLoggerView.Views.Timesheet.TimeLoggerWindow"
+        xmlns:vm="clr-namespace:TimeLoggerView.ViewModels"
+        xmlns:suki="clr-namespace:SukiUI.Controls;assembly=SukiUI"
+        xmlns:models="clr-namespace:SukiUI.Models;assembly=SukiUI"
+        xmlns:objectModel="clr-namespace:System.Collections.ObjectModel;assembly=System"
+        xmlns:theme="clr-namespace:SukiUI.Theme;assembly=SukiUI"
+        xmlns:views="using:TimeLoggerView.Views"
+        Title="TimeLoggerWindow" PointerEntered="Window_PointerEntered" PointerExited="Window_PointerExited_1" SizeToContent="WidthAndHeight"
+        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaChromeHints="NoChrome"
+        ExtendClientAreaTitleBarHeightHint="-1"
+        SystemDecorations="BorderOnly" Background="Transparent" Topmost="True" ShowInTaskbar="True" Loaded="Window_Loaded" Closed="Window_Closed">
+  <Border CornerRadius="5"  Background="#353535">
+    <Grid>
+      <Grid x:Name="MainView" IsVisible="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <TextBlock>
+          Welcome to Avalonia!
+        </TextBlock>
+      </Grid>
+      <Grid x:Name="MiniView" ColumnDefinitions="Auto, *">
+        <Border Background="LightGray" Opacity="0.4" PointerPressed="InputElement_OnPointerPressed"
+            PointerReleased="InputElement_OnPointerReleased"
+            PointerMoved="InputElement_OnPointerMoved" Padding="10">
+          <StackPanel IsHitTestVisible="False">
+
+            <Image Margin="0"  Height="16" IsHitTestVisible="False" HorizontalAlignment="Center" VerticalAlignment="Top">
+              <Image.Source>
+                <i:IconImage Value="mdi-dots-grid" Brush="Black" />
+              </Image.Source>
+            </Image>
+            <Image Margin="0 -4 0 -4"  Height="16" IsHitTestVisible="False" HorizontalAlignment="Center" VerticalAlignment="Top">
+              <Image.Source>
+                <i:IconImage Value="mdi-dots-grid" Brush="Black" />
+              </Image.Source>
+            </Image>
+            <Image Margin="0"  Height="16" IsHitTestVisible="False" HorizontalAlignment="Center" VerticalAlignment="Top">
+              <Image.Source>
+                <i:IconImage Value="mdi-dots-grid" Brush="Black" />
+              </Image.Source>
+            </Image>
+          </StackPanel>
+
+        </Border>
+        <StackPanel Grid.Column="1" VerticalAlignment="Center" MinWidth="300" MinHeight="200">
+        </StackPanel>
+      </Grid>
+    </Grid>
+  </Border>
+
+</Window>

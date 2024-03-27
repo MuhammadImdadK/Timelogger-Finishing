@@ -33,7 +33,7 @@ public class UserManagementViewModel : ViewModelBase
 
     private string primaryActionText = "Add";
 
-    public UserManagementViewModel(User currentUser)
+    public UserManagementViewModel()
     {
         this.userService = (IUserService)App.Container.GetService(typeof(IUserService));
         this.AddUserCommand = ReactiveCommand.Create(this.AddUser);
@@ -42,7 +42,7 @@ public class UserManagementViewModel : ViewModelBase
         this.PerformEditCommand = ReactiveCommand.Create(this.PerformEdit);
         this.PerformDeleteCommand = ReactiveCommand.Create(this.PerformDelete);
         this.CloseDialogCommand = ReactiveCommand.Create(this.CloseDialog);
-        this.CurrentUser = currentUser;
+        this.CurrentUser = App.CurrentUser;
         this.LoadUsers();
     }
 

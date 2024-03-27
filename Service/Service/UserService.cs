@@ -22,8 +22,8 @@ namespace Service.Service
         {
             List<User> response = _repository.GetQueryableWithOutTracking<User>()
                 .OrderByDescending(x => x.Modified)
-                .Skip(skip)
-                .Take(take)
+                //.Skip(skip)
+                //.Take(take)
                 .ToList();
             response.ForEach(itm => itm.Role = Constants.Roles.FirstOrDefault(role => itm.RoleID == role.Id));
             return response;

@@ -48,24 +48,33 @@ namespace Model.Repository
         }
         public virtual IQueryable<T> GetQueryable<T>() where T : class
         {
-            return _DbContext.Set<T>();
+            lock (_DbContext)
+            {
+                return _DbContext.Set<T>();
+            }
         }
         public virtual IQueryable<T> GetQueryableWithOutTracking<T>() where T : class
         {
-            return _DbContext.Set<T>().AsNoTracking();
+            lock (_DbContext)
+            {
+                return _DbContext.Set<T>().AsNoTracking();
+            }
         }
         public virtual IQueryable<T> GetQueryableWithOutTracking<T>(IList<string> includes = null, Expression<Func<T, bool>> filter = null) where T : class
         {
-            IQueryable<T> queryable = _DbContext.Set<T>().AsNoTracking();
+            lock (_DbContext)
+            {
+                IQueryable<T> queryable = _DbContext.Set<T>().AsNoTracking();
 
-            if (filter != null)
-                queryable = queryable.Where(filter);
-            if (includes != null && queryable.Any())
-                foreach (var item in includes)
-                {
-                    queryable = queryable.Include(item);
-                }
-            return queryable;
+                if (filter != null)
+                    queryable = queryable.Where(filter);
+                if (includes != null && queryable.Any())
+                    foreach (var item in includes)
+                    {
+                        queryable = queryable.Include(item);
+                    }
+                return queryable;
+            }
         }
 
 
@@ -77,6 +86,7 @@ namespace Model.Repository
         {
             return await _DbContext.Set<T>().FindAsync(modelId);
         }
+
         public async Task<IEnumerable<T>> CheckNumber<T>(Expression<Func<T, bool>> filter = null) where T : class
         {
             if (filter != null)
@@ -85,6 +95,7 @@ namespace Model.Repository
             }
             return await _DbContext.Set<T>().ToListAsync();
         }
+
         public IQueryable<T> GetReportQueryable<T>(IList<string> includes = null, Expression<Func<T, bool>> filter = null) where T : class
         {
             IQueryable<T> queryable = _DbContext.Set<T>();

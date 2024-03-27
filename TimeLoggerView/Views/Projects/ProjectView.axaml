@@ -15,171 +15,168 @@
              xmlns:i="https://github.com/projektanker/icons.avalonia"
              x:DataType="vm:ProjectManagementViewModel"
              mc:Ignorable="d">
-	<controls:BusyArea IsBusy="{Binding IsBusy}" BusyText="{Binding BusyText}">
-	
-	<Grid ColumnDefinitions="*, Auto, Auto">
-		<controls:GroupBox Margin="5">
-			<controls:GroupBox.Header>
-				<Grid>
-					<TextBlock IsVisible="{Binding !IsEditing}" Text="{Binding CurrentProject.ProjectName}" />
-					<TextBox IsVisible="{Binding IsEditing}" Text="{Binding CurrentProject.ProjectName}" />
-				</Grid>
-			</controls:GroupBox.Header>
-			<ScrollViewer VerticalScrollBarVisibility="Visible" VerticalAlignment="Stretch" MaxHeight="400">
-				
-					<Grid VerticalAlignment="Stretch" RowDefinitions="Auto,Auto,*,Auto" ColumnDefinitions="*,Auto">
-						<TextBlock VerticalAlignment="Center" Text="{Binding CurrentProject.ERFNumber}"></TextBlock>
-						<StackPanel IsVisible="{Binding !IsEditing}" Grid.Column="1" Orientation="Horizontal">
-							<Button Classes="Flat" IsVisible="{Binding IsTicketApproved}" Command="{Binding LogTimeCommand}">
-								<StackPanel Orientation="Horizontal">
-									<Image Height="24" IsHitTestVisible="False">
-										<Image.Source>
-											<i:IconImage Value="mdi-record-rec" Brush="White" />
-										</Image.Source>
-									</Image>
-									<TextBlock Margin="2 0 0 0" VerticalAlignment="Center">Log Time</TextBlock>
-								</StackPanel>
-							</Button>
-							<Button Margin="5 0 0 0" Classes="Flat" Command="{Binding BeginEditCommand}">
-								<Image Height="24" IsHitTestVisible="False">
-									<Image.Source>
-										<i:IconImage Value="mdi-pencil" Brush="White" />
-									</Image.Source>
-								</Image>
-							</Button>
-							<Button Margin="5 0 0 0" Classes="Flat" Background="#3a9c22" Command="{Binding AddAttachmentCommand}">
-								<Image Height="24" IsHitTestVisible="False">
-									<Image.Source>
-										<i:IconImage Value="mdi-paperclip-plus"  Brush="White" />
-									</Image.Source>
-								</Image>
-							</Button>
-						</StackPanel>
-						<StackPanel HorizontalAlignment="Right" IsVisible="{Binding IsEditing}" Grid.Column="1" Orientation="Horizontal">
-							<Button Margin="5 0 0 0" Classes="Flat" Command="{Binding SaveEditCommand}" Background="#3a9c22">
-								<Image Height="24" IsHitTestVisible="False">
-									<Image.Source>
-										<i:IconImage Value="mdi-content-save" Brush="White" />
-									</Image.Source>
-								</Image>
-							</Button>
-							<Button Margin="5 0 0 0" Background="#cc0000" Command="{Binding CancelEditCommand}">
-								<Image Height="24" IsHitTestVisible="False">
-									<Image.Source>
-										<i:IconImage Value="mdi-cancel"  Brush="White" />
-									</Image.Source>
-								</Image>
-							</Button>
-						</StackPanel>
+  <Design.DataContext>
+    <!-- This only sets the DataContext for the previewer in an IDE,
+         to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+    <vm:ProjectManagementViewModel />
+  </Design.DataContext>
+  <controls:BusyArea IsBusy="{Binding IsBusy}" BusyText="{Binding BusyText}">
 
-						<controls:GroupBox IsVisible="{Binding IsAddingAttachment}" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Header="Add Drawing" Margin="10">
-							<Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto">
-								<StackPanel>
-									<TextBlock>Name</TextBlock>
-									<TextBox MinWidth="200" Watermark="Name"></TextBox>
-								</StackPanel>
-								<StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
-									<TextBlock>Description</TextBlock>
-									<TextBox MinHeight="100" Watermark="Description" TextWrapping="WrapWithOverflow" AcceptsReturn="True"></TextBox>
-								</StackPanel>
-								<StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Right" Orientation="Horizontal">
-									<Button Margin="5" Background="#3a9c22" Command="{Binding SubmitAttachmentCommand}">
-										<StackPanel Orientation="Horizontal">
-											<Image Height="24" IsHitTestVisible="False">
-												<Image.Source>
-													<i:IconImage Value="mdi-plus"  Brush="White" />
-												</Image.Source>
-											</Image>
-											<TextBlock VerticalAlignment="Center" Margin="5 0 0 0">Add</TextBlock>
-										</StackPanel>
-									</Button>
-									<Button Margin="5 5 0 5" Background="#cc0000" Command="{Binding CancelAttachmentCommand}">
-										<Image Height="20" IsHitTestVisible="False">
-											<Image.Source>
-												<i:IconImage Value="mdi-cancel"  Brush="White" />
-											</Image.Source>
-										</Image>
-									</Button>
-								</StackPanel>
-							</Grid>
-						</controls:GroupBox>
-					
-						<controls:GroupBox Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Header="Description" Margin="10">
-							<Grid>
+    <Grid ColumnDefinitions="*, Auto, Auto">
+      <controls:GroupBox Margin="5">
+        <controls:GroupBox.Header>
+          <Grid ColumnDefinitions="*, Auto">
+            <TextBlock VerticalAlignment="Center" IsVisible="{Binding !IsEditing}" Text="{Binding CurrentProject.ProjectName}" />
+            <TextBox IsVisible="{Binding IsEditing}" Text="{Binding CurrentProject.ProjectName}" />
+            <Button Grid.Column="1" Margin="0 5 0 5" IsEnabled="{Binding !IsEditing}" Command="{Binding CloseProjectViewCommand}">
+              <Image Height="24" IsHitTestVisible="False">
+                <Image.Source>
+                  <i:IconImage Value="mdi-close" Brush="White" />
+                </Image.Source>
+              </Image>
+            </Button>
+          </Grid>
+        </controls:GroupBox.Header>
+        <ScrollViewer VerticalScrollBarVisibility="Visible" VerticalAlignment="Stretch" MaxHeight="400">
 
-								<TextBlock IsVisible="{Binding !IsEditing}"  MinHeight="300" TextWrapping="WrapWithOverflow" Text="{Binding CurrentProject.Description}"></TextBlock>
-								<TextBox IsVisible="{Binding IsEditing}" MinHeight="300" TextWrapping="WrapWithOverflow" Text="{Binding CurrentProject.Description}" AcceptsReturn="True"></TextBox>
-							</Grid>
-						</controls:GroupBox>
-						<controls:GroupBox Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Header="Attachments" Margin="10">
-							<DataGrid Margin="10" x:Name="ProjectAttachments" ItemsSource="{Binding CurrentDrawings}"
+          <Grid VerticalAlignment="Stretch" RowDefinitions="Auto,Auto,*,Auto" ColumnDefinitions="*,Auto">
+            <StackPanel Orientation="Horizontal">
+              <TextBlock VerticalAlignment="Center">ERF-</TextBlock>
+              <TextBlock VerticalAlignment="Center" Text="{Binding CurrentProject.ERFNumber}"></TextBlock>
+            </StackPanel>
+            <Grid IsVisible="{Binding CurrentProject.IsActive}" Grid.Column="1">
+
+              <StackPanel IsVisible="{Binding !IsEditing}" Grid.Column="1" Orientation="Horizontal">
+                <!--<Button Classes="Flat" IsVisible="{Binding IsTicketApproved}" Command="{Binding LogTimeCommand}">-->
+                  <Button Classes="Flat" Command="{Binding LogTimeCommand}">
+                  <StackPanel Orientation="Horizontal">
+                    <Image Height="24" IsHitTestVisible="False">
+                      <Image.Source>
+                        <i:IconImage Value="mdi-record-rec" Brush="White" />
+                      </Image.Source>
+                    </Image>
+                    <TextBlock Margin="2 0 0 0" VerticalAlignment="Center">Log Time</TextBlock>
+                  </StackPanel>
+                </Button>
+                <Button Margin="5 0 0 0" Classes="Flat" Command="{Binding BeginEditCommand}">
+                  <Image Height="24" IsHitTestVisible="False">
+                    <Image.Source>
+                      <i:IconImage Value="mdi-pencil" Brush="White" />
+                    </Image.Source>
+                  </Image>
+                </Button>
+                <Button Margin="5 0 0 0" Classes="Flat" Background="#3a9c22" Command="{Binding AddAttachmentCommand}">
+                  <Image Height="24" IsHitTestVisible="False">
+                    <Image.Source>
+                      <i:IconImage Value="mdi-paperclip-plus"  Brush="White" />
+                    </Image.Source>
+                  </Image>
+                </Button>
+              </StackPanel>
+              <StackPanel HorizontalAlignment="Right" IsVisible="{Binding IsEditing}" Grid.Column="1" Orientation="Horizontal">
+                <Button Margin="5 0 0 0" Background="#cc0000" Command="{Binding CancelEditCommand}">
+                  <Image Height="24" IsHitTestVisible="False">
+                    <Image.Source>
+                      <i:IconImage Value="mdi-cancel"  Brush="White" />
+                    </Image.Source>
+                  </Image>
+                </Button>
+                <Button Margin="5 0 0 0" Classes="Flat" Command="{Binding SaveEditCommand}" Background="#3a9c22">
+                  <Image Height="24" IsHitTestVisible="False">
+                    <Image.Source>
+                      <i:IconImage Value="mdi-content-save" Brush="White" />
+                    </Image.Source>
+                  </Image>
+                </Button>
+              </StackPanel>
+            </Grid>
+
+            <controls:GroupBox IsVisible="{Binding IsAddingAttachment}" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Header="Add Drawing" Margin="10">
+              <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto">
+                <StackPanel>
+                  <TextBlock>Name</TextBlock>
+                  <TextBox MinWidth="200" MaxWidth="200" Watermark="Name"></TextBox>
+                </StackPanel>
+                <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
+                  <TextBlock>Description</TextBlock>
+                  <TextBox MinHeight="100" MaxHeight="200" Watermark="Description" TextWrapping="WrapWithOverflow" AcceptsReturn="True"></TextBox>
+                </StackPanel>
+                <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Right" Orientation="Horizontal">
+                  <Button Margin="5 5 0 5" Background="#cc0000" Command="{Binding CancelAttachmentCommand}">
+                    <Image Height="20" IsHitTestVisible="False">
+                      <Image.Source>
+                        <i:IconImage Value="mdi-cancel"  Brush="White" />
+                      </Image.Source>
+                    </Image>
+                  </Button>
+                  <Button Margin="5" Background="#3a9c22" Command="{Binding SubmitAttachmentCommand}">
+                    <StackPanel Orientation="Horizontal">
+                      <Image Height="24" IsHitTestVisible="False">
+                        <Image.Source>
+                          <i:IconImage Value="mdi-plus"  Brush="White" />
+                        </Image.Source>
+                      </Image>
+                      <TextBlock VerticalAlignment="Center" Margin="5 0 0 0">Add</TextBlock>
+                    </StackPanel>
+                  </Button>
+                </StackPanel>
+              </Grid>
+            </controls:GroupBox>
+
+            <controls:GroupBox Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Header="Description" MinWidth="500" Margin="10">
+              <Grid>
+
+                <TextBlock IsVisible="{Binding !IsEditing}"  MinHeight="300" TextWrapping="WrapWithOverflow" Text="{Binding CurrentProject.Description}"></TextBlock>
+                <TextBox IsVisible="{Binding IsEditing}" MinHeight="300" TextWrapping="WrapWithOverflow" Text="{Binding CurrentProject.Description}" AcceptsReturn="True"></TextBox>
+              </Grid>
+            </controls:GroupBox>
+            <controls:GroupBox Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Header="Attachments" Margin="10">
+              <DataGrid Margin="10" x:Name="ProjectAttachments" ItemsSource="{Binding CurrentDrawings}"
 									  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MinHeight="300"
 									  IsReadOnly="True" AreRowDetailsFrozen="False">
-								<DataGrid.Columns>
-									<DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
-									<DataGridTextColumn Header="Description" Binding="{Binding Description}"/>
-									<!--<DataGridTemplateColumn Header="Action">
-					  <DataGridTemplateColumn.CellTemplate>
-						<DataTemplate>
-						  <StackPanel Orientation="Horizontal">
-							<Button  Margin="5" Classes="Flat" Click="Edit_Click">
-							  <Image Height="16" PointerPressed="Image_PointerPressed" IsHitTestVisible="False">
-								<Image.Source>
-								  <i:IconImage Value="mdi-pencil" Brush="White" />
-								</Image.Source>
-							  </Image>
-							</Button>
-							<Button Margin="4" Background="{DynamicResource ErrorBrush}" Click="Delete_Click">
-							  <Image Height="16" PointerPressed="Image_PointerPressed" IsHitTestVisible="False">
-								<Image.Source>
-								  <i:IconImage Value="mdi-delete" Brush="White" />
-								</Image.Source>
-							  </Image>
-							</Button>
-						  </StackPanel>
-						</DataTemplate>
-					  </DataGridTemplateColumn.CellTemplate>
-					</DataGridTemplateColumn>-->
-								</DataGrid.Columns>
-							</DataGrid>
+                <DataGrid.Columns>
+                  <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
+                  <DataGridTextColumn Header="Description" Binding="{Binding Description}"/>
+                </DataGrid.Columns>
+              </DataGrid>
 
-						</controls:GroupBox>
-					</Grid>
-			</ScrollViewer>
+            </controls:GroupBox>
+          </Grid>
+        </ScrollViewer>
 
 
-		</controls:GroupBox>
-		<Border Grid.Column="1" BorderBrush="{DynamicResource ThemeAccentBrush4}" Background="{DynamicResource ThemeAccentBrush4}" Width="2" BorderThickness="1" VerticalAlignment="Stretch" Margin="5 25 5 25"></Border>
-		<controls:GroupBox Grid.Column="2" Margin="5" Header="Details" MinWidth="200">
-			<Grid ColumnDefinitions="*, Auto" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
-				<Button Margin="0 0 0 10" IsVisible="{Binding CurrentProject.IsActive}" Command="{Binding MarkProjectAsClosedCommand}" >Complete Project</Button>
-				<TextBlock Grid.Row="1" FontWeight="Bold">Created By:</TextBlock>
-				<TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding CurrentProject.CreatedByUser.Username}"/>
-				<TextBlock Grid.Row="2" FontWeight="Bold">Created On:</TextBlock>
-				<TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding CurrentProject.CreatedLocalString}"/>
-				<Separator Margin="0 5 0 5" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Background="{DynamicResource ThemeAccentBrush4}"/>
-				<TextBlock Grid.Row="4" FontWeight="Bold">Modified By:</TextBlock>
-				<TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding CurrentProject.ModifiedByUser.Username}"/>
-				<TextBlock Grid.Row="5" FontWeight="Bold">Modified On:</TextBlock>
-				<TextBlock Grid.Row="5" Grid.Column="1" Text="{Binding CurrentProject.ModifiedLocalString}"/>
-				<Separator Margin="0 5 0 5" Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Background="{DynamicResource ThemeAccentBrush4}"/>
-				<TextBlock Grid.Row="7" Grid.Column="0" FontWeight="Bold">Estimated Man-hours</TextBlock>
-				<NumericUpDown Margin="5" IsEnabled="{Binding CanModifyBudget}" Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" theme:NumericUpDownExtensions.Unit="hours" Minimum="0" Increment="0.5" Value="{Binding CurrentProject.ManhourBudget}" />
-				<TextBlock Grid.Row="9" FontWeight="Bold">Status</TextBlock>
-				<TextBlock Grid.Row="9" Grid.Column="1" Foreground="{Binding ApprovalStateBrush}" Text="{Binding ApprovalState}" FontWeight="Bold"/>
-				<Button Grid.Row="10" Margin="0 10 0 0" IsVisible="{Binding CanSubmit}" Command="{Binding SubmitBudgetCommand}">
-					<StackPanel Orientation="Horizontal">
-						<Image Height="24" IsHitTestVisible="False">
-							<Image.Source>
-								<i:IconImage Value="mdi-send-variant-clock"  Brush="White" />
-							</Image.Source>
-						</Image>
-						<TextBlock Margin="5 0 0 0 " VerticalAlignment="Center">Submit Budget</TextBlock>
-					</StackPanel>
-				</Button>
-			</Grid>
-		</controls:GroupBox>
-	</Grid>
-	</controls:BusyArea>
+      </controls:GroupBox>
+      <Border Grid.Column="1" BorderBrush="{DynamicResource ThemeAccentBrush4}" Background="{DynamicResource ThemeAccentBrush4}" Width="2" BorderThickness="1" VerticalAlignment="Stretch" Margin="5 25 5 25"></Border>
+      <controls:GroupBox Grid.Column="2" Margin="5" Header="Details" MinWidth="200">
+        <Grid ColumnDefinitions="*, Auto" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
+          <Button Margin="0 0 0 10" IsVisible="{Binding CurrentProject.IsActive}" Command="{Binding MarkProjectAsClosedCommand}" >Complete Project</Button>
+          <TextBlock Grid.Row="1" FontWeight="Bold">Created By:</TextBlock>
+          <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding CreatedByUser.Username}"/>
+          <TextBlock Grid.Row="2" FontWeight="Bold">Created On:</TextBlock>
+          <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding CurrentProject.CreatedLocalString}"/>
+          <Separator Margin="0 5 0 5" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Background="{DynamicResource ThemeAccentBrush4}"/>
+          <TextBlock Grid.Row="4" FontWeight="Bold">Modified By:</TextBlock>
+          <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding ModifiedByUser.Username}"/>
+          <TextBlock Grid.Row="5" FontWeight="Bold">Modified On:</TextBlock>
+          <TextBlock Grid.Row="5" Grid.Column="1" Text="{Binding CurrentProject.ModifiedLocalString}"/>
+          <Separator Margin="0 5 0 5" Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Background="{DynamicResource ThemeAccentBrush4}"/>
+          <TextBlock Grid.Row="7" Grid.Column="0" FontWeight="Bold">Estimated Man-hours</TextBlock>
+          <NumericUpDown Margin="5" IsEnabled="{Binding CanModifyBudget}" Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" theme:NumericUpDownExtensions.Unit="hours" Minimum="0" Increment="0.5" Value="{Binding CurrentProject.ManhourBudget}" />
+          <TextBlock Grid.Row="9" FontWeight="Bold">Status</TextBlock>
+          <TextBlock Grid.Row="9" Grid.Column="1" Foreground="{Binding ApprovalStateBrush}" Text="{Binding ApprovalState}" FontWeight="Bold"/>
+          <Button Grid.Row="10" Margin="0 10 0 0" IsVisible="{Binding CanSubmit}" Command="{Binding SubmitBudgetCommand}">
+            <StackPanel Orientation="Horizontal">
+              <Image Height="24" IsHitTestVisible="False">
+                <Image.Source>
+                  <i:IconImage Value="mdi-send-variant-clock"  Brush="White" />
+                </Image.Source>
+              </Image>
+              <TextBlock Margin="5 0 0 0 " VerticalAlignment="Center">Submit Budget</TextBlock>
+            </StackPanel>
+          </Button>
+        </Grid>
+      </controls:GroupBox>
+    </Grid>
+  </controls:BusyArea>
 
 </UserControl>

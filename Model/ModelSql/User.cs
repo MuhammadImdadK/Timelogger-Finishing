@@ -14,8 +14,10 @@ namespace Model.ModelSql
     // User entity model
     public class User: BasicEntity, ICloneable
     {
-        public int RoleID { get; set; }
+        private const int UserRoleId = 3;
+        public int RoleID { get; set; } = UserRoleId;
         public string EmployeeNumber { get; set; }
+        public new bool IsActive { get; set; } = true;
         public string Username { get; set; }
         public string Password { get; set; }
         public string FirstName { get; set; }

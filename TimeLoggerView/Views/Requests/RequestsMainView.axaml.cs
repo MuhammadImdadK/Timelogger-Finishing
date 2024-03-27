@@ -2,10 +2,9 @@ using Avalonia.Controls;
 
 namespace TimeLoggerView.Views
 {
-    public partial class ProjectMainView : UserControl
+    public partial class RequestsMainView : UserControl
     {
-
-        public ProjectMainView()
+        public RequestsMainView()
         {
             InitializeComponent();
         }

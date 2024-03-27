@@ -46,6 +46,7 @@
               <DataGrid x:Name="UserTable" ItemsSource="{Binding Users}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MinHeight="300"
                       IsReadOnly="True" AreRowDetailsFrozen="False">
                 <DataGrid.Columns>
+                  <DataGridTextColumn Header="Employee No." Binding="{Binding EmployeeNumber}"/>
                   <DataGridTextColumn Header="Username" Binding="{Binding Username}"/>
                   <DataGridTextColumn Header="First Name" Binding="{Binding FirstName}"/>
                   <DataGridTextColumn Header="Last Name" Binding="{Binding LastName}"/>

@@ -79,7 +79,7 @@
           </Image>
         </suki:SukiSideMenuItem.Icon>
         <suki:SukiSideMenuItem.PageContent>
-          <TextBlock>Foo</TextBlock>
+          <views:RequestsMainView/>
         </suki:SukiSideMenuItem.PageContent>
       </suki:SukiSideMenuItem>
       <suki:SukiSideMenuItem Header="Log Time">
@@ -91,7 +91,7 @@
           </Image>
         </suki:SukiSideMenuItem.Icon>
         <suki:SukiSideMenuItem.PageContent>
-          <TextBlock>Foo</TextBlock>
+          <views:TimesheetMainView/>
         </suki:SukiSideMenuItem.PageContent>
       </suki:SukiSideMenuItem>
       <suki:SukiSideMenuItem Header="Reports">
@@ -103,41 +103,9 @@
           </Image>
         </suki:SukiSideMenuItem.Icon>
         <suki:SukiSideMenuItem.PageContent>
-          <TextBlock>Foo</TextBlock>
+          <views:ReportsMainView/>
         </suki:SukiSideMenuItem.PageContent>
       </suki:SukiSideMenuItem>
-      <!--<suki:SukiSideMenuItem Header="Settings">
-        <suki:SukiSideMenuItem.Icon>
-          <Image>
-            <Image.Source>
-              <i:IconImage Value="mdi-cog-outline" Brush="{DynamicResource ThemeAccentBrush}" />
-            </Image.Source>
-          </Image>
-        </suki:SukiSideMenuItem.Icon>
-        <suki:SukiSideMenuItem.PageContent>
-          <suki:SettingsLayout>
-            <suki:SettingsLayout.Items>
-              <objectModel:ObservableCollection x:TypeArguments="suki:SettingsLayoutItem">
-                <suki:SettingsLayoutItem Header="General Settings">
-                  <suki:SettingsLayoutItem.Content>
-                    <Label>General Settings area</Label>
-                   </suki:SettingsLayoutItem.Content>
-                </suki:SettingsLayoutItem>
-                <suki:SettingsLayoutItem Header="License Information">
-                  <suki:SettingsLayoutItem.Content>
-                    <Border Background="LightGray" Height="300" />
-                  </suki:SettingsLayoutItem.Content>
-                </suki:SettingsLayoutItem>
-                <suki:SettingsLayoutItem Header="Appearance">
-                  <suki:SettingsLayoutItem.Content>
-                    <Border Background="LightGray" Height="300" />
-                  </suki:SettingsLayoutItem.Content>
-                </suki:SettingsLayoutItem>
-              </objectModel:ObservableCollection>
-            </suki:SettingsLayout.Items>
-          </suki:SettingsLayout>
-        </suki:SukiSideMenuItem.PageContent>
-      </suki:SukiSideMenuItem>-->
     </suki:SukiSideMenu.Items>
   </suki:SukiSideMenu>
 </UserControl>

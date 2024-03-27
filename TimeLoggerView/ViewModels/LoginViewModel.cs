@@ -53,12 +53,21 @@ namespace TimeLoggerView.ViewModels
                     if (response.Data is User user)
                     {
                         this.IsLoggingIn = false;
-                        this.IsSuccess = true;
-                        this.Username = string.Empty;
-                        this.Password = string.Empty;
-                        user.Role = Constants.Roles.FirstOrDefault(itm => itm.Id == user.RoleID) ?? new Role { Id = user.RoleID, Name = "Unknown" };
 
-                        Dispatcher.UIThread.Invoke(() => this.OnLoginSuccessful?.Invoke(this, user));
+                        if (user.IsActive)
+                        {
+                            this.IsSuccess = true;
+                            this.Username = string.Empty;
+                            this.Password = string.Empty;
+                            user.Role = Constants.Roles.FirstOrDefault(itm => itm.Id == user.RoleID) ?? new Role { Id = user.RoleID, Name = "Unknown" };
+
+                            Dispatcher.UIThread.Invoke(() => this.OnLoginSuccessful?.Invoke(this, user));
+                        } 
+                        else
+                        {
+                            this.IsSuccess = false;
+                            this.ErrorText = "Unauthorized\nYour account is inactive";
+                        }
                     }
                 }
                 else

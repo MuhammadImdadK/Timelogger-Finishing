@@ -25,6 +25,8 @@ public partial class App : Application
 
     public static MainWindow? WorkspaceInstance { get; set; }
 
+    public static User CurrentUser { get; set; } = new();
+
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
@@ -51,14 +53,16 @@ public partial class App : Application
         var dbString = connectionStrings["TimeLoggerDatabase"];
 
         services.AddRepository(dbString);
-        services.AddSingleton<IConfigurationRoot>(configuration);
         
-        services.AddScoped<IRepository, EntityFrameworkRepository>();
+        services.AddSingleton<IConfigurationRoot>(configuration);
+        services.AddTransient<IRepository, EntityFrameworkRepository>();
         services.AddScoped<IAuthenticationService, AuthenticationService>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<ITimeLogService, TimeLogService>();
         services.AddScoped<IProjectService, ProjectService>();
+        services.AddScoped<IAttachmentService, AttachmentService>();
         services.AddScoped<IRequestService, RequestService>();
+        
         Container = services.BuildServiceProvider();
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
@@ -72,27 +76,31 @@ public partial class App : Application
             desktop.MainWindow = loginPage; 
             SukiTheme.GetInstance().ChangeBaseTheme(ThemeVariant.Dark);
         }
-        //else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform)
-        //{
-        //    singleViewPlatform.MainView = new MainView
-        //    {
-        //        DataContext = new MainViewModel()
-        //    };
-        //}
 
         base.OnFrameworkInitializationCompleted();
     }
 
+    /// <summary>
+    /// Triggers once the login is successful; hide the login screen and open the main window.
+    /// </summary>
+    /// <param name="sender">the login view model</param>
+    /// <param name="user">the user that was logged into.</param>
     private void OnLoginSuccessful(object sender, User user)
     {
         if(ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            desktop.MainWindow?.Hide();
-            var vm = new MainViewModel(user);
-            WorkspaceInstance = new MainWindow()
+            if(!user.IsActive)
             {
-                DataContext = vm
-            };
+                return;
+            }
+            desktop.MainWindow?.Hide();
+            // The following must be done before the ViewModel is created
+            WorkspaceInstance = new MainWindow();
+            CurrentUser = user;
+
+            // now we can hook up the model safely
+            var vm = new MainViewModel();
+            WorkspaceInstance.DataContext = vm;
             WorkspaceInstance.Show();
             vm.OnSignout += OnSignout;
         }
