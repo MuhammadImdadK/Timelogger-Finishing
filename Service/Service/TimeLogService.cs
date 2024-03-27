@@ -30,7 +30,8 @@ namespace Service.Service
             {
                 repository.InsertModel(timeLog);
                 return repository.Save() > 0;
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 return false;
             }

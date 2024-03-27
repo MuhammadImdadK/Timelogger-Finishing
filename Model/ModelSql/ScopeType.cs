@@ -14,6 +14,5 @@ namespace Common.Enums
         AsBuilt = 3,
         Relocation = 4,
         Standard = 5,
-
     }
 }
