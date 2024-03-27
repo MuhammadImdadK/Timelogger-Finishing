@@ -176,7 +176,10 @@ public class ProjectManagementViewModel : ModuleViewModel
             if (CurrentProject.Id != null)
             {
                 var drawings = this.attachmentService.GetDrawingsByProjectId(CurrentProject.Id ?? 0);
-                this.CurrentDrawings.AddRange(drawings);
+                Dispatcher.UIThread.Invoke(() =>
+                {
+                    this.CurrentDrawings.AddRange(drawings);
+                });
             }
             if (CurrentProject.ModifiedBy != null)
             {
@@ -295,7 +298,7 @@ public class ProjectManagementViewModel : ModuleViewModel
         {
             this.IsBusy = true;
             this.BusyText = "Adding Drawing";
-
+            this.CurrentAttachment.ProjectId = this.CurrentProject.Id ?? 0;
             this.CurrentAttachment.ModifiedByUser = null;
             this.CurrentAttachment.CreatedByUser = null;
             this.CurrentAttachment.CreatedBy = App.CurrentUser.Id;

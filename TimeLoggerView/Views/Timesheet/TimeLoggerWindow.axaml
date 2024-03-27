@@ -11,11 +11,17 @@
         xmlns:objectModel="clr-namespace:System.Collections.ObjectModel;assembly=System"
         xmlns:theme="clr-namespace:SukiUI.Theme;assembly=SukiUI"
         xmlns:views="using:TimeLoggerView.Views"
-        Title="TimeLoggerWindow" PointerEntered="Window_PointerEntered" PointerExited="Window_PointerExited_1" SizeToContent="WidthAndHeight"
+        Title="Time Logger" PointerEntered="Window_PointerEntered" PointerExited="Window_PointerExited_1" SizeToContent="WidthAndHeight"
         ExtendClientAreaToDecorationsHint="True"
         ExtendClientAreaChromeHints="NoChrome"
         ExtendClientAreaTitleBarHeightHint="-1"
-        SystemDecorations="BorderOnly" Background="Transparent" Topmost="True" ShowInTaskbar="True" Loaded="Window_Loaded" Closed="Window_Closed">
+		Icon="/Assets/icon.ico"
+        SystemDecorations="BorderOnly" 
+		Background="Transparent" 
+		Topmost="True" 
+		ShowInTaskbar="True" 
+		Loaded="Window_Loaded" 
+		Closed="Window_Closed">
   <Border CornerRadius="5"  Background="#353535">
     <Grid>
       <Grid x:Name="MainView" IsVisible="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
@@ -48,6 +54,7 @@
 
         </Border>
         <StackPanel Grid.Column="1" VerticalAlignment="Center" MinWidth="300" MinHeight="200">
+			<Button Foreground="White" Click="Button_Click_1">Toggle</Button>
         </StackPanel>
       </Grid>
     </Grid>

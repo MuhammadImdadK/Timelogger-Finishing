@@ -62,6 +62,7 @@ public partial class App : Application
         services.AddScoped<IProjectService, ProjectService>();
         services.AddScoped<IAttachmentService, AttachmentService>();
         services.AddScoped<IRequestService, RequestService>();
+        services.AddScoped<IRequestCommentService, RequestCommentService>();
         
         Container = services.BuildServiceProvider();
 

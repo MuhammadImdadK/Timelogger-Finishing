@@ -10,7 +10,7 @@ using Model.EntityModel;
 
 namespace Model.ModelSql
 {
-    // Request entity model
+
     public class Request : BasicEntity
     {
         public int UserID { get; set; }
@@ -20,7 +20,6 @@ namespace Model.ModelSql
         public DateTime StartTime { get; set; }
         public DateTime? EndTime { get; set; }
         public RequestStatus RequestStatus { get; set; }
-        public List<string> Comments { get; set; }
         public DateTime Timestamp { get; set; }
 
         // Navigation properties

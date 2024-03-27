@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Model.Database;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Model.Migrations
 {
     [DbContext(typeof(TimeLoggerContext))]
-    partial class TimeLoggerContextModelSnapshot : ModelSnapshot
+    [Migration("20240327213338_create_request_comments")]
+    partial class create_request_comments
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -272,52 +275,6 @@ namespace Model.Migrations
                     b.HasIndex("UserID");
 
                     b.ToTable("Requests");
-                });
-
-            modelBuilder.Entity("Model.ModelSql.RequestComment", b =>
-                {
-                    b.Property<int?>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int?>("Id"));
-
-                    b.Property<string>("Comment")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("Created")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int?>("CreatedBy")
-                        .HasColumnType("integer");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTime?>("Modified")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int?>("ModifiedBy")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("RequestID")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("UserID")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CreatedBy");
-
-                    b.HasIndex("ModifiedBy");
-
-                    b.HasIndex("RequestID");
-
-                    b.HasIndex("UserID");
-
-                    b.ToTable("RequestComments");
                 });
 
             modelBuilder.Entity("Model.ModelSql.Role", b =>
@@ -637,37 +594,6 @@ namespace Model.Migrations
                     b.Navigation("Project");
 
                     b.Navigation("TimeLog");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Model.ModelSql.RequestComment", b =>
-                {
-                    b.HasOne("Model.ModelSql.User", "CreatedByUser")
-                        .WithMany()
-                        .HasForeignKey("CreatedBy");
-
-                    b.HasOne("Model.ModelSql.User", "ModifiedByUser")
-                        .WithMany()
-                        .HasForeignKey("ModifiedBy");
-
-                    b.HasOne("Model.ModelSql.Request", "Request")
-                        .WithMany()
-                        .HasForeignKey("RequestID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Model.ModelSql.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CreatedByUser");
-
-                    b.Navigation("ModifiedByUser");
-
-                    b.Navigation("Request");
 
                     b.Navigation("User");
                 });

@@ -15,7 +15,7 @@ namespace Model.ModelSql
         public string Description { get; set; }
         public int ProjectId { get; set; }
 
-        [ForeignKey("ProjectID")]
+        [ForeignKey("ProjectId")]
         public virtual Project Project { get; set; }
     }
 

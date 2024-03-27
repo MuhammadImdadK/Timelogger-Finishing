@@ -8,6 +8,7 @@ namespace TimeLoggerView.Views.Timesheet
     public partial class TimeLoggerWindow : Window
     {
         public static TimeLoggerWindow? Instance { get; set; }
+        
         public TimeLoggerWindow()
         {
             InitializeComponent();
@@ -51,11 +52,50 @@ namespace TimeLoggerView.Views.Timesheet
         {
             if (!this.MainView.IsVisible)
             {
-                this.SetValue(OpacityProperty, 0.7);
+                this.SetValue(OpacityProperty, 0.9);
             }
         }
 
         private void Window_Loaded(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            MoveWindow();
+        }
+
+        private void Window_Closed(object? sender, System.EventArgs e)
+        {
+            Instance = null;
+        }
+        bool toggle = false;
+        private void Button_Click_1(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            toggle = !toggle;
+            SetDecorations(toggle);
+        }
+
+        private void SetDecorations(bool enable = false)
+        {
+            this.SetValue(SizeToContentProperty, SizeToContent.Manual);
+            this.Width = 10;
+            this.Height = 10;
+            if (enable)
+            {
+                this.SetValue(SystemDecorationsProperty, SystemDecorations.Full);
+                this.SetValue(ExtendClientAreaChromeHintsProperty, Avalonia.Platform.ExtendClientAreaChromeHints.SystemChrome);
+                this.SetValue(ExtendClientAreaToDecorationsHintProperty, false);
+                this.SetValue(ExtendClientAreaTitleBarHeightHintProperty, 0);
+            }
+            else
+            {
+                this.SetValue(SystemDecorationsProperty, SystemDecorations.None);
+                this.SetValue(ExtendClientAreaChromeHintsProperty, Avalonia.Platform.ExtendClientAreaChromeHints.NoChrome);
+                this.SetValue(ExtendClientAreaToDecorationsHintProperty, true);
+                this.SetValue(ExtendClientAreaTitleBarHeightHintProperty, -1);
+            }
+            this.SetValue(SizeToContentProperty, SizeToContent.WidthAndHeight);
+            MoveWindow();
+        }
+
+        private void MoveWindow()
         {
             if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
@@ -67,11 +107,6 @@ namespace TimeLoggerView.Views.Timesheet
                   screenSize.Width - windowSize.Width,
                   screenSize.Height - windowSize.Height);
             }
-        }
-
-        private void Window_Closed(object? sender, System.EventArgs e)
-        {
-            Instance = null;
         }
     }
 }
