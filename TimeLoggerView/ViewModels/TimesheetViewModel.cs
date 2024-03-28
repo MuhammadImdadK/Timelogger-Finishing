@@ -34,7 +34,7 @@ public class TimesheetViewModel : ModuleViewModel
     private string comment;
     private TimeSpan? duration;
     private DateTime? endDateTime;
-    private DateTime startDateTime;
+    private DateTime startDateTime = DateTime.UtcNow;
     private bool isUser;
     private bool canSave;
     private bool isPlanningEngineer;
