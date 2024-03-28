@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input;
+using TimeLoggerView.ViewModels;
 
 namespace TimeLoggerView.Views.Timesheet
 {
@@ -13,6 +14,7 @@ namespace TimeLoggerView.Views.Timesheet
         {
             InitializeComponent();
             Instance = this;
+            this.DataContext = MainViewModel.TimesheetManagement;
         }
         private bool _mouseDownForWindowMoving = false;
         private PointerPoint _originalPoint;

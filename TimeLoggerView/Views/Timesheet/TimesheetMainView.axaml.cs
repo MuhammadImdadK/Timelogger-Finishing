@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using TimeLoggerView.ViewModels;
 
 namespace TimeLoggerView.Views
 {
@@ -7,6 +8,7 @@ namespace TimeLoggerView.Views
         public TimesheetMainView()
         {
             InitializeComponent();
+            this.DataContext = MainViewModel.TimesheetManagement;
         }
     }
 }

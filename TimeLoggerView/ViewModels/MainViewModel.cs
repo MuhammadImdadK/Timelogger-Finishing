@@ -14,7 +14,6 @@ public class MainViewModel : ViewModelBase
 {
     private UserManagementViewModel userManagement;
     private ProjectManagementViewModel projectManagement;
-    private TimesheetViewModel timesheetManagement;
     private RequestsViewModel requestsViewModel;
 
     public bool ShouldQuit { get; private set; } = true;
@@ -23,7 +22,7 @@ public class MainViewModel : ViewModelBase
     public UserManagementViewModel UserManagement { get => this.userManagement; set => this.RaiseAndSetIfChanged(ref this.userManagement, value); }
     public ProjectManagementViewModel ProjectManagement { get => this.projectManagement; set => this.RaiseAndSetIfChanged(ref this.projectManagement, value); }
 
-    public TimesheetViewModel TimesheetManagement { get => this.timesheetManagement; set => this.RaiseAndSetIfChanged(ref this.timesheetManagement, value); }
+    public static TimesheetViewModel TimesheetManagement { get; set; }
 
     public RequestsViewModel RequestsViewModel { get => this.requestsViewModel; set => this.RaiseAndSetIfChanged(ref this.requestsViewModel, value); }
     
@@ -37,9 +36,8 @@ public class MainViewModel : ViewModelBase
         this.ProjectManagement = new ProjectManagementViewModel();
         this.UserManagement = new UserManagementViewModel();
         this.RequestsViewModel = new RequestsViewModel();
-        this.TimesheetManagement = new TimesheetViewModel();
+        TimesheetManagement = new TimesheetViewModel();
         Signout = ReactiveCommand.Create(PerformSignout);
-
     }
 
     public void PerformSignout()

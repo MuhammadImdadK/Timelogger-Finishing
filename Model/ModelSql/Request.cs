@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Common.Enums;
 using Model.EntityModel;
+using System.Globalization;
 
 namespace Model.ModelSql
 {
@@ -22,8 +23,16 @@ namespace Model.ModelSql
         public DateTimeOffset? StartTimeOffset { get; set; } = DateTimeOffset.Now;
         public DateTime StartTime { get; set; }
         [NotMapped]
+        public string StartTimeLocalString => StartTime != null
+            ? ((DateTime)StartTime).ToLocalTime().ToString("f", CultureInfo.CurrentCulture)
+            : "Unknown";
+        [NotMapped]
         public DateTimeOffset? EndTimeOffset { get; set; } = DateTimeOffset.Now;
         public DateTime? EndTime { get; set; }
+        [NotMapped]
+        public string EndTimeLocalString => EndTime != null
+            ? ((DateTime)EndTime).ToLocalTime().ToString("f", CultureInfo.CurrentCulture)
+            : "Unknown";
         public RequestStatus RequestStatus { get; set; }
         public TimeSpan? Timestamp { get; set; }
 
