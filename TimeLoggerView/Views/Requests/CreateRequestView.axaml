@@ -2,7 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="600"
              xmlns:vm="clr-namespace:TimeLoggerView.ViewModels"
              xmlns:suki="clr-namespace:SukiUI.Controls;assembly=SukiUI"
              xmlns:models="clr-namespace:SukiUI.Models;assembly=SukiUI"
@@ -14,13 +14,15 @@
              x:Class="TimeLoggerView.Views.CreateRequestView">
   <suki:BusyArea IsBusy="{Binding IsBusy}" BusyText="{Binding BusyText}">
     <suki:GroupBox Margin="10" Header="Create Request">
-      <Grid RowDefinitions="Auto,*,Auto" ColumnDefinitions="*,*">
+      <ScrollViewer VerticalScrollBarVisibility="Visible" MinHeight="400" MaxHeight="500">
+        
+      <Grid RowDefinitions="Auto,*,*,Auto" ColumnDefinitions="*,*">
         <StackPanel HorizontalAlignment="Left">
           <TextBlock Margin="10">Assign To</TextBlock>
-          <ComboBox x:Name="ProjectName" Margin="10 0 0 0" MinWidth="200" MaxWidth="200" ItemsSource="{Binding AvailablePlanningEngineers}" SelectedItem="{Binding CurrentRequest.PlanningEngineer}"></ComboBox>
+          <ComboBox HorizontalAlignment="Left" x:Name="ProjectName" Margin="10 0 0 0" MinWidth="300" MaxWidth="425" ItemsSource="{Binding AvailablePlanningEngineers}" SelectedItem="{Binding CurrentRequest.PlanningEngineer}"></ComboBox>
         </StackPanel>
         <suki:GroupBox Margin="10" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" Header="Timings">
-          <Grid ColumnDefinitions="*,*">
+          <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto">
             <StackPanel HorizontalAlignment="Left">
               <TextBlock Margin="10">Start Date</TextBlock>
               <DatePicker Margin="10" MinWidth="200" MaxWidth="200" SelectedDate="{Binding CurrentRequest.StartTimeOffset}" />
@@ -33,16 +35,38 @@
 
                 </CheckBox>
                 <DatePicker Margin="10" MinWidth="200" MaxWidth="200" SelectedDate="{Binding CurrentRequest.EndTimeOffset}" IsEnabled="{Binding IsAddingEndTime}" />
+                
               </StackPanel>
 
             </StackPanel>
+            <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Left">
+              <TextBlock Margin="10">Duration</TextBlock>
+              <TimePicker Margin="10" MinWidth="200" SelectedTime="{Binding CurrentRequest.Timestamp}" />
+            </StackPanel>
           </Grid>
         </suki:GroupBox>
-        <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Right" Orientation="Horizontal">
+        <suki:GroupBox Margin="10" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" Header="Details to Ammend">
+          <Grid RowDefinitions="Auto,Auto">
+            <StackPanel Margin="10">
+              <TextBlock>Request Type</TextBlock>
+              <ComboBox Margin="10" ItemsSource="{Binding AvailableRequestTypes}" SelectedItem="{Binding SelectedRequestType}"></ComboBox>
+            </StackPanel>
+            <StackPanel Margin="10" Grid.Row="1" IsVisible="{Binding IsAddingProjectRequest}">
+              <TextBlock>Project</TextBlock>
+              <ComboBox Margin="10" ItemsSource="{Binding AvailableProjects}" SelectedItem="{Binding CurrentRequest.Project}"></ComboBox>
+            </StackPanel>
+            <StackPanel Margin="10" Grid.Row="1" IsVisible="{Binding !IsAddingProjectRequest}">
+              <TextBlock>Time Log</TextBlock>
+              <ComboBox Margin="10" ItemsSource="{Binding AvailableTimelogs}" SelectedItem="{Binding CurrentRequest.TimeLog}"></ComboBox>
+            </StackPanel>
+          </Grid>        
+        </suki:GroupBox>
+        <StackPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Right" Orientation="Horizontal">
           <Button Command="{Binding CloseDialogCommand}">Cancel</Button>
           <Button Margin="5 0 0 0" Classes="Flat" Command="{Binding SubmitCreateRequestCommand}">Create Request</Button>
         </StackPanel>
       </Grid>
+      </ScrollViewer>
     </suki:GroupBox>
   </suki:BusyArea>
 </UserControl>

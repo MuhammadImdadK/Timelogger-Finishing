@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Model.Database;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Model.Migrations
 {
     [DbContext(typeof(TimeLoggerContext))]
-    partial class TimeLoggerContextModelSnapshot : ModelSnapshot
+    [Migration("20240328063413_AddRequestType_ForEasierUiNav")]
+    partial class AddRequestType_ForEasierUiNav
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -239,7 +242,7 @@ namespace Model.Migrations
                     b.Property<int?>("PlanningEngineerID")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("ProjectID")
+                    b.Property<int>("ProjectID")
                         .HasColumnType("integer");
 
                     b.Property<int>("RequestStatus")
@@ -620,7 +623,9 @@ namespace Model.Migrations
 
                     b.HasOne("Model.ModelSql.Project", "Project")
                         .WithMany()
-                        .HasForeignKey("ProjectID");
+                        .HasForeignKey("ProjectID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Model.ModelSql.TimeLog", "TimeLog")
                         .WithMany()

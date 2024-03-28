@@ -14,4 +14,10 @@ namespace Common.Enums
         Rejected = 3,
         UpdateRequested=4
     }
+
+    public enum RequestType
+    {
+        Project = 0,
+        TimeLog = 1
+    }
 }

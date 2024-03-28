@@ -16,8 +16,10 @@ namespace Model.ModelSql
     {
         public int UserID { get; set; }
         public int? PlanningEngineerID { get; set; }
-        public int ProjectID { get; set; }
+        public int? ProjectID { get; set; }
         public int? TimeLogID { get; set; }
+
+        public RequestType RequestType { get; set; } = RequestType.Project;
 
         [NotMapped]
         public DateTimeOffset? StartTimeOffset { get; set; } = DateTimeOffset.Now;

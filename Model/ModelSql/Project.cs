@@ -26,7 +26,7 @@ namespace Model.ModelSql
 
         public override string ToString()
         {
-            return $"{ERFNumber} - {ProjectName}";
+            return $"ERF-{ERFNumber} - {ProjectName}";
         }
     }
 }

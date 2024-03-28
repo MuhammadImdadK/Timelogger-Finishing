@@ -69,29 +69,33 @@
                           </StackPanel>
                         </Grid>
                       </suki:GroupBox>
-                      <suki:GroupBox Grid.Row="2" Margin="2" Header="Details">
+                      <suki:GroupBox Grid.Row="2" Margin="10" Header="Details">
                         <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto,Auto">
                           <StackPanel Margin="10" HorizontalAlignment="Left">
+                            <TextBlock Margin="10" FontWeight="Bold" Text="Request Type"/>
+                            <TextBlock Margin="10" MinWidth="200" MaxWidth="200" Text="{Binding RequestType}"/>
+                          </StackPanel>
+                          <StackPanel Grid.Row="1" Margin="10" HorizontalAlignment="Left">
                             <TextBlock Margin="10" FontWeight="Bold" Text="Start Time"/>
                             <TextBlock Margin="10" MinWidth="200" MaxWidth="200" Text="{Binding StartTimeLocalString}"/>
                           </StackPanel>
-                          <StackPanel Grid.Column="1" Margin="10" HorizontalAlignment="Left">
+                          <StackPanel Grid.Row="1" Grid.Column="1" Margin="10" HorizontalAlignment="Left">
                             <TextBlock Margin="10" FontWeight="Bold" Text="End Time"/>
                             <TextBlock Margin="10" MinWidth="200" MaxWidth="200" Text="{Binding EndTimeLocalString}"/>
                           </StackPanel>
-                          <StackPanel Grid.Row="1" Margin="10" HorizontalAlignment="Left">
+                          <StackPanel Grid.Row="2" Margin="10" HorizontalAlignment="Left">
                             <TextBlock Margin="10" FontWeight="Bold" Text="Duration"/>
                             <TextBlock Margin="10" MinWidth="200" MaxWidth="200" Text="{Binding Timestamp}"/>
                           </StackPanel>
-                          <StackPanel Grid.Row="1" Grid.Column="1" Margin="10" HorizontalAlignment="Left">
+                          <StackPanel Grid.Row="2" Grid.Column="1" Margin="10" HorizontalAlignment="Left">
                             <TextBlock Margin="10" FontWeight="Bold" Text="Status"/>
                             <TextBlock Margin="10" MinWidth="200" MaxWidth="200" Text="{Binding RequestStatus}"/>
                           </StackPanel>
-                          <StackPanel Grid.Row="2" Margin="10" HorizontalAlignment="Left">
+                          <StackPanel Grid.Row="3" Margin="10" HorizontalAlignment="Left">
                             <TextBlock Margin="10" FontWeight="Bold" Text="Time Log"/>
                             <TextBlock Margin="10" MinWidth="200" MaxWidth="200" Text="{Binding TimeLog}"/>
                           </StackPanel>
-                          <StackPanel Grid.Row="2" Grid.Column="1" Margin="10" HorizontalAlignment="Left">
+                          <StackPanel Grid.Row="3" Grid.Column="1" Margin="10" HorizontalAlignment="Left">
                             <TextBlock Margin="10" FontWeight="Bold" Text="Project"/>
                             <TextBlock Margin="10" MinWidth="200" MaxWidth="200" Text="{Binding Project}"/>
                           </StackPanel>

@@ -30,6 +30,8 @@ public class RequestsViewModel : ModuleViewModel
     private RequestStatus updateStatus;
     private string updateStatusComment;
     private bool isAddingEndTime;
+    private RequestType selectedRequestType;
+    private bool isAddingProjectRequest = true;
 
     public bool IsUser { get => this.isUser; set => this.RaiseAndSetIfChanged(ref this.isUser, value); }
     public bool IsPlanningEngineer { get => this.isPlanningEngineer; set => this.RaiseAndSetIfChanged(ref this.isPlanningEngineer, value); }
@@ -48,6 +50,23 @@ public class RequestsViewModel : ModuleViewModel
         RequestStatus.UpdateRequested
     };
 
+    public List<RequestType> AvailableRequestTypes { get; set; } = new()
+    {
+        RequestType.Project,
+        RequestType.TimeLog
+    };
+
+    public bool IsAddingProjectRequest { get => isAddingProjectRequest; set => this.RaiseAndSetIfChanged(ref isAddingProjectRequest, value); }
+
+    public RequestType SelectedRequestType
+    {
+        get => selectedRequestType;
+        set
+        {
+            this.RaiseAndSetIfChanged(ref selectedRequestType, value);
+            IsAddingProjectRequest = value == RequestType.Project;
+        }
+    }
     public RequestStatus UpdateStatus { get => updateStatus; set => this.RaiseAndSetIfChanged(ref this.updateStatus, value); }
     public string UpdateStatusComment { get => updateStatusComment; set => this.RaiseAndSetIfChanged(ref this.updateStatusComment, value); }
     public Request CurrentRequest { get => currentRequest; set => this.RaiseAndSetIfChanged(ref this.currentRequest, value); }
@@ -180,11 +199,14 @@ public class RequestsViewModel : ModuleViewModel
             CurrentRequest.ModifiedBy = App.CurrentUser.Id;
             CurrentRequest.IsActive = true;
             CurrentRequest.RequestStatus = RequestStatus.Open;
-            CurrentRequest.ProjectID = CurrentRequest.Project?.Id ?? 0;
+            CurrentRequest.RequestType = SelectedRequestType;
+
+            CurrentRequest.ProjectID = CurrentRequest.Project?.Id;
             CurrentRequest.Project = null;
-            if (CurrentRequest.TimeLog != null)
+            if (CurrentRequest.TimeLog != null && SelectedRequestType == RequestType.TimeLog)
             {
                 CurrentRequest.TimeLogID = CurrentRequest.TimeLog.Id;
+                CurrentRequest.ProjectID = CurrentRequest.TimeLog.ProjectID;
             }
             if (this.CurrentRequest.PlanningEngineer != null)
             {
