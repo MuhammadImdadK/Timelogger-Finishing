@@ -58,7 +58,7 @@ public partial class App : Application
         services.AddTransient<IRepository, EntityFrameworkRepository>();
         services.AddScoped<IAuthenticationService, AuthenticationService>();
         services.AddTransient<IUserService, UserService>();
-        services.AddScoped<ITimeLogService, TimeLogService>();
+        services.AddTransient<ITimeLogService, TimeLogService>();
         services.AddTransient<IProjectService, ProjectService>();
         services.AddScoped<IAttachmentService, AttachmentService>();
         services.AddTransient<IRequestService, RequestService>();

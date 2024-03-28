@@ -91,21 +91,9 @@
           </Image>
         </suki:SukiSideMenuItem.Icon>
         <suki:SukiSideMenuItem.PageContent>
-          <views:TimesheetMainView/>
+          <views:TimesheetMainView DataContext="{Binding TimesheetModel}" />
         </suki:SukiSideMenuItem.PageContent>
       </suki:SukiSideMenuItem>
-      <!--<suki:SukiSideMenuItem Header="Reports">
-        <suki:SukiSideMenuItem.Icon>
-          <Image>
-            <Image.Source>
-              <i:IconImage Value="mdi-chart-line" Brush="{DynamicResource ThemeAccentBrush}" />
-            </Image.Source>
-          </Image>
-        </suki:SukiSideMenuItem.Icon>
-        <suki:SukiSideMenuItem.PageContent>
-          <views:ReportsMainView/>
-        </suki:SukiSideMenuItem.PageContent>
-      </suki:SukiSideMenuItem>-->
     </suki:SukiSideMenu.Items>
   </suki:SukiSideMenu>
 </UserControl>

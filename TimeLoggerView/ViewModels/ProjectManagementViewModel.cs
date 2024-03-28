@@ -60,6 +60,7 @@ public class ProjectManagementViewModel : ModuleViewModel
     public Model.ModelSql.Drawing CurrentAttachment { get => this.currentAttachment; set => this.RaiseAndSetIfChanged(ref this.currentAttachment, value); }
     public Request CurrentRequest { get => this.currentRequest; set => this.RaiseAndSetIfChanged(ref this.currentRequest, value); }
 
+    public ICommand LoadProjectCommand { get; }
     public ICommand CreateProjectCommand { get; }
     public ICommand SubmitCreateProjectCommand { get; }
 
@@ -142,6 +143,7 @@ public class ProjectManagementViewModel : ModuleViewModel
         this.CreateProjectCommand = ReactiveCommand.Create(CreateProject);
         this.SubmitCreateProjectCommand = ReactiveCommand.Create(SubmitCreateProject);
         this.CloseProjectViewCommand = ReactiveCommand.Create(CloseProjectView);
+        this.LoadProjectCommand = ReactiveCommand.Create(LoadProjects);
         this.LoadProjects();
     }
 
@@ -484,9 +486,4 @@ public class ProjectManagementViewModel : ModuleViewModel
             this.LoadProjects();
         });
     }
-}
-
-public class TimesheetViewModel : ViewModelBase
-{
-
 }

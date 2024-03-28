@@ -21,13 +21,22 @@
           <suki:GroupBox.Header>
             <Grid ColumnDefinitions="*, Auto">
               <TextBlock VerticalAlignment="Center">Projects</TextBlock>
-              <Button Grid.Column="1" Classes="Flat" Background="#3a9c22" Command="{Binding CreateProjectCommand}">
-                <Image Height="16" IsHitTestVisible="False">
-                  <Image.Source>
-                    <i:IconImage Value="mdi-plus" Brush="White" />
-                  </Image.Source>
-                </Image>
-              </Button>
+              <StackPanel Grid.Column="1" Orientation="Horizontal">
+                <Button  Classes="Flat"  Command="{Binding LoadProjectCommand}">
+                  <Image Height="16" IsHitTestVisible="False">
+                    <Image.Source>
+                      <i:IconImage Value="mdi-refresh" Brush="White" />
+                    </Image.Source>
+                  </Image>
+                </Button>
+                <Button Margin="5 0 0 0" Classes="Flat" Background="#3a9c22" Command="{Binding CreateProjectCommand}">
+                  <Image Height="16" IsHitTestVisible="False">
+                    <Image.Source>
+                      <i:IconImage Value="mdi-plus" Brush="White" />
+                    </Image.Source>
+                  </Image>
+                </Button>
+              </StackPanel>
             </Grid>
           </suki:GroupBox.Header>
           <ItemsControl x:Name="ProjectsPane" ItemsSource="{Binding Projects}">

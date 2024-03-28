@@ -7,6 +7,12 @@
 
   <Application.Styles>
     <sukiUi:SukiTheme ThemeColor="Blue" />
+    <Style Selector="TextBlock">
+      <Setter Property="Foreground" Value="White"/>
+    </Style>
+    <Style Selector="CheckBox">
+      <Setter Property="Background" Value="DarkGray"/>
+    </Style>
     <Style Selector="TextBox">
       <Setter Property="SelectionBrush" Value="{DynamicResource ThemeAccentBrush2}" />
     </Style>

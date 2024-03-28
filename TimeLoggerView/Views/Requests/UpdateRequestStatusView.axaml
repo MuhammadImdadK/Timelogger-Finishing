@@ -2,7 +2,48 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="600"
+             xmlns:vm="clr-namespace:TimeLoggerView.ViewModels"
+             xmlns:suki="clr-namespace:SukiUI.Controls;assembly=SukiUI"
+             xmlns:models="clr-namespace:SukiUI.Models;assembly=SukiUI"
+             xmlns:objectModel="clr-namespace:System.Collections.ObjectModel;assembly=System"
+             xmlns:theme="clr-namespace:SukiUI.Theme;assembly=SukiUI"
+             xmlns:views="using:TimeLoggerView.Views"
+             xmlns:i="https://github.com/projektanker/icons.avalonia"
+             x:DataType="vm:RequestsViewModel"
              x:Class="TimeLoggerView.Views.UpdateRequestStatusView">
-  Welcome to Avalonia!
+  <suki:BusyArea IsBusy="{Binding IsBusy}" BusyText="{Binding BusyText}">
+    <suki:GroupBox Margin="10" Header="Create Request">
+      <ScrollViewer VerticalScrollBarVisibility="Visible" MinHeight="400" MaxHeight="500">
+
+        <Grid RowDefinitions="Auto,Auto,*,Auto" ColumnDefinitions="*,Auto,*">
+          <StackPanel Margin="10">
+            <TextBlock FontWeight="Bold">Current Status</TextBlock>
+            <TextBlock Margin="0 15 0 0" VerticalAlignment="Center" Text="{Binding CurrentRequest.RequestStatus}"/>
+          </StackPanel>
+          <Image Height="32" Margin="10" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Left" IsHitTestVisible="False">
+            <Image.Source>
+              <i:IconImage Value="mdi-arrow-right" Brush="White" />
+            </Image.Source>
+          </Image>
+          <StackPanel Grid.Column="2" HorizontalAlignment="Left">
+            <TextBlock FontWeight="Bold" Margin="10">Change status to</TextBlock>
+            <ComboBox HorizontalAlignment="Left" x:Name="ProjectName" Margin="10 0 0 0" MinWidth="200" MaxWidth="200" ItemsSource="{Binding AvailableRequestStatuses}" SelectedItem="{Binding UpdateStatus}"></ComboBox>
+          </StackPanel>
+          <Separator Margin="10" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1"/>
+          <suki:GroupBox Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Margin="10" Header="Remarks">
+            <TextBox MinHeight="150" MaxHeight="150" Watermark="Comment" UseFloatingWatermark="True" AcceptsReturn="True" Text="{Binding UpdateStatusComment}"/>
+          </suki:GroupBox>
+          <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Right">
+            <Button Command="{Binding CloseDialogCommand}">
+              Cancel
+            </Button>
+            <Button Margin="5 0 0 0" Classes="Flat" Command="{Binding SubmitUpdateRequestStatusCommand}">
+              Update Status
+            </Button>
+          </StackPanel>
+        </Grid>
+      </ScrollViewer>
+    </suki:GroupBox>
+  </suki:BusyArea>
 </UserControl>

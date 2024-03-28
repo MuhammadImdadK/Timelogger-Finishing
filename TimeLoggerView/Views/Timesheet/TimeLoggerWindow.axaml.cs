@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input;
+using System;
 using TimeLoggerView.ViewModels;
 
 namespace TimeLoggerView.Views.Timesheet
@@ -14,6 +15,8 @@ namespace TimeLoggerView.Views.Timesheet
         {
             InitializeComponent();
             Instance = this;
+            MainViewModel.TimesheetManagement.OnCompactModeChanged += OnCompactModeChanged;
+            MainViewModel.TimesheetManagement.OnTriggerWindowClose += OnTriggerWindowClose;
             this.DataContext = MainViewModel.TimesheetManagement;
         }
         private bool _mouseDownForWindowMoving = false;
@@ -66,12 +69,25 @@ namespace TimeLoggerView.Views.Timesheet
         private void Window_Closed(object? sender, System.EventArgs e)
         {
             Instance = null;
+            MainViewModel.TimesheetManagement.OnCompactModeChanged -= OnCompactModeChanged;
+            MainViewModel.TimesheetManagement.OnTriggerWindowClose -= OnTriggerWindowClose;
+
         }
         bool toggle = false;
         private void Button_Click_1(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
             toggle = !toggle;
             SetDecorations(toggle);
+        }
+
+        private void OnTriggerWindowClose(object? sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void OnCompactModeChanged(object? sender, bool e)
+        {
+            SetDecorations(!e);
         }
 
         private void SetDecorations(bool enable = false)

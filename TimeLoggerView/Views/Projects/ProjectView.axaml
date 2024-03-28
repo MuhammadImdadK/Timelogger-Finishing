@@ -47,8 +47,7 @@
             <Grid IsVisible="{Binding CurrentProject.IsActive}" Grid.Column="1">
 
               <StackPanel IsVisible="{Binding !IsEditing}" Grid.Column="1" Orientation="Horizontal">
-                <!--<Button Classes="Flat" IsVisible="{Binding IsTicketApproved}" Command="{Binding LogTimeCommand}">-->
-                  <Button Classes="Flat" Command="{Binding LogTimeCommand}">
+                <Button Classes="Flat" IsVisible="{Binding IsTicketApproved}" Command="{Binding LogTimeCommand}">
                   <StackPanel Orientation="Horizontal">
                     <Image Height="24" IsHitTestVisible="False">
                       <Image.Source>

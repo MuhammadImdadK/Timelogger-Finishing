@@ -8,7 +8,6 @@ namespace TimeLoggerView.Views
         public TimesheetMainView()
         {
             InitializeComponent();
-            this.DataContext = MainViewModel.TimesheetManagement;
         }
     }
 }

@@ -23,10 +23,11 @@ public class MainViewModel : ViewModelBase
     public ProjectManagementViewModel ProjectManagement { get => this.projectManagement; set => this.RaiseAndSetIfChanged(ref this.projectManagement, value); }
 
     public static TimesheetViewModel TimesheetManagement { get; set; }
-
+    public TimesheetViewModel TimesheetModel { get => timesheetModel; set => this.RaiseAndSetIfChanged(ref timesheetModel, value); }
     public RequestsViewModel RequestsViewModel { get => this.requestsViewModel; set => this.RaiseAndSetIfChanged(ref this.requestsViewModel, value); }
     
     public EventHandler OnSignout;
+    private TimesheetViewModel timesheetModel;
 
     public ICommand Signout { get; }
 
@@ -37,6 +38,7 @@ public class MainViewModel : ViewModelBase
         this.UserManagement = new UserManagementViewModel();
         this.RequestsViewModel = new RequestsViewModel();
         TimesheetManagement = new TimesheetViewModel();
+        this.TimesheetModel = new TimesheetViewModel();
         Signout = ReactiveCommand.Create(PerformSignout);
     }
 

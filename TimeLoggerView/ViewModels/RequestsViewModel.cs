@@ -267,7 +267,7 @@ public class RequestsViewModel : ModuleViewModel
             {
                 CurrentRequest.Project.ModifiedBy = App.CurrentUser.Id;
                 CurrentRequest.Project.Modified = DateTime.UtcNow;
-                CurrentRequest.Project.ApprovalState = CurrentRequest.RequestStatus;
+                CurrentRequest.Project.ApprovalState = UpdateStatus;
                 CurrentRequest.Project.ModifiedByUser = null;
                 CurrentRequest.Project.CreatedByUser = null;
                 var projectResponse = this.projectService.UpdateProject(CurrentRequest.Project);
@@ -305,6 +305,7 @@ public class RequestsViewModel : ModuleViewModel
             CurrentRequest.Project = null;
             CurrentRequest.CreatedByUser = null;
             CurrentRequest.ModifiedByUser = null;
+            CurrentRequest.RequestStatus = UpdateStatus;
             CurrentRequest.TimeLog = null;
             var response = this.requestService.UpdateRequest(CurrentRequest);
             if (response)
