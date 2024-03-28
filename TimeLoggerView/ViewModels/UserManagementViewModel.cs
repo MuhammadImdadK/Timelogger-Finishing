@@ -5,6 +5,7 @@ using DynamicData;
 using Model.ModelSql;
 using ReactiveUI;
 using Service.Interface;
+using Service.Service;
 using Session;
 using SukiUI.Controls;
 using System;
@@ -12,6 +13,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -21,6 +23,7 @@ namespace TimeLoggerView.ViewModels;
 
 public class UserManagementViewModel : ViewModelBase
 {
+    private string errorText;
     private int skip = 0;
     private int take = 50;
     private readonly IUserService userService;
@@ -68,6 +71,7 @@ public class UserManagementViewModel : ViewModelBase
     public string SearchTerm { get => this.searchTerm; set => this.RaiseAndSetIfChanged(ref this.searchTerm, value); }
     public string BusyText { get => this.busyText; set => this.RaiseAndSetIfChanged(ref this.busyText, value); }
     public string PrimaryActionText { get => this.primaryActionText; set => this.RaiseAndSetIfChanged(ref this.primaryActionText, value); }
+    public string ErrorText { get => this.errorText; set => this.RaiseAndSetIfChanged(ref this.errorText, value); }
     public bool IsBusy { get => this.isBusy; set => this.RaiseAndSetIfChanged(ref this.isBusy, value); }
 
     public bool IsEditing { get => this.isEditing; set => this.RaiseAndSetIfChanged(ref this.isEditing, value); }
@@ -178,6 +182,8 @@ public class UserManagementViewModel : ViewModelBase
         this.BusyText = "Adding new user";
         Task.Run(() =>
         {
+            var valid = true;
+            var tempText = "The following validation errors were encountered:\n";
             if (this.ModifyingUser.Role == null)
             {
                 this.ModifyingUser.RoleID = Constants.Roles.LastOrDefault().Id;
@@ -186,14 +192,53 @@ public class UserManagementViewModel : ViewModelBase
             {
                 this.ModifyingUser.RoleID = this.ModifyingUser.Role.Id;
             }
+            
+            if(string.IsNullOrWhiteSpace(this.ModifyingUser.EmployeeNumber))
+            {
+                valid = false;
+                tempText += "- Employee number is required\n";
+            }
+            if (string.IsNullOrWhiteSpace(this.ModifyingUser.Email)){
+                valid = false;
+                tempText += "- Email is required\n";
+            }
+            if (string.IsNullOrWhiteSpace(this.ModifyingUser.FirstName))
+            {
+                valid = false;
+                tempText += "- First Name is required\n";
+            }
+            if(string.IsNullOrWhiteSpace(this.ModifyingUser.Username)) {
+                valid = false;
+                tempText += "- Username is required\n";
+            }
+            if(this.ModifyingUser.Id == null && string.IsNullOrEmpty(this.ModifyingUser.NewPassword))
+            {
+                valid = false;
+                tempText += "- Password is required\n";
+            }
+
+            if (!valid)
+            {
+                this.IsBusy = false;
+                ErrorText = tempText;
+                return;
+            }
+            ErrorText = string.Empty;
+            if (!string.IsNullOrEmpty(this.ModifyingUser.NewPassword))
+            {
+                var authMan = new AuthenticationManager();
+                var salt = authMan.GetSalt();
+                var hash = authMan.GenerateHash(Encoding.UTF8.GetBytes(this.ModifyingUser.NewPassword), salt);
+                this.ModifyingUser.Password = hash;
+                this.ModifyingUser.Salt = salt;
+            }
+
             this.ModifyingUser.Role = null;
             this.ModifyingUser.CreatedBy = this.currentUser.Id;
             this.ModifyingUser.Created = DateTime.UtcNow;
             this.ModifyingUser.Modified = DateTime.UtcNow;
             this.ModifyingUser.ModifiedBy = this.currentUser.Id;
-            Thread.Sleep(1000);
             this.userService.AddUser(this.ModifyingUser!);
-            Thread.Sleep(1000);
             this.IsEditing = false;
 
             Dispatcher.UIThread.Invoke(() =>
@@ -215,6 +260,8 @@ public class UserManagementViewModel : ViewModelBase
 
         Task.Run(() =>
         {
+            var valid = true;
+            var tempText = "The following validation errors were encountered:\n";
             if (this.ModifyingUser.Role == null)
             {
                 this.ModifyingUser.RoleID = Constants.Roles.LastOrDefault().Id;
@@ -223,6 +270,50 @@ public class UserManagementViewModel : ViewModelBase
             {
                 this.ModifyingUser.RoleID = this.ModifyingUser.Role.Id;
             }
+
+            if (string.IsNullOrWhiteSpace(this.ModifyingUser.EmployeeNumber))
+            {
+                valid = false;
+                tempText += "- Employee number is required\n";
+            }
+            if (string.IsNullOrWhiteSpace(this.ModifyingUser.Email))
+            {
+                valid = false;
+                tempText += "- Email is required\n";
+            }
+            if (string.IsNullOrWhiteSpace(this.ModifyingUser.FirstName))
+            {
+                valid = false;
+                tempText += "- First Name is required\n";
+            }
+            if (string.IsNullOrWhiteSpace(this.ModifyingUser.Username))
+            {
+                valid = false;
+                tempText += "- Username is required\n";
+            }
+            if (this.ModifyingUser.Id == null && string.IsNullOrEmpty(this.ModifyingUser.NewPassword))
+            {
+                valid = false;
+                tempText += "- Password is required\n";
+            }
+
+            if (!valid)
+            {
+                this.IsBusy = false;
+                ErrorText = tempText;
+                return;
+            }
+            ErrorText = string.Empty;
+
+            if (!string.IsNullOrEmpty(this.ModifyingUser.NewPassword))
+            {
+                var authMan = new AuthenticationManager();
+                var salt = authMan.GetSalt();
+                var hash = authMan.GenerateHash(Encoding.UTF8.GetBytes(this.ModifyingUser.NewPassword), salt);
+                this.ModifyingUser.Password = hash;
+                this.ModifyingUser.Salt = salt;
+            }
+            
             this.ModifyingUser.Modified = DateTime.UtcNow;
             this.ModifyingUser.ModifiedBy = this.currentUser.Id;
             this.ModifyingUser.Role = null;

@@ -19,7 +19,10 @@ namespace Model.ModelSql
         public string EmployeeNumber { get; set; }
         public new bool IsActive { get; set; } = true;
         public string Username { get; set; }
+        [NotMapped]
+        public string NewPassword { get; set; }
         public string Password { get; set; }
+        public byte[] Salt { get; set; } = Array.Empty<byte>();
         public string FirstName { get; set; }
         public string? LastName { get; set; }
         public string? Designation { get; set; }
