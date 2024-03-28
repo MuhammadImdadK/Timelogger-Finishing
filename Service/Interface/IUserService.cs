@@ -16,5 +16,6 @@ namespace Service.Interface
         public List<DropdownModel> GetRolesForDropdown();
         bool EditUser(User? modifyingUser);
         void DeleteUser(User? id);
+        public List<User> SearchFor(string searchTerm);
     }
 }

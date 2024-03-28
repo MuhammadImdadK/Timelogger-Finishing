@@ -30,7 +30,7 @@ public class UserManagementViewModel : ViewModelBase
     private bool isEditing = false;
     private bool isDeleting = false;
     private User? modifyingUser;
-
+    private string searchTerm;
     private string primaryActionText = "Add";
 
     public UserManagementViewModel()
@@ -42,6 +42,7 @@ public class UserManagementViewModel : ViewModelBase
         this.PerformEditCommand = ReactiveCommand.Create(this.PerformEdit);
         this.PerformDeleteCommand = ReactiveCommand.Create(this.PerformDelete);
         this.CloseDialogCommand = ReactiveCommand.Create(this.CloseDialog);
+        this.PerformSearchCommand = ReactiveCommand.Create(this.PerformSearch);
         this.CurrentUser = App.CurrentUser;
         this.LoadUsers();
     }
@@ -54,6 +55,7 @@ public class UserManagementViewModel : ViewModelBase
     public ICommand PerformDeleteCommand { get; }
 
     public ICommand CloseDialogCommand { get; }
+    public ICommand PerformSearchCommand { get; }
 
     public List<Role> AvailableRoles { get; } = Constants.Roles;
     public List<TeamType> AvailableTeams { get; } = new List<TeamType> { TeamType.None, TeamType.CoreTeam, TeamType.AdditionalTeam };
@@ -63,6 +65,7 @@ public class UserManagementViewModel : ViewModelBase
     public int Take { get => this.take; set => this.RaiseAndSetIfChanged(ref this.take, value); }
 
     public ObservableCollection<User> Users { get; set; } = new ObservableCollection<User>();
+    public string SearchTerm { get => this.searchTerm; set => this.RaiseAndSetIfChanged(ref this.searchTerm, value); }
     public string BusyText { get => this.busyText; set => this.RaiseAndSetIfChanged(ref this.busyText, value); }
     public string PrimaryActionText { get => this.primaryActionText; set => this.RaiseAndSetIfChanged(ref this.primaryActionText, value); }
     public bool IsBusy { get => this.isBusy; set => this.RaiseAndSetIfChanged(ref this.isBusy, value); }
@@ -133,6 +136,40 @@ public class UserManagementViewModel : ViewModelBase
         {
             RunUpdateTask();
         }
+    }
+
+    private void PerformSearch()
+    {
+        this.IsBusy = true;
+        this.BusyText = $"Searching for '{searchTerm}'";
+        Task.Run(() =>
+        {
+            var results = this.userService.SearchFor(this.SearchTerm);
+            if(results.Count == 0)
+            {
+                Dispatcher.UIThread.Invoke(() =>
+                {
+                    this.IsBusy = false;
+                    var tb = new TextBlock();
+                    tb.Text = $"No results were found for '{SearchTerm}' try refining your search.";
+                    tb.Margin = new(5);
+
+                    CloseDialog();
+                    SukiHost.ShowToast(App.WorkspaceInstance, new("No results", tb, TimeSpan.FromSeconds(5), null));
+                    this.LoadUsers();
+                });
+            }
+            else
+            {
+                Dispatcher.UIThread.Invoke(() =>
+                {
+                    this.IsBusy = false;
+
+                    Users.Clear();
+                    Users.AddRange(results);
+                });
+            }
+        });
     }
 
     private void RunInsertTask()

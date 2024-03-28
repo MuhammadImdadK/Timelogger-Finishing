@@ -18,7 +18,7 @@ namespace Service.Service
         {
             _repository = repository;
         }
-        public List<User> GetUsers(int skip=0, int take=0)
+        public List<User> GetUsers(int skip = 0, int take = 0)
         {
             List<User> response = _repository.GetQueryableWithOutTracking<User>()
                 .OrderByDescending(x => x.Modified)
@@ -50,7 +50,7 @@ namespace Service.Service
                 _repository.UpdateRange(new List<User>() { user });
                 _repository.Save();
                 return true;
-            } 
+            }
             catch (Exception ex)
             {
                 return false;
@@ -59,12 +59,12 @@ namespace Service.Service
 
         public List<DropdownModel> GetRolesForDropdown()
         {
-          return  _repository.GetQueryableWithOutTracking<Role>().Where(x=>x.IsActive.Equals(true))
-                .Select(x=>new DropdownModel
-                {
-                    Id=x.Id,
-                    Name=x.Name,
-                }).ToList();
+            return _repository.GetQueryableWithOutTracking<Role>().Where(x => x.IsActive.Equals(true))
+                  .Select(x => new DropdownModel
+                  {
+                      Id = x.Id,
+                      Name = x.Name,
+                  }).ToList();
         }
 
         public void DeleteUser(User? user)
@@ -75,6 +75,17 @@ namespace Service.Service
             }
 
             _repository.RemoveRange<User>(new List<User> { user });
+        }
+
+        public List<User> SearchFor(string searchTerm)
+        {
+            searchTerm = searchTerm.ToLower();
+            return GetUsers().Where(itm => itm.Username.ToLower().Contains(searchTerm) ||
+                itm.FirstName.ToLower().Contains(searchTerm) ||
+                (itm.LastName?.ToLower().Contains(searchTerm) ?? false) ||
+                itm.Email.ToLower().Contains(searchTerm) ||
+                itm.EmployeeNumber.ToLower().Contains(searchTerm) ||
+                (itm.Designation?.ToLower().Contains(searchTerm) ?? false)).ToList();
         }
     }
 }
