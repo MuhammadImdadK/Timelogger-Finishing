@@ -79,7 +79,7 @@
           </Image>
         </suki:SukiSideMenuItem.Icon>
         <suki:SukiSideMenuItem.PageContent>
-          <views:RequestsMainView/>
+          <views:RequestsMainView DataContext="{Binding RequestsViewModel}" />
         </suki:SukiSideMenuItem.PageContent>
       </suki:SukiSideMenuItem>
       <suki:SukiSideMenuItem Header="Log Time">

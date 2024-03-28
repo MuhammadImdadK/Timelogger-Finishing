@@ -34,5 +34,10 @@ namespace Model.ModelSql
         {
             return this.MemberwiseClone();
         }
+        public override string ToString()
+        {
+            var lastName = this.LastName != null ? $" {this.LastName}" : string.Empty;
+            return $"{this.FirstName}{lastName}";
+        }
     }
 }

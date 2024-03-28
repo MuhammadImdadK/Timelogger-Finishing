@@ -23,5 +23,10 @@ namespace Model.ModelSql
         {
             return base.MemberwiseClone();
         }
+
+        public override string ToString()
+        {
+            return $"{ERFNumber} - {ProjectName}";
+        }
     }
 }

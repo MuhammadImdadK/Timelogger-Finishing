@@ -10,14 +10,14 @@
              xmlns:theme="clr-namespace:SukiUI.Theme;assembly=SukiUI"
              xmlns:views="using:TimeLoggerView.Views"
              xmlns:i="https://github.com/projektanker/icons.avalonia"
-             x:DataType="vm:ProjectManagementViewModel"
-             x:Class="TimeLoggerView.Views.Projects.ProjectRequestView">
+             x:DataType="vm:RequestsViewModel"
+             x:Class="TimeLoggerView.Views.CreateRequestView">
   <suki:BusyArea IsBusy="{Binding IsBusy}" BusyText="{Binding BusyText}">
-    <suki:GroupBox Margin="10" Header="Submit Budget Proposal">
+    <suki:GroupBox Margin="10" Header="Create Request">
       <Grid RowDefinitions="Auto,*,Auto" ColumnDefinitions="*,*">
         <StackPanel HorizontalAlignment="Left">
           <TextBlock Margin="10">Assign To</TextBlock>
-          <ComboBox x:Name="ProjectName" Margin="10 0 0 0" MinWidth="200" MaxWidth="200" ItemsSource="{Binding AvailableProjectEngineers}" SelectedItem="{Binding CurrentRequest.PlanningEngineer}"></ComboBox>
+          <ComboBox x:Name="ProjectName" Margin="10 0 0 0" MinWidth="200" MaxWidth="200" ItemsSource="{Binding AvailablePlanningEngineers}" SelectedItem="{Binding CurrentRequest.PlanningEngineer}"></ComboBox>
         </StackPanel>
         <suki:GroupBox Margin="10" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" Header="Timings">
           <Grid ColumnDefinitions="*,*">
@@ -39,8 +39,8 @@
           </Grid>
         </suki:GroupBox>
         <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Right" Orientation="Horizontal">
-          <Button Command="{Binding CancelBudgetCommand}">Cancel</Button>
-          <Button Margin="5 0 0 0" Classes="Flat" Command="{Binding PerformSubmitBudgetCommand}">Submit Proposal</Button>
+          <Button Command="{Binding CloseDialogCommand}">Cancel</Button>
+          <Button Margin="5 0 0 0" Classes="Flat" Command="{Binding SubmitCreateRequestCommand}">Create Request</Button>
         </StackPanel>
       </Grid>
     </suki:GroupBox>

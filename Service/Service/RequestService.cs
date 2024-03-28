@@ -36,5 +36,19 @@ namespace Service.Service
                 return false;
             }
         }
+
+        public bool UpdateRequest(Request currentRequest)
+        {
+            try
+            {
+                repository.UpdateRange(new List<Request> { currentRequest });
+                repository.Save();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
     }
 }

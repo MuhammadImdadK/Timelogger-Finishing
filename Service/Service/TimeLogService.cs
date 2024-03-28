@@ -19,6 +19,11 @@ namespace Service.Service
             return timeLogs;
         }
 
+        public TimeLog? GetTimeLogById(int id)
+        {
+            return GetTimeLogs().First(itm => itm.Id == id);
+        }
+
         public List<TimeLog> GetTimeLogsByUserId(int userId)
         {
             return GetTimeLogs().Where(itm => itm.UserID == userId).ToList();
@@ -32,6 +37,20 @@ namespace Service.Service
                 return repository.Save() > 0;
             }
             catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        public bool UpdateTimeLog(TimeLog timeLog)
+        {
+            try
+            {
+                repository.UpdateRange(new List<TimeLog> { timeLog });
+                repository.Save();
+                return true;
+            }
+            catch
             {
                 return false;
             }

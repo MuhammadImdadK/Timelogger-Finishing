@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Common.Enums;
 using Model.EntityModel;
+using System.Globalization;
 
 namespace Model.ModelSql
 {
@@ -16,7 +17,16 @@ namespace Model.ModelSql
         public int UserID { get; set; }
         public int ProjectID { get; set; }
         public DateTime StartDateTime { get; set; }
+        [NotMapped]
+        public string StartDateTimeLocalString => StartDateTime != null
+            ? ((DateTime)StartDateTime).ToLocalTime().ToString("f", CultureInfo.CurrentCulture)
+            : "Unknown";
         public DateTime? EndDateTime { get; set; }
+        [NotMapped]
+        public string EndDateTimeLocalString => EndDateTime != null
+        ? ((DateTime)EndDateTime).ToLocalTime().ToString("f", CultureInfo.CurrentCulture)
+        : "Unknown";
+        public TimeSpan Duration { get; set; }
         public TimeLogStatus? TimeLogStatus { get; set; }
         public string? Comment { get; set; }
 
@@ -32,5 +42,10 @@ namespace Model.ModelSql
 
         [ForeignKey("ProjectID")]
         public virtual Project Project { get; set; }
+
+        public override string ToString()
+        {
+            return TimeLogStatus == null ? "Not set" : $"ERF-{ProjectID + 10001} - {StartDateTimeLocalString}";
+        }
     }
 }

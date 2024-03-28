@@ -18,7 +18,7 @@ namespace Service.Service
         {
             _repository = repository;
         }
-        public List<User> GetUsers(int skip, int take)
+        public List<User> GetUsers(int skip=0, int take=0)
         {
             List<User> response = _repository.GetQueryableWithOutTracking<User>()
                 .OrderByDescending(x => x.Modified)

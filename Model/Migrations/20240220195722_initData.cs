@@ -57,7 +57,7 @@ values: new object[,]
              "Super User",
              "testtimer@mailinator.com",
              1,
-             false,
+             true,
              DateTime.UtcNow,
              DateTime.UtcNow,
              1,

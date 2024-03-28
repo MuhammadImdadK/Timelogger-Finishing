@@ -2,7 +2,114 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:TimeLoggerView.ViewModels"
+             xmlns:suki="clr-namespace:SukiUI.Controls;assembly=SukiUI"
+             xmlns:models="clr-namespace:SukiUI.Models;assembly=SukiUI"
+             xmlns:objectModel="clr-namespace:System.Collections.ObjectModel;assembly=System"
+             xmlns:theme="clr-namespace:SukiUI.Theme;assembly=SukiUI"
+             xmlns:views="using:TimeLoggerView.Views"
+             xmlns:sqlModels="clr-namespace:Model.ModelSql;assembly=Model"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:DataType="vm:RequestsViewModel"
+             
+             xmlns:i="https://github.com/projektanker/icons.avalonia"
              x:Class="TimeLoggerView.Views.RequestsMainView">
-  Request Main View
+  <Design.DataContext>
+    <!-- This only sets the DataContext for the previewer in an IDE,
+         to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+    <vm:RequestsViewModel />
+  </Design.DataContext>
+  <ScrollViewer VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+    <suki:BusyArea IsBusy="{Binding IsBusy}" BusyText="{Binding BusyText}">
+      <suki:GlassCard VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="5">
+        <suki:GroupBox VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+          <suki:GroupBox.Header>
+            <Grid ColumnDefinitions="*, Auto">
+              <TextBlock VerticalAlignment="Center">Requests</TextBlock>
+              <StackPanel Grid.Column="1" HorizontalAlignment="Right" Orientation="Horizontal">
+                <Button  Classes="Flat"  Command="{Binding ReloadRequestsCommand}">
+                  <Image Height="16" IsHitTestVisible="False">
+                    <Image.Source>
+                      <i:IconImage Value="mdi-refresh" Brush="White" />
+                    </Image.Source>
+                  </Image>
+                </Button>
+                <Button Margin="5 0 0 0" Classes="Flat" Background="#3a9c22" Command="{Binding CreateRequestCommand}">
+                  <Image Height="16" IsHitTestVisible="False">
+                    <Image.Source>
+                      <i:IconImage Value="mdi-plus" Brush="White" />
+                    </Image.Source>
+                  </Image>
+                </Button>
+              </StackPanel>
+            </Grid>
+          </suki:GroupBox.Header>
+          <ItemsControl x:Name="RequestsPane" ItemsSource="{Binding AvailableRequests}">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate x:DataType="sqlModels:Request">
+                <suki:GlassCard Margin="5">
+                  <Expander Header="{Binding}">
+                    <Grid RowDefinitions="Auto,Auto,Auto,Auto">
+                      <suki:GroupBox IsVisible="{Binding #RequestsPane((vm:RequestsViewModel)DataContext).IsPlanningEngineer}" Margin="10" Header="Actions">
+                        <Grid>
+                          <StackPanel HorizontalAlignment="Right">
+                            <Button Classes="Flat"  Command="{Binding #RequestsPane((vm:RequestsViewModel)DataContext).UpdateRequestStatusCommand}" CommandParameter="{Binding}">Update Status</Button>
+                          </StackPanel>
+                        </Grid>
+                      </suki:GroupBox>
+                      <suki:GroupBox Grid.Row="1" Margin="10" Header="Personnel">
+                        <Grid ColumnDefinitions="*,*">
+                          <StackPanel Margin="10">
+                            <TextBlock>Requestee</TextBlock>
+                            <TextBlock Text="{Binding User}"/>
+                          </StackPanel>
+                          <StackPanel Grid.Column="1" Margin="10">
+                            <TextBlock>Approver</TextBlock>
+                            <TextBlock Text="{Binding PlanningEngineer}"/>
+                          </StackPanel>
+                        </Grid>
+                      </suki:GroupBox>
+                      <Expander Margin="10" Grid.Row="3" Header="Comments">
+                        <Grid RowDefinitions="Auto,Auto,*">
+                          <Border CornerRadius="10" Background="{DynamicResource ThemeAccentBrush4}" Opacity="0.4"></Border>
+                          <Grid Grid.Row="0" RowDefinitions="Auto,Auto" Margin="10">
+                            <TextBox MaxHeight="150" Watermark="Comment" UseFloatingWatermark="True" AcceptsReturn="True" Text="{Binding PendingComment}"/>
+                            <StackPanel Margin="10" Grid.Row="1" HorizontalAlignment="Right">
+                              <Button  Classes="Flat" Command="{Binding #RequestsPane((vm:RequestsViewModel)DataContext).PostCommentCommand}" CommandParameter="{Binding}">
+                                <Image Height="16" IsHitTestVisible="False">
+                                  <Image.Source>
+                                    <i:IconImage Value="mdi-send" Brush="White" />
+                                  </Image.Source>
+                                </Image>
+                              </Button>
+                            </StackPanel>
+                          </Grid>
+                          <Separator HorizontalAlignment="Stretch" Margin="10" Grid.Row="1"></Separator>
+                          <ItemsControl Grid.Row="2" ItemsSource="{Binding RequestComments}">
+                            <ItemsControl.ItemTemplate>
+                              <DataTemplate x:DataType="sqlModels:RequestComment">
+                                <suki:GlassCard Margin="5">
+                                  <Grid ColumnDefinitions="*, Auto" RowDefinitions="Auto,Auto,Auto">
+                                    <TextBlock Margin="10" HorizontalAlignment="Left" Text="{Binding User}"></TextBlock>
+                                    <TextBlock Margin="10" HorizontalAlignment="Right" Grid.Column="1" Text="{Binding CreatedLocalString}"/>
+                                    <Separator Margin="10" HorizontalAlignment="Stretch" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1"/>
+                                    <TextBlock Margin="10" HorizontalAlignment="Left" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" Text="{Binding Comment}"/>
+                                  </Grid>
+                                </suki:GlassCard>
+                              </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                          </ItemsControl>
+                        </Grid>
+                      </Expander>
+
+                    </Grid>
+                  </Expander>
+                </suki:GlassCard>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </suki:GroupBox>
+      </suki:GlassCard>
+    </suki:BusyArea>
+  </ScrollViewer>
 </UserControl>

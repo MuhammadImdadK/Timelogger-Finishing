@@ -13,5 +13,6 @@ namespace Service.Interface
         public List<Request> GetRequests();
         public Request? GetRequestById(int id);
         public bool InsertRequest(Request request);
+        bool UpdateRequest(Request currentRequest);
     }
 }

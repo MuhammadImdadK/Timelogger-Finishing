@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Model.Database;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Model.Migrations
 {
     [DbContext(typeof(TimeLoggerContext))]
-    partial class TimeLoggerContextModelSnapshot : ModelSnapshot
+    [Migration("20240328011242_MakeTimestampOptional")]
+    partial class MakeTimestampOptional
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -251,8 +254,8 @@ namespace Model.Migrations
                     b.Property<int?>("TimeLogID")
                         .HasColumnType("integer");
 
-                    b.Property<TimeSpan?>("Timestamp")
-                        .HasColumnType("interval");
+                    b.Property<DateTime?>("Timestamp")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("UserID")
                         .HasColumnType("integer");
@@ -427,9 +430,6 @@ namespace Model.Migrations
 
                     b.Property<int>("DrawingType")
                         .HasColumnType("integer");
-
-                    b.Property<TimeSpan>("Duration")
-                        .HasColumnType("interval");
 
                     b.Property<DateTime?>("EndDateTime")
                         .HasColumnType("timestamp with time zone");

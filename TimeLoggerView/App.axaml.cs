@@ -57,12 +57,12 @@ public partial class App : Application
         services.AddSingleton<IConfigurationRoot>(configuration);
         services.AddTransient<IRepository, EntityFrameworkRepository>();
         services.AddScoped<IAuthenticationService, AuthenticationService>();
-        services.AddScoped<IUserService, UserService>();
+        services.AddTransient<IUserService, UserService>();
         services.AddScoped<ITimeLogService, TimeLogService>();
-        services.AddScoped<IProjectService, ProjectService>();
+        services.AddTransient<IProjectService, ProjectService>();
         services.AddScoped<IAttachmentService, AttachmentService>();
-        services.AddScoped<IRequestService, RequestService>();
-        services.AddScoped<IRequestCommentService, RequestCommentService>();
+        services.AddTransient<IRequestService, RequestService>();
+        services.AddTransient<IRequestCommentService, RequestCommentService>();
         
         Container = services.BuildServiceProvider();
 

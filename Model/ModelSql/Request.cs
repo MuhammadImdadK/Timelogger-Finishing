@@ -17,21 +17,46 @@ namespace Model.ModelSql
         public int? PlanningEngineerID { get; set; }
         public int ProjectID { get; set; }
         public int? TimeLogID { get; set; }
+
+        [NotMapped]
+        public DateTimeOffset? StartTimeOffset { get; set; } = DateTimeOffset.Now;
         public DateTime StartTime { get; set; }
+        [NotMapped]
+        public DateTimeOffset? EndTimeOffset { get; set; } = DateTimeOffset.Now;
         public DateTime? EndTime { get; set; }
         public RequestStatus RequestStatus { get; set; }
-        public DateTime Timestamp { get; set; }
+        public TimeSpan? Timestamp { get; set; }
 
         // Navigation properties
         [ForeignKey("UserID")]
         public virtual User User { get; set; }
 
         [ForeignKey("PlanningEngineerID")]
-        public virtual User PlanningEngineer { get; set; }
+        public virtual User? PlanningEngineer { get; set; }
 
         [ForeignKey("ProjectID")]
-        public virtual Project Project { get; set; }
+        public virtual Project? Project { get; set; }
         [ForeignKey("TimeLogID")]
-        public virtual TimeLog TimeLog { get; set; }
+        public virtual TimeLog? TimeLog { get; set; }
+
+        [NotMapped]
+        public List<RequestComment> RequestComments { get; set; }
+        
+        [NotMapped]
+        public string PendingComment { get; set; }
+
+
+        public override string ToString()
+        {
+            if(User == null && TimeLog?.User == null && Project?.CreatedByUser == null)
+            {
+                return "Unknown request";
+            }
+            var timelog = TimeLog?.ToString().Replace("Not set", string.Empty);
+            var project = Project.ToString();
+            var user = User?.ToString();
+
+            return $"{user} {project} {timelog}".Trim();
+        }
     }
 }
