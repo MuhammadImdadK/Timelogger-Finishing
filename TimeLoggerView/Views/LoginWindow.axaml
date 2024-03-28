@@ -22,7 +22,7 @@
   <Grid Margin="15">
     <suki:GlassCard Width="350" Margin="0,0,0,25">
       <Grid ColumnDefinitions="Auto,Auto">
-        <Image Grid.Column="0" VerticalAlignment="Center" Height="90" Margin="0" Source="avares://TimeLoggerView/Assets/Logo-Vertical.png"/>
+        <Image Grid.Column="0" VerticalAlignment="Center" Height="90" Margin="0" Source="avares://Pec.ProjectManagement.Ui/Assets/Logo-Vertical.png"/>
         <suki:BusyArea Grid.Column="1" Name="BusySignIn" Margin="25"
                        BusyText="Signing In..."
                        IsBusy="{Binding IsLoggingIn}">

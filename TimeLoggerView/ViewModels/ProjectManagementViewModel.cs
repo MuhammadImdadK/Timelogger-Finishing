@@ -23,7 +23,7 @@ namespace TimeLoggerView.ViewModels;
 
 public class ProjectManagementViewModel : ModuleViewModel
 {
-    private const int ErfOffset = 10001;
+    private const int ErfOffset = 100001;
     private bool canModifyBudget;
     private bool isEditing;
     private bool isAddingAttachment;
@@ -369,6 +369,8 @@ public class ProjectManagementViewModel : ModuleViewModel
     private void CreateProject()
     {
         this.CurrentProject = new();
+        var erf = (this.projectService.GetLatestProjectId() ?? 0) + ErfOffset;
+        CurrentProject.ERFNumber = erf.ToString();
         var view = new CreateProjectView()
         {
             DataContext = this
@@ -389,8 +391,11 @@ public class ProjectManagementViewModel : ModuleViewModel
             CurrentProject.ModifiedBy = App.CurrentUser.Id;
             CurrentProject.IsActive = true;
             CurrentProject.ApprovalState = RequestStatus.None;
-            var erf = (this.projectService.GetLatestProjectId() ?? 0) + ErfOffset;
-            CurrentProject.ERFNumber = erf.ToString();
+            if (string.IsNullOrWhiteSpace(CurrentProject.ERFNumber?.Trim()))
+            {
+                var erf = (this.projectService.GetLatestProjectId() ?? 0) + ErfOffset;
+                CurrentProject.ERFNumber = erf.ToString();
+            }
             var result = this.projectService.InsertProject(CurrentProject);
 
             Thread.Sleep(1000);

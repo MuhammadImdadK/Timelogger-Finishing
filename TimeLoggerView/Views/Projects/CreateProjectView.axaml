@@ -16,21 +16,28 @@
 
     <suki:GroupBox Margin="10" Header="Create Project">
 
-      <Grid RowDefinitions="Auto,*,Auto" ColumnDefinitions="*,*">
+      <Grid RowDefinitions="Auto, Auto,*,Auto" ColumnDefinitions="*,*">
         <StackPanel HorizontalAlignment="Left">
+          <TextBlock Margin="10">
+            ERF Number
+          </TextBlock>
+          <TextBox x:Name="ERFNumber" theme:TextBoxExtensions.Prefix="ERF-" Margin="10 0 0 0" MinWidth="200" MaxWidth="200" Text="{Binding CurrentProject.ERFNumber}"></TextBox>
+
+        </StackPanel>
+        <StackPanel Grid.Row="1" HorizontalAlignment="Left">
           <TextBlock Margin="10">Project Name</TextBlock>
           <TextBox x:Name="ProjectName" Margin="10 0 0 0" MinWidth="200" MaxWidth="200" Text="{Binding CurrentProject.ProjectName}"></TextBox>
         </StackPanel>
-        <StackPanel Margin="10 0 0 0" HorizontalAlignment="Left" Grid.Column="1">
+        <StackPanel Margin="10 0 0 0" HorizontalAlignment="Left" Grid.Column="1" Grid.Row="1">
           <TextBlock Margin="10">Initial Estimate</TextBlock>
           <NumericUpDown Margin="5" MinWidth="200" MaxHeight="200" Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" theme:NumericUpDownExtensions.Unit="hours" Minimum="0" Increment="0.5" Value="{Binding CurrentProject.ManhourBudget}" />
         </StackPanel>
-        <suki:GroupBox Margin="10" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" Header="Description">
+        <suki:GroupBox Margin="10" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" Header="Description">
           <StackPanel>
             <TextBox MinHeight="100" MaxHeight="200" Watermark="Description" TextWrapping="WrapWithOverflow" AcceptsReturn="True" Text="{Binding CurrentProject.Description}" ></TextBox>
           </StackPanel>
         </suki:GroupBox>
-        <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Right" Orientation="Horizontal">
+        <StackPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Right" Orientation="Horizontal">
           <Button Command="{Binding CloseDialogCommand}">Cancel</Button>
           <Button Margin="5 0 0 0" Classes="Flat" Command="{Binding SubmitCreateProjectCommand}">Add Project</Button>
         </StackPanel>

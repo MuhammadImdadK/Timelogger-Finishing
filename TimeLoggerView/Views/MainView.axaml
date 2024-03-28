@@ -21,7 +21,7 @@
   <suki:SukiSideMenu>
     <suki:SukiSideMenu.HeaderContent>
       <StackPanel >
-        <Image Grid.Row="1" Grid.Column="1" Height="90" Margin="0" Source="avares://TimeLoggerView/Assets/Logo-Horizontal.png"/>
+        <Image Grid.Row="1" Grid.Column="1" Height="90" Margin="0" Source="avares://Pec.ProjectManagement.Ui/Assets/Logo-Horizontal.png"/>
 
         <StackPanel Orientation="Horizontal">
           <Image Margin="5" Width="32">

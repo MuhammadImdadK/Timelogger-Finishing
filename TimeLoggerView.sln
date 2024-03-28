@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34309.116
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TimeLoggerView", "TimeLoggerView\TimeLoggerView.csproj", "{5C4CDF94-82FA-40E3-AE1F-2F42EC55E270}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pec.ProjectManagement.Ui", "TimeLoggerView\Pec.ProjectManagement.Ui.csproj", "{5C4CDF94-82FA-40E3-AE1F-2F42EC55E270}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TimeLoggerView.Desktop", "TimeLoggerView.Desktop\TimeLoggerView.Desktop.csproj", "{34805F8F-A1C0-4B32-9D46-09291CE3C873}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pec.ProjectManagement.Ui.Desktop", "TimeLoggerView.Desktop\Pec.ProjectManagement.Ui.Desktop.csproj", "{34805F8F-A1C0-4B32-9D46-09291CE3C873}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Session", "Session\Session.csproj", "{B7AB65B5-66AA-48E9-B1E2-D0BC081E59A7}"
 EndProject
