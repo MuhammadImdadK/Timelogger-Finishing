@@ -79,7 +79,7 @@ namespace Service.Service
 
         public List<User> SearchFor(string searchTerm)
         {
-            searchTerm = searchTerm.ToLower();
+            searchTerm = searchTerm?.ToLower() ?? string.Empty;
             return GetUsers().Where(itm => itm.Username.ToLower().Contains(searchTerm) ||
                 itm.FirstName.ToLower().Contains(searchTerm) ||
                 (itm.LastName?.ToLower().Contains(searchTerm) ?? false) ||
