@@ -1,0 +1,31 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="Pec.ProjectManagement.Ui.Views.SplashWindow"
+        Title="SplashWindow"
+        SystemDecorations="BorderOnly"
+        ExtendClientAreaChromeHints="NoChrome"
+        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaTitleBarHeightHint="-1"
+        Loaded="Window_Loaded" Background="Transparent"
+        xmlns:vm="clr-namespace:TimeLoggerView.ViewModels"
+        xmlns:suki="clr-namespace:SukiUI.Controls;assembly=SukiUI"
+        xmlns:models="clr-namespace:SukiUI.Models;assembly=SukiUI"
+        xmlns:objectModel="clr-namespace:System.Collections.ObjectModel;assembly=System"
+        xmlns:theme="clr-namespace:SukiUI.Theme;assembly=SukiUI"
+        xmlns:views="using:TimeLoggerView.Views"
+        Width="300" Height="300" CanResize="False" WindowStartupLocation="CenterScreen" SizeToContent="WidthAndHeight" Topmost="True">
+  <Grid>
+    <Border Background="#6e6e6e" CornerRadius="10"></Border>
+    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Orientation="Horizontal" Margin="50">
+      <Image Grid.Column="0" VerticalAlignment="Center" Height="90" Margin="0 0 50 0" Source="avares://Pec.ProjectManagement.Ui/Assets/Logo-Vertical.png"/>
+      <Border BorderBrush="{DynamicResource ThemeAccentBrush4}" BorderThickness="1" Margin="0 0 50 0"/>
+      <StackPanel VerticalAlignment="Center">
+        <suki:CircleProgressBar VerticalAlignment="Center" IsEnabled="True" IsIndeterminate="True" Width="50" Height="50"></suki:CircleProgressBar>
+        <TextBlock x:Name="StatusText" Margin="10" VerticalAlignment="Center">Loading</TextBlock>
+      </StackPanel>
+    </StackPanel>
+  </Grid>
+</Window>

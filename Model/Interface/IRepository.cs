@@ -1,4 +1,5 @@
 ﻿using Common.Enums;
+using Microsoft.Extensions.Configuration;
 using Model.EntityModel;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ namespace Model.Interface
 {
     public interface IRepository : IRepositoryReadOnly
     {
+        bool RunMigrations(IConfigurationRoot config);
         void InsertModel<T>(T model) where T : class;
         void ResetChangeTracker();
         void DeleteModel<T>(int modelId) where T : class;

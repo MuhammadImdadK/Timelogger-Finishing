@@ -16,6 +16,7 @@ using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using Model.ModelSql;
+using Pec.ProjectManagement.Ui.Views;
 
 namespace TimeLoggerView;
 
@@ -44,8 +45,8 @@ public partial class App : Application
             .Build();
 
         var connectionStrings = configuration.GetSection("ConnectionStrings").Get<Dictionary<string, string>>();
-        
-        if(connectionStrings == null || (!connectionStrings?.ContainsKey("TimeLoggerDatabase") ?? true))
+
+        if (connectionStrings == null || (!connectionStrings?.ContainsKey("TimeLoggerDatabase") ?? true))
         {
             throw new InvalidOperationException("Configuration does not contain the time logger database.");
         }
@@ -53,7 +54,7 @@ public partial class App : Application
         var dbString = connectionStrings["TimeLoggerDatabase"];
 
         services.AddRepository(dbString);
-        
+
         services.AddSingleton<IConfigurationRoot>(configuration);
         services.AddTransient<IRepository, EntityFrameworkRepository>();
         services.AddScoped<IAuthenticationService, AuthenticationService>();
@@ -63,7 +64,7 @@ public partial class App : Application
         services.AddScoped<IAttachmentService, AttachmentService>();
         services.AddTransient<IRequestService, RequestService>();
         services.AddTransient<IRequestCommentService, RequestCommentService>();
-        
+
         Container = services.BuildServiceProvider();
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
@@ -74,11 +75,34 @@ public partial class App : Application
                 DataContext = vm
             };
             vm.OnLoginSuccessful += OnLoginSuccessful;
-            desktop.MainWindow = loginPage; 
+            desktop.MainWindow = loginPage;
+
             SukiTheme.GetInstance().ChangeBaseTheme(ThemeVariant.Dark);
+            desktop.MainWindow.Hide();
+
+            var splash = new SplashWindow();
+            splash.Show();
+            splash.Loaded += Splash_Loaded;
+            splash.Closed += Splash_Closed;
         }
 
         base.OnFrameworkInitializationCompleted();
+    }
+
+    private void Splash_Loaded(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        {
+            desktop.MainWindow!.Hide();
+        }
+    }
+
+    private void Splash_Closed(object? sender, EventArgs e)
+    {
+        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        {
+            desktop.MainWindow!.Show();
+        }
     }
 
     /// <summary>
@@ -88,9 +112,9 @@ public partial class App : Application
     /// <param name="user">the user that was logged into.</param>
     private void OnLoginSuccessful(object sender, User user)
     {
-        if(ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            if(!user.IsActive)
+            if (!user.IsActive)
             {
                 return;
             }
@@ -109,12 +133,12 @@ public partial class App : Application
 
     private void OnSignout(object sender, EventArgs e)
     {
-        if(WorkspaceInstance!.DataContext is MainViewModel vm)
+        if (WorkspaceInstance!.DataContext is MainViewModel vm)
         {
             vm.OnSignout -= OnSignout;
             WorkspaceInstance.Close();
 
-            if(ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 desktop.MainWindow?.Show();
             }

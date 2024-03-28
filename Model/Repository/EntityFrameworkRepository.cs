@@ -130,7 +130,21 @@ namespace Model.Repository
                 throw ex;
             }
         }
-    
+
+        public bool RunMigrations(IConfigurationRoot configuration)
+        {
+            try
+            {
+                new TimeLoggerContext(new(), configuration).Database.Migrate();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
         private void SaveChangesWithAudit(object entity, ActionType actionType, EventType eventType)
         {
             // Save changes to the database
