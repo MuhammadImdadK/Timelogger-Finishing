@@ -176,6 +176,7 @@ public class RequestsViewModel : ModuleViewModel
 
     private void CreateRequest()
     {
+        ErrorText = string.Empty;
         this.CurrentRequest = new();
         this.IsAddingEndTime = true;
 
@@ -188,6 +189,7 @@ public class RequestsViewModel : ModuleViewModel
 
     private void EditRequest(Request request)
     {
+        ErrorText = string.Empty;
         this.CurrentRequest = request;
         this.IsAddingEndTime = true;
         var view = new CreateRequestView()
@@ -206,6 +208,10 @@ public class RequestsViewModel : ModuleViewModel
                 this.CreateToast("Invalid Request", "Make sure you've added a planning engineer");
                 return;
             }
+            ErrorText = string.Empty;
+            var tempText = "The following validation errors were encountered:\n";
+            var valid = true;
+
             this.IsBusy = true;
             this.BusyText = "Submitting Request";
             if (this.CurrentRequest.Id == null)
@@ -287,8 +293,22 @@ public class RequestsViewModel : ModuleViewModel
     {
         Task.Run(() =>
         {
+            this.ErrorText = string.Empty;
+            var valid = true;
+            var tempText = "The following validation errors were encountered:\n";
+            if (!this.AvailableRequestStatuses.Any(itm => itm == UpdateStatus))
+            {
+                valid = false;
+                tempText += "- Updated status was not provided";
+            }
+            if (!valid)
+            {
+                this.ErrorText = tempText;
+                return;
+            }
             this.IsBusy = true;
             this.BusyText = "Updating Request";
+
             CurrentRequest.Modified = DateTime.UtcNow;
             CurrentRequest.ModifiedBy = App.CurrentUser.Id;
             CurrentRequest.IsActive = true;
@@ -310,7 +330,7 @@ public class RequestsViewModel : ModuleViewModel
                     return;
                 }
             }
-            else if (CurrentRequest.TimeLog != null)
+            else if (CurrentRequest.TimeLog != null && UpdateStatus == RequestStatus.Accepted)
             {
                 CurrentRequest.TimeLog.CreatedByUser = null;
                 CurrentRequest.TimeLog.ModifiedByUser = null;
