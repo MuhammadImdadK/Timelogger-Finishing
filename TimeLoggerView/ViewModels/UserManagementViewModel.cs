@@ -84,6 +84,7 @@ public class UserManagementViewModel : ViewModelBase
     {
         this.ModifyingUser = new();
         this.IsEditing = true;
+        this.ErrorText = string.Empty;
         var userEdit = new UserEditorView();
         this.PrimaryActionText = "Add User";
         this.ModifyingUser.Role = this.AvailableRoles.FirstOrDefault(itm => itm.Id == ModifyingUser.RoleID);
@@ -95,6 +96,7 @@ public class UserManagementViewModel : ViewModelBase
     {
         this.ModifyingUser = user.Clone() as User;
         this.IsEditing = true;
+        this.ErrorText = string.Empty;
         var userEdit = new UserEditorView();
         this.PrimaryActionText = "Edit User";
         this.ModifyingUser.Role = this.AvailableRoles.FirstOrDefault(itm => itm.Id == ModifyingUser.RoleID);
@@ -198,24 +200,26 @@ public class UserManagementViewModel : ViewModelBase
                 valid = false;
                 tempText += "- Employee number is required\n";
             }
-            if (string.IsNullOrWhiteSpace(this.ModifyingUser.Email)){
+            if (string.IsNullOrWhiteSpace(this.ModifyingUser.Username))
+            {
                 valid = false;
-                tempText += "- Email is required\n";
+                tempText += "- Username is required\n";
+            }
+            if (this.ModifyingUser.Id == null && string.IsNullOrEmpty(this.ModifyingUser.NewPassword))
+            {
+                valid = false;
+                tempText += "- Password is required\n";
             }
             if (string.IsNullOrWhiteSpace(this.ModifyingUser.FirstName))
             {
                 valid = false;
                 tempText += "- First Name is required\n";
             }
-            if(string.IsNullOrWhiteSpace(this.ModifyingUser.Username)) {
+            if (string.IsNullOrWhiteSpace(this.ModifyingUser.Email)){
                 valid = false;
-                tempText += "- Username is required\n";
+                tempText += "- Email is required\n";
             }
-            if(this.ModifyingUser.Id == null && string.IsNullOrEmpty(this.ModifyingUser.NewPassword))
-            {
-                valid = false;
-                tempText += "- Password is required\n";
-            }
+
 
             if (!valid)
             {
@@ -276,25 +280,20 @@ public class UserManagementViewModel : ViewModelBase
                 valid = false;
                 tempText += "- Employee number is required\n";
             }
-            if (string.IsNullOrWhiteSpace(this.ModifyingUser.Email))
+            if (string.IsNullOrWhiteSpace(this.ModifyingUser.Username))
             {
                 valid = false;
-                tempText += "- Email is required\n";
+                tempText += "- Username is required\n";
             }
             if (string.IsNullOrWhiteSpace(this.ModifyingUser.FirstName))
             {
                 valid = false;
                 tempText += "- First Name is required\n";
             }
-            if (string.IsNullOrWhiteSpace(this.ModifyingUser.Username))
+            if (string.IsNullOrWhiteSpace(this.ModifyingUser.Email))
             {
                 valid = false;
-                tempText += "- Username is required\n";
-            }
-            if (this.ModifyingUser.Id == null && string.IsNullOrEmpty(this.ModifyingUser.NewPassword))
-            {
-                valid = false;
-                tempText += "- Password is required\n";
+                tempText += "- Email is required\n";
             }
 
             if (!valid)

@@ -35,7 +35,7 @@
 					<StackPanel Grid.Row="1" Grid.Column="0" Margin="10">
 						<TextBlock MinWidth="200" MaxWidth="200" Text="Employee Number"
                      />
-						<TextBox MinWidth="200" MaxWidth="200" Watermark="EmployeeNumber" Text="{Binding ModifyingUser.EmployeeNumber}"  x:Name="txtEmployeeNumber"/>
+						<TextBox MinWidth="200" MaxWidth="200" Watermark="Employee Number" Text="{Binding ModifyingUser.EmployeeNumber}"  x:Name="txtEmployeeNumber"/>
 					</StackPanel>
 					<StackPanel Grid.Row="1" Grid.Column="1" Margin="10" VerticalAlignment="Center">
 						<CheckBox Background="DarkGray" Margin="10 20 10 10" VerticalAlignment="Center" IsChecked="{Binding ModifyingUser.IsActive}">
