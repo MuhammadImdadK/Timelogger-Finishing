@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -48,6 +49,7 @@ public class TimesheetViewModel : ModuleViewModel
     private readonly IProjectService projectService;
     private readonly IUserService userService;
     private TimeLog? currentTimeLog = null;
+    private string endDateLocalTime = "Unknown";
 
     public TimesheetViewModel()
     {
@@ -126,7 +128,7 @@ public class TimesheetViewModel : ModuleViewModel
             var availableTimeLogs = new List<TimeLog>();
             if (this.IsPlanningEngineer)
             {
-                availableTimeLogs= this.timesheetService.GetTimeLogs();
+                availableTimeLogs = this.timesheetService.GetTimeLogs();
             }
             else
             {
@@ -174,7 +176,7 @@ public class TimesheetViewModel : ModuleViewModel
                 StartDateTime = this.StartDateTime ?? DateTime.UtcNow,
                 EndDateTime = this.EndDateTime,
                 Duration = this.Duration ?? TimeSpan.Zero,
-                ProjectID = this.SelectedProject.Id ?? 0,
+                ProjectID = this.SelectedProject?.Id ?? 0,
                 TeamType = this.TeamType,
                 DisciplineType = this.DisciplineType,
                 DrawingType = this.DrawingType,
@@ -193,7 +195,7 @@ public class TimesheetViewModel : ModuleViewModel
             timeLog.StartDateTime = this.StartDateTime ?? DateTime.UtcNow;
             timeLog.EndDateTime = this.EndDateTime;
             timeLog.Duration = this.Duration ?? TimeSpan.Zero;
-            timeLog.ProjectID = this.SelectedProject.Id ?? 0;
+            timeLog.ProjectID = this.SelectedProject?.Id ?? 0;
             timeLog.TeamType = this.TeamType;
             timeLog.DisciplineType = this.DisciplineType;
             timeLog.DrawingType = this.DrawingType;
@@ -201,7 +203,7 @@ public class TimesheetViewModel : ModuleViewModel
             timeLog.TimeLogStatus = TimeLogStatus.None;
         }
 
-        if(this.SelectedProject == null)
+        if (this.SelectedProject == null)
         {
             tempText += "- A Project must be selected\n";
             valid = false;
@@ -216,7 +218,7 @@ public class TimesheetViewModel : ModuleViewModel
             tempText += "- Start date must be set\n";
             valid = false;
         }
-        if(this.Duration == null || this.Duration == TimeSpan.Zero)
+        if (this.Duration == null || this.Duration == TimeSpan.Zero)
         {
             tempText += "- Duration must be set\n";
             valid = false;
@@ -247,12 +249,13 @@ public class TimesheetViewModel : ModuleViewModel
             this.CreateToast("Inserted Time Log", "Successfully inserted time log");
             if (this.CanRunTimeRecorder)
             {
-                if(App.WorkspaceInstance.DataContext is MainViewModel mvm)
+                if (App.WorkspaceInstance.DataContext is MainViewModel mvm)
                 {
                     mvm.TimesheetModel.LoadData();
                 }
                 this.OnTriggerWindowClose?.Invoke(this, EventArgs.Empty);
-            } else
+            }
+            else
             {
                 this.CloseDialog();
             }
@@ -384,10 +387,49 @@ public class TimesheetViewModel : ModuleViewModel
             if (EnteringTimeManually)
             {
                 this.EndDateTime = value;
+                this.EndDateLocalTime = EndDateTime != null
+                    ? ((DateTime)EndDateTime).ToLocalTime().ToString("f", CultureInfo.CurrentCulture)
+                    : "Unknown";
             }
         }
     }
-    public DateTime? EndDateTime { get => endDateTime; set => this.RaiseAndSetIfChanged(ref this.endDateTime, value); }
+    public DateTime? EndDateTime
+    {
+        get => endDateTime;
+        set
+        {
+            if (StartDateTime != null && Duration != null)
+            {
+                this.RaiseAndSetIfChanged(ref this.endDateTime, ((DateTime)this.StartDateTime).Add((TimeSpan)Duration));
+                this.EndDateLocalTime = EndDateTime != null
+                    ? ((DateTime)EndDateTime).ToLocalTime().ToString("f", CultureInfo.CurrentCulture)
+                    : "Unknown";
+            }
+        }
+    }
+    public string EndDateLocalTime { get => endDateLocalTime; set => this.RaiseAndSetIfChanged(ref endDateLocalTime, value); }
+    public TimeSpan? StartDateTimeSpan
+    {
+        get
+        {
+            if (this.StartDateTime == null)
+            {
+                return null;
+            }
+            var conv = (DateTime)StartDateTime;
+            return conv.TimeOfDay;
+        }
+        set
+        {
+            if (value != null && StartDateTime != null && this.EnteringTimeManually)
+            {
+                var conv = (DateTime)StartDateTime;
+                var ts = (TimeSpan)value;
+                StartDateTime = conv.Date.Add(ts);
+            }
+        }
+    }
+
     public TimeSpan? Duration
     {
         get => duration;
@@ -397,6 +439,7 @@ public class TimesheetViewModel : ModuleViewModel
             if (value != null)
             {
                 this.TimerString = ((TimeSpan)value).ToString(@"hh\:mm\:ss");
+                this.EndDateTime = DateTime.UtcNow;
                 this.CanSave = true;
             }
             else

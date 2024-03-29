@@ -8,6 +8,7 @@ using SukiUI.Controls;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -33,6 +34,10 @@ public class RequestsViewModel : ModuleViewModel
     private RequestType selectedRequestType = RequestType.TimeLog;
     private bool isAddingProjectRequest = false;
     private string submitButtonText;
+    private DateTime? startDateTime;
+    private DateTime? endDateTime;
+    private string endDateLocalTime = "Unknown";
+    private TimeSpan? duration;
 
     public bool IsUser { get => this.isUser; set => this.RaiseAndSetIfChanged(ref this.isUser, value); }
     public bool IsPlanningEngineer { get => this.isPlanningEngineer; set => this.RaiseAndSetIfChanged(ref this.isPlanningEngineer, value); }
@@ -84,6 +89,108 @@ public class RequestsViewModel : ModuleViewModel
     public ICommand SubmitUpdateRequestStatusCommand { get; }
     public ICommand PostCommentCommand { get; }
     public bool IsAddingEndTime { get => this.isAddingEndTime; set => this.RaiseAndSetIfChanged(ref this.isAddingEndTime, value); }
+
+
+    public DateTimeOffset? EndDateTimeOffset
+    {
+        get
+        {
+            if (this.EndDateTime == null)
+                return null;
+            return new DateTimeOffset((DateTime)this.EndDateTime);
+        }
+        set
+        {
+            if (value == null)
+                this.EndDateTime = null;
+            else
+                this.EndDateTime = ((DateTimeOffset)value).UtcDateTime;
+        }
+    }
+
+    public DateTimeOffset? StartDateTimeOffset
+    {
+        get => this.StartDateTime != null ? new DateTimeOffset((DateTime)this.StartDateTime) : null;
+        set
+        {
+            if (value != null)
+            {
+                this.StartDateTime = ((DateTimeOffset)value).UtcDateTime;
+            }
+            else
+            {
+                this.StartDateTime = null;
+            }
+
+            this.EndDateTimeOffset = value;
+        }
+    }
+    public DateTime? StartDateTime
+    {
+        get => startDateTime;
+        set
+        {
+            this.RaiseAndSetIfChanged(ref this.startDateTime, value);
+                this.EndDateTime = value;
+                this.EndDateLocalTime = EndDateTime != null
+                    ? ((DateTime)EndDateTime).ToLocalTime().ToString("f", CultureInfo.CurrentCulture)
+                    : "Unknown";
+        }
+    }
+    public DateTime? EndDateTime
+    {
+        get => endDateTime;
+        set
+        {
+            if (StartDateTime != null && Duration != null)
+            {
+                this.RaiseAndSetIfChanged(ref this.endDateTime, ((DateTime)this.StartDateTime).Add((TimeSpan)Duration));
+                this.EndDateLocalTime = EndDateTime != null
+                    ? ((DateTime)EndDateTime).ToLocalTime().ToString("f", CultureInfo.CurrentCulture)
+                    : "Unknown";
+            }
+        }
+    }
+    public string EndDateLocalTime { get => endDateLocalTime; set => this.RaiseAndSetIfChanged(ref endDateLocalTime, value); }
+    public TimeSpan? StartDateTimeSpan
+    {
+        get
+        {
+            if (this.StartDateTime == null)
+            {
+                return null;
+            }
+            var conv = (DateTime)StartDateTime;
+            return conv.TimeOfDay;
+        }
+        set
+        {
+            if (value != null && StartDateTime != null)
+            {
+                var conv = (DateTime)StartDateTime;
+                var ts = (TimeSpan)value;
+                StartDateTime = conv.Date.Add(ts);
+            }
+        }
+    }
+
+    public TimeSpan? Duration
+    {
+        get => duration;
+        set
+        {
+            this.RaiseAndSetIfChanged(ref this.duration, value);
+            if (value != null)
+            {
+                this.EndDateTime = DateTime.UtcNow;
+            }
+            else
+            {
+            }
+        }
+    }
+
+
 
     public RequestsViewModel()
     {
@@ -179,6 +286,7 @@ public class RequestsViewModel : ModuleViewModel
     private void CreateRequest()
     {
         ErrorText = string.Empty;
+        this.EndDateLocalTime = "Unknown";
         this.SubmitButtonText = "Create Request";
         this.CurrentRequest = new();
         this.IsAddingEndTime = true;
@@ -193,6 +301,12 @@ public class RequestsViewModel : ModuleViewModel
     private void EditRequest(Request request)
     {
         ErrorText = string.Empty;
+        this.StartDateTime = request.StartTime;
+        this.Duration = request.Timestamp;
+        this.EndDateLocalTime = EndDateTime != null
+                    ? ((DateTime)EndDateTime).ToLocalTime().ToString("f", CultureInfo.CurrentCulture)
+                    : "Unknown";
+
         this.SubmitButtonText = "Update Request";
 
         this.CurrentRequest = request;
@@ -211,17 +325,26 @@ public class RequestsViewModel : ModuleViewModel
             ErrorText = string.Empty;
             var valid = true;
             var tempText = "The following validation errors were encountered:\n";
-            if(this.CurrentRequest.PlanningEngineer == null)
+            if (this.CurrentRequest.TimeLog != null)
+            {
+                this.CurrentRequest.TimeLog.StartDateTime = StartDateTime ?? DateTime.UtcNow;
+                this.CurrentRequest.TimeLog.EndDateTime = EndDateTime ?? DateTime.UtcNow;
+                this.CurrentRequest.TimeLog.Duration = EndDateTime - StartDateTime ?? TimeSpan.Zero;
+            }
+            this.CurrentRequest.StartTime = StartDateTime ?? DateTime.UtcNow;
+            this.CurrentRequest.EndTime = EndDateTime ?? DateTime.UtcNow;
+            this.CurrentRequest.Timestamp = EndDateTime - StartDateTime ?? TimeSpan.Zero;
+            if (this.CurrentRequest.PlanningEngineer == null)
             {
                 valid = false;
                 tempText += "- A planning engineer must be assigned\n";
             }
-            if(this.CurrentRequest.Timestamp == null || this.CurrentRequest.Timestamp == TimeSpan.Zero)
+            if (this.CurrentRequest.Timestamp == null || this.CurrentRequest.Timestamp == TimeSpan.Zero)
             {
                 valid = false;
                 tempText += "- A duration must be provided\n";
             }
-            if(this.CurrentRequest.TimeLog == null)
+            if (this.CurrentRequest.TimeLog == null)
             {
                 valid = false;
                 tempText += "- The time log entry to modify must be provided\n";
@@ -278,7 +401,7 @@ public class RequestsViewModel : ModuleViewModel
             if (this.CurrentRequest.Id == null)
             {
                 response = this.requestService.InsertRequest(CurrentRequest);
-            } 
+            }
             else
             {
                 response = this.requestService.UpdateRequest(CurrentRequest);

@@ -59,7 +59,6 @@ public class ProjectManagementViewModel : ModuleViewModel
     public Project CurrentProject { get => this.currentProject; set => this.RaiseAndSetIfChanged(ref this.currentProject, value); }
     public Model.ModelSql.Drawing CurrentAttachment { get => this.currentAttachment; set => this.RaiseAndSetIfChanged(ref this.currentAttachment, value); }
     public Request CurrentRequest { get => this.currentRequest; set => this.RaiseAndSetIfChanged(ref this.currentRequest, value); }
-
     public ICommand LoadProjectCommand { get; }
     public ICommand CreateProjectCommand { get; }
     public ICommand SubmitCreateProjectCommand { get; }
