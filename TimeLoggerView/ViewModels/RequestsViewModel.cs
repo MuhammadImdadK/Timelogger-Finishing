@@ -29,9 +29,9 @@ public class RequestsViewModel : ModuleViewModel
     private Request currentRequest;
     private RequestStatus updateStatus;
     private string updateStatusComment;
-    private bool isAddingEndTime;
-    private RequestType selectedRequestType;
-    private bool isAddingProjectRequest = true;
+    private bool isAddingEndTime = true;
+    private RequestType selectedRequestType = RequestType.TimeLog;
+    private bool isAddingProjectRequest = false;
 
     public bool IsUser { get => this.isUser; set => this.RaiseAndSetIfChanged(ref this.isUser, value); }
     public bool IsPlanningEngineer { get => this.isPlanningEngineer; set => this.RaiseAndSetIfChanged(ref this.isPlanningEngineer, value); }
@@ -76,6 +76,7 @@ public class RequestsViewModel : ModuleViewModel
 
 
     public ICommand CreateRequestCommand { get; }
+    public ICommand EditRequestCommand { get; }
     public ICommand SubmitCreateRequestCommand { get; }
     public ICommand UpdateRequestStatusCommand { get; }
     public ICommand SubmitUpdateRequestStatusCommand { get; }
@@ -96,6 +97,7 @@ public class RequestsViewModel : ModuleViewModel
         this.CreateRequestCommand = ReactiveCommand.Create(CreateRequest);
         this.SubmitCreateRequestCommand = ReactiveCommand.Create(SubmitCreateRequest);
         this.UpdateRequestStatusCommand = ReactiveCommand.Create<Request>(UpdateRequestStatus);
+        this.EditRequestCommand = ReactiveCommand.Create<Request>(EditRequest);
         this.SubmitUpdateRequestStatusCommand = ReactiveCommand.Create(SubmitUpdateRequestStatus);
         this.PostCommentCommand = ReactiveCommand.Create<Request>(PostComment);
         LoadRequests();
@@ -175,6 +177,19 @@ public class RequestsViewModel : ModuleViewModel
     private void CreateRequest()
     {
         this.CurrentRequest = new();
+        this.IsAddingEndTime = true;
+
+        var view = new CreateRequestView()
+        {
+            DataContext = this
+        };
+        SukiHost.ShowDialog(App.WorkspaceInstance, view, allowBackgroundClose: false);
+    }
+
+    private void EditRequest(Request request)
+    {
+        this.CurrentRequest = request;
+        this.IsAddingEndTime = true;
         var view = new CreateRequestView()
         {
             DataContext = this
@@ -193,13 +208,18 @@ public class RequestsViewModel : ModuleViewModel
             }
             this.IsBusy = true;
             this.BusyText = "Submitting Request";
-            CurrentRequest.Created = DateTime.UtcNow;
-            CurrentRequest.CreatedBy = App.CurrentUser.Id;
+            if (this.CurrentRequest.Id == null)
+            {
+                CurrentRequest.Created = DateTime.UtcNow;
+                CurrentRequest.CreatedBy = App.CurrentUser.Id;
+            }
+            CurrentRequest.CreatedByUser = null;
             CurrentRequest.Modified = DateTime.UtcNow;
             CurrentRequest.ModifiedBy = App.CurrentUser.Id;
+            CurrentRequest.ModifiedByUser = null;
             CurrentRequest.IsActive = true;
             CurrentRequest.RequestStatus = RequestStatus.Open;
-            CurrentRequest.RequestType = SelectedRequestType;
+            CurrentRequest.RequestType = RequestType.TimeLog;
 
             CurrentRequest.ProjectID = CurrentRequest.Project?.Id;
             CurrentRequest.Project = null;
@@ -207,6 +227,7 @@ public class RequestsViewModel : ModuleViewModel
             {
                 CurrentRequest.TimeLogID = CurrentRequest.TimeLog.Id;
                 CurrentRequest.ProjectID = CurrentRequest.TimeLog.ProjectID;
+                CurrentRequest.TimeLog = null;
             }
             if (this.CurrentRequest.PlanningEngineer != null)
             {
@@ -226,7 +247,17 @@ public class RequestsViewModel : ModuleViewModel
                 CurrentRequest.StartTime = ((DateTimeOffset)CurrentRequest.StartTimeOffset).UtcDateTime;
             }
             this.CurrentRequest.UserID = App.CurrentUser.Id ?? 0;
-            var response = this.requestService.InsertRequest(CurrentRequest);
+            var response = false;
+
+            if (this.CurrentRequest.Id == null)
+            {
+                response = this.requestService.InsertRequest(CurrentRequest);
+            } 
+            else
+            {
+                response = this.requestService.UpdateRequest(CurrentRequest);
+            }
+
             if (response)
             {
                 this.IsBusy = false;

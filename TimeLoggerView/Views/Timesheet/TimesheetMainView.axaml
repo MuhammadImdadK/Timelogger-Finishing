@@ -12,7 +12,8 @@
              xmlns:sqlModels="clr-namespace:Model.ModelSql;assembly=Model"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:DataType="vm:TimesheetViewModel"
-             x:Class="TimeLoggerView.Views.TimesheetMainView">
+             x:Class="TimeLoggerView.Views.TimesheetMainView"
+             x:Name="TimeLoggerViewPanel">
 
   <Design.DataContext>
     <!-- This only sets the DataContext for the previewer in an IDE,
@@ -57,6 +58,8 @@
                   <DataGridTextColumn Header="Team Type" Binding="{Binding TeamType}"/>
                   <DataGridTextColumn Header="Drawing Type" Binding="{Binding DrawingType}"/>
                   <DataGridTextColumn Header="Comment" Binding="{Binding Comment}"/>
+                  <DataGridTextColumn Header="User" IsVisible="{Binding #TimeLoggerViewPanel((vm:TimesheetViewModel)DataContext).IsPlanningEngineer}" Binding="{Binding User.Username}"/>
+                  <DataGridTextColumn Header="Actions" IsVisible="{Binding #TimeLoggerViewPanel((vm:TimesheetViewModel)DataContext).IsPlanningEngineer}" />
                 </DataGrid.Columns>
               </DataGrid>
             </suki:BusyArea>

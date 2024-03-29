@@ -48,7 +48,17 @@
             <ItemsControl.ItemTemplate>
               <DataTemplate x:DataType="sqlModels:Request">
                 <suki:GlassCard Margin="5">
-                  <Expander Header="{Binding}">
+                  <Expander >
+                    <Expander.Header>
+                      <Grid ColumnDefinitions="*,Auto" HorizontalAlignment="Stretch">
+                        <TextBlock Text="{Binding}" VerticalAlignment="Center" HorizontalAlignment="Stretch"/>
+                        <StackPanel Grid.Column="1" HorizontalAlignment="Right">
+                          <Button Margin="5 0 0 0" IsVisible="{Binding IsUpdateRequested}"  Command="{Binding #RequestsPane((vm:RequestsViewModel)DataContext).EditRequestCommand}" CommandParameter="{Binding}">
+                            Edit Request
+                          </Button>
+                        </StackPanel>
+                      </Grid>
+                    </Expander.Header>
                     <Grid RowDefinitions="Auto,Auto,Auto,Auto">
                       <suki:GroupBox IsVisible="{Binding #RequestsPane((vm:RequestsViewModel)DataContext).IsPlanningEngineer}" Margin="10" Header="Actions">
                         <Grid>

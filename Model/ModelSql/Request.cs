@@ -56,6 +56,8 @@ namespace Model.ModelSql
         [NotMapped]
         public string PendingComment { get; set; }
 
+        [NotMapped]
+        public bool IsUpdateRequested => RequestStatus == RequestStatus.UpdateRequested;
 
         public override string ToString()
         {

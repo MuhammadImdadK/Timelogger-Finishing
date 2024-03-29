@@ -382,7 +382,7 @@ public class ProjectManagementViewModel : ModuleViewModel
     private void SubmitCreateProject()
     {
         var tempText = "The following validation errors were encountered:\n";
-        var valid = false;
+        var valid = true;
         if(string.IsNullOrWhiteSpace(this.CurrentProject.ERFNumber))
         {
             valid = false;
