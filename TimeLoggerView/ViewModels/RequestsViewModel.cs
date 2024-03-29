@@ -32,6 +32,7 @@ public class RequestsViewModel : ModuleViewModel
     private bool isAddingEndTime = true;
     private RequestType selectedRequestType = RequestType.TimeLog;
     private bool isAddingProjectRequest = false;
+    private string submitButtonText;
 
     public bool IsUser { get => this.isUser; set => this.RaiseAndSetIfChanged(ref this.isUser, value); }
     public bool IsPlanningEngineer { get => this.isPlanningEngineer; set => this.RaiseAndSetIfChanged(ref this.isPlanningEngineer, value); }
@@ -69,6 +70,7 @@ public class RequestsViewModel : ModuleViewModel
     }
     public RequestStatus UpdateStatus { get => updateStatus; set => this.RaiseAndSetIfChanged(ref this.updateStatus, value); }
     public string UpdateStatusComment { get => updateStatusComment; set => this.RaiseAndSetIfChanged(ref this.updateStatusComment, value); }
+    public string SubmitButtonText { get => submitButtonText; set => this.RaiseAndSetIfChanged(ref this.submitButtonText, value); }
     public Request CurrentRequest { get => currentRequest; set => this.RaiseAndSetIfChanged(ref this.currentRequest, value); }
 
     public ICommand ReloadRequestsCommand { get; }
@@ -177,6 +179,7 @@ public class RequestsViewModel : ModuleViewModel
     private void CreateRequest()
     {
         ErrorText = string.Empty;
+        this.SubmitButtonText = "Create Request";
         this.CurrentRequest = new();
         this.IsAddingEndTime = true;
 
@@ -190,6 +193,8 @@ public class RequestsViewModel : ModuleViewModel
     private void EditRequest(Request request)
     {
         ErrorText = string.Empty;
+        this.SubmitButtonText = "Update Request";
+
         this.CurrentRequest = request;
         this.IsAddingEndTime = true;
         var view = new CreateRequestView()

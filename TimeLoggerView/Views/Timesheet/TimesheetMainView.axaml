@@ -9,6 +9,8 @@
              xmlns:objectModel="clr-namespace:System.Collections.ObjectModel;assembly=System"
              xmlns:theme="clr-namespace:SukiUI.Theme;assembly=SukiUI"
              xmlns:views="using:TimeLoggerView.Views"
+             xmlns:enums="clr-namespace:Common.Enums;assembly=Common"
+             xmlns:modelEnums="clr-namespace:Common.Enums;assembly=Model"
              xmlns:sqlModels="clr-namespace:Model.ModelSql;assembly=Model"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:DataType="vm:TimesheetViewModel"
@@ -55,8 +57,8 @@
                   <DataGridTextColumn Header="Start Date" Binding="{Binding StartDateTimeLocalString}"/>
                   <DataGridTextColumn Header="End Date" Binding="{Binding EndDateTimeLocalString}"/>
                   <DataGridTextColumn Header="Duration" Binding="{Binding Duration}"/>
-                  <DataGridTextColumn Header="Team Type" Binding="{Binding TeamType}"/>
-                  <DataGridTextColumn Header="Drawing Type" Binding="{Binding DrawingType}"/>
+                  <DataGridTextColumn Header="Team Type" Binding="{Binding TeamType, Converter={StaticResource enumConverter}}"/>
+                  <DataGridTextColumn Header="Drawing Type" Binding="{Binding DrawingType, Converter={StaticResource enumConverter}}"/>
                   <DataGridTextColumn Header="Comment" Binding="{Binding Comment}"/>
                   <DataGridTextColumn Header="User" IsVisible="{Binding #TimeLoggerViewPanel((vm:TimesheetViewModel)DataContext).IsPlanningEngineer}" Binding="{Binding User.Username}"/>
                   <DataGridTemplateColumn Header="Actions" IsVisible="{Binding #TimeLoggerViewPanel((vm:TimesheetViewModel)DataContext).IsPlanningEngineer}">

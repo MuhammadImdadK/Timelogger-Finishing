@@ -4,7 +4,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:i="https://github.com/projektanker/icons.avalonia"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-
+        xmlns:enums="clr-namespace:Common.Enums;assembly=Common"
+        xmlns:modelEnums="clr-namespace:Common.Enums;assembly=Model"
         xmlns:vm="clr-namespace:TimeLoggerView.ViewModels"
         xmlns:suki="clr-namespace:SukiUI.Controls;assembly=SukiUI"
         xmlns:models="clr-namespace:SukiUI.Models;assembly=SukiUI"
@@ -28,21 +29,45 @@
           </StackPanel>
           <StackPanel Grid.Column="1" Margin="10" HorizontalAlignment="Left">
             <TextBlock>Discipline Type</TextBlock>
-            <ComboBox MinWidth="200" MaxWidth="200" ItemsSource="{Binding AvailableDisciplineTypes}"  SelectedItem="{Binding DisciplineType}"/>
+            <ComboBox MinWidth="200" MaxWidth="200" ItemsSource="{Binding AvailableDisciplineTypes}"  SelectedItem="{Binding DisciplineType}">
+              <ComboBox.ItemTemplate>
+                <DataTemplate x:DataType="modelEnums:DisciplineType">
+                  <TextBlock Text="{Binding, Converter={StaticResource enumConverter}}" />
+                </DataTemplate>
+              </ComboBox.ItemTemplate>
+            </ComboBox>
           </StackPanel>
 
           <StackPanel Grid.Row="1" Margin="10" HorizontalAlignment="Left">
             <TextBlock>Drawing Type</TextBlock>
-            <ComboBox MinWidth="200" MaxWidth="200" ItemsSource="{Binding AvailableDrawingTypes}" SelectedItem="{Binding DrawingType}"></ComboBox>
+            <ComboBox MinWidth="200" MaxWidth="200" ItemsSource="{Binding AvailableDrawingTypes}" SelectedItem="{Binding DrawingType}">
+              <ComboBox.ItemTemplate>
+                <DataTemplate x:DataType="modelEnums:DrawingType">
+                  <TextBlock Text="{Binding, Converter={StaticResource enumConverter}}" />
+                </DataTemplate>
+              </ComboBox.ItemTemplate>
+            </ComboBox>
           </StackPanel>
           <StackPanel Grid.Row="1" Grid.Column="1" Margin="10" HorizontalAlignment="Left">
             <TextBlock>Scope Type</TextBlock>
-            <ComboBox MinWidth="200" MaxWidth="200" ItemsSource="{Binding AvailableScopeTypes}"  SelectedItem="{Binding ScopeType}"/>
+            <ComboBox MinWidth="200" MaxWidth="200" ItemsSource="{Binding AvailableScopeTypes}"  SelectedItem="{Binding ScopeType}">
+              <ComboBox.ItemTemplate>
+                <DataTemplate x:DataType="modelEnums:ScopeType">
+                  <TextBlock Text="{Binding, Converter={StaticResource enumConverter}}" />
+                </DataTemplate>
+              </ComboBox.ItemTemplate>
+            </ComboBox>
           </StackPanel>
 
           <StackPanel Grid.Row="2" Margin="10" HorizontalAlignment="Left">
             <TextBlock>Team Type</TextBlock>
-            <ComboBox MinWidth="200" MaxWidth="200" ItemsSource="{Binding AvailableTeamTypes}" SelectedItem="{Binding TeamType}"></ComboBox>
+            <ComboBox MinWidth="200" MaxWidth="200" ItemsSource="{Binding AvailableTeamTypes}" SelectedItem="{Binding TeamType}">
+              <ComboBox.ItemTemplate>
+                <DataTemplate x:DataType="modelEnums:TeamType">
+                  <TextBlock Text="{Binding, Converter={StaticResource enumConverter}}" />
+                </DataTemplate>
+              </ComboBox.ItemTemplate>
+            </ComboBox>
           </StackPanel>
 
           <StackPanel Margin="10" HorizontalAlignment="Stretch" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2">

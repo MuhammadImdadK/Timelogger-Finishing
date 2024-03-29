@@ -11,7 +11,7 @@
              xmlns:sqlModels="clr-namespace:Model.ModelSql;assembly=Model"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:DataType="vm:RequestsViewModel"
-             
+             xmlns:enums="clr-namespace:Common.Enums;assembly=Common"
              xmlns:i="https://github.com/projektanker/icons.avalonia"
              x:Class="TimeLoggerView.Views.RequestsMainView">
   <Design.DataContext>
@@ -99,7 +99,7 @@
                           </StackPanel>
                           <StackPanel Grid.Row="2" Grid.Column="1" Margin="10" HorizontalAlignment="Left">
                             <TextBlock Margin="10" FontWeight="Bold" Text="Status"/>
-                            <TextBlock Margin="10" MinWidth="200" MaxWidth="200" Text="{Binding RequestStatus}"/>
+                            <TextBlock Margin="10" MinWidth="200" MaxWidth="200" Text="{Binding RequestStatus, Converter={StaticResource enumConverter}}"/>
                           </StackPanel>
                           <StackPanel Grid.Row="3" Margin="10" HorizontalAlignment="Left">
                             <TextBlock Margin="10" FontWeight="Bold" Text="Time Log"/>

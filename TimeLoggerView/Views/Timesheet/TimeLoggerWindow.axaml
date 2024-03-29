@@ -29,11 +29,13 @@
   <Border CornerRadius="5"  Background="#353535">
 
     <Grid RowDefinitions="Auto,Auto">
-      <!--<TextBlock Grid.Row="0" Text="{Binding ErrorText}" Foreground="{DynamicResource ErrorBrush}" />-->
       <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Visible" MaxHeight="480" IsVisible="{Binding !TimerRunning}">
+        <StackPanel>
+        <TextBlock Grid.Row="0" Text="{Binding ErrorText}" Foreground="{DynamicResource ErrorBrush}" />
         <Grid x:Name="MainView" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
           <views:TimesheetEditorComponent DataContext="{Binding}"/>
         </Grid>
+        </StackPanel>
       </ScrollViewer>
 
       <Grid IsVisible="{Binding TimerRunning}" x:Name="MiniView" ColumnDefinitions="Auto, *">
