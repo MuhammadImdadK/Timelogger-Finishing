@@ -12,9 +12,10 @@
              xmlns:i="https://github.com/projektanker/icons.avalonia"
              x:DataType="vm:RequestsViewModel"
              x:Class="TimeLoggerView.Views.CreateRequestView">
-  <suki:BusyArea IsBusy="{Binding IsBusy}" BusyText="{Binding BusyText}">
-    <suki:GroupBox Margin="10" Header="Create Request">
-      <ScrollViewer VerticalScrollBarVisibility="Visible" MinHeight="400" MaxHeight="500">
+  <ScrollViewer VerticalScrollBarVisibility="Visible" VerticalAlignment="Top" MaxHeight="500">
+
+    <suki:BusyArea IsBusy="{Binding IsBusy}" BusyText="{Binding BusyText}">
+    <suki:GroupBox Margin="10" Header="Create Request" VerticalAlignment="Stretch">
         
       <Grid RowDefinitions="Auto,*,*,Auto" ColumnDefinitions="*,*">
         <StackPanel HorizontalAlignment="Left">
@@ -66,7 +67,8 @@
           <Button Margin="5 0 0 0" Classes="Flat" Command="{Binding SubmitCreateRequestCommand}">Create Request</Button>
         </StackPanel>
       </Grid>
-      </ScrollViewer>
     </suki:GroupBox>
   </suki:BusyArea>
+  </ScrollViewer>
+
 </UserControl>

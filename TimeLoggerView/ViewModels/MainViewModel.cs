@@ -7,10 +7,11 @@ using System;
 using System.Linq;
 using System.Reflection.Metadata;
 using System.Windows.Input;
+using TimeLoggerView.Views.Timesheet;
 
 namespace TimeLoggerView.ViewModels;
 
-public class MainViewModel : ViewModelBase
+public class MainViewModel : ModuleViewModel
 {
     private UserManagementViewModel userManagement;
     private ProjectManagementViewModel projectManagement;
@@ -28,8 +29,10 @@ public class MainViewModel : ViewModelBase
     
     public EventHandler OnSignout;
     private TimesheetViewModel timesheetModel;
+    private bool isAdminUser;
 
     public ICommand Signout { get; }
+    public bool IsAdminUser { get => isAdminUser; set => isAdminUser = value; }
 
     public MainViewModel()
     {
@@ -40,11 +43,18 @@ public class MainViewModel : ViewModelBase
         TimesheetManagement = new TimesheetViewModel();
         this.TimesheetModel = new TimesheetViewModel();
         Signout = ReactiveCommand.Create(PerformSignout);
+        this.IsAdminUser = this.CurrentUser.RoleID == 1;
     }
 
     public void PerformSignout()
     {
-        this.ShouldQuit = false;
-        OnSignout?.Invoke(this, EventArgs.Empty);
+        if (TimeLoggerWindow.Instance == null)
+        {
+            this.ShouldQuit = false;
+            OnSignout?.Invoke(this, EventArgs.Empty);
+        } else
+        {
+            this.CreateToast("You have unsaved changes", "The time logger is still open. Please review changes before signing out.");
+        }
     }
 }

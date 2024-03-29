@@ -18,15 +18,19 @@
 		    ShowInTaskbar="True"
 		    Loaded="Window_Loaded"
 		    Closed="Window_Closed"
-        x:DataType="vm:TimesheetViewModel">
+        x:DataType="vm:TimesheetViewModel" 
+        MinWidth="480"
+        MaxHeight="500">
   <Design.DataContext>
     <!-- This only sets the DataContext for the previewer in an IDE,
          to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
     <vm:TimesheetViewModel />
   </Design.DataContext>
   <Border CornerRadius="5"  Background="#353535">
-    <Grid>
-      <Grid x:Name="MainView" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="*,*" IsVisible="{Binding !TimerRunning}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+    <ScrollViewer VerticalScrollBarVisibility="Visible">
+    <Grid RowDefinitions="Auto,Auto">
+      <TextBlock Grid.Row="0" Text="{Binding ErrorText}" Foreground="{DynamicResource ErrorBrush}" />
+      <Grid Grid.Row="1" x:Name="MainView" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="*,*" IsVisible="{Binding !TimerRunning}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <StackPanel Margin="10" HorizontalAlignment="Left">
           <TextBlock>Project</TextBlock>
           <ComboBox MinWidth="200" MaxWidth="200" ItemsSource="{Binding Projects}" SelectedItem="{Binding SelectedProject}"></ComboBox>
@@ -125,6 +129,7 @@
         </StackPanel>
       </Grid>
     </Grid>
+    </ScrollViewer>
   </Border>
 
 </Window>

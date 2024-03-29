@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Model.Database;
 using Model.Interface;
+using System;
 using System.Threading.Tasks;
 using TimeLoggerView;
 
@@ -22,10 +23,19 @@ namespace Pec.ProjectManagement.Ui.Views
             this.StatusText.Text = "Checking database";
             Task.Run(() =>
             {
-                IRepository repository = App.Container.GetService<IRepository>();
-                IConfigurationRoot config = App.Container.GetRequiredService<IConfigurationRoot>();
+                try
+                {
+                    IRepository repository = App.Container.GetService<IRepository>();
+                    IConfigurationRoot config = App.Container.GetRequiredService<IConfigurationRoot>();
 
-                repository.RunMigrations(config);
+                    repository.RunMigrations(config);
+                } 
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error running migrations");
+                    Console.WriteLine(ex.ToString());
+                    Console.WriteLine(ex.Message);
+                }
 
                 Dispatcher.UIThread.Invoke(() => this.Close());
             });

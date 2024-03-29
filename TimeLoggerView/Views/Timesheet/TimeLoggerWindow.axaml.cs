@@ -3,6 +3,8 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input;
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 using TimeLoggerView.ViewModels;
 
 namespace TimeLoggerView.Views.Timesheet
@@ -101,16 +103,23 @@ namespace TimeLoggerView.Views.Timesheet
                 this.SetValue(ExtendClientAreaChromeHintsProperty, Avalonia.Platform.ExtendClientAreaChromeHints.SystemChrome);
                 this.SetValue(ExtendClientAreaToDecorationsHintProperty, false);
                 this.SetValue(ExtendClientAreaTitleBarHeightHintProperty, 0);
+                this.SetValue(CanResizeProperty, true);
+                this.SetValue(MinWidthProperty, 500);
             }
             else
             {
+                this.SetValue(MinWidthProperty, 70);
                 this.SetValue(SystemDecorationsProperty, SystemDecorations.None);
                 this.SetValue(ExtendClientAreaChromeHintsProperty, Avalonia.Platform.ExtendClientAreaChromeHints.NoChrome);
                 this.SetValue(ExtendClientAreaToDecorationsHintProperty, true);
                 this.SetValue(ExtendClientAreaTitleBarHeightHintProperty, -1);
+                this.SetValue(CanResizeProperty, false);
             }
             this.SetValue(SizeToContentProperty, SizeToContent.WidthAndHeight);
-            MoveWindow();
+            Task.Run(() => {
+                Thread.Sleep(100);
+                MoveWindow();
+            });
         }
 
         private void MoveWindow()

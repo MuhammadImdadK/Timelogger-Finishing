@@ -53,7 +53,8 @@
                   <DataGridTextColumn Header="Designation" Binding="{Binding Designation}"/>
                   <DataGridTextColumn Header="Email" Binding="{Binding Email}"/>
                   <DataGridTextColumn Header="Role" Binding="{Binding Role.Name}"/>
-                  <DataGridTextColumn Header="Team" Binding="{Binding TeamType}"/>
+                  <DataGridTextColumn Header="Team" Binding="{Binding TeamType,  Converter={StaticResource enumConverter}}">
+                  </DataGridTextColumn>
                   <DataGridTemplateColumn Header="Action">
                     <DataGridTemplateColumn.CellTemplate>
                       <DataTemplate>

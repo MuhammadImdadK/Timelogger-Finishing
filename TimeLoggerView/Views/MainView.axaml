@@ -22,8 +22,7 @@
     <suki:SukiSideMenu.HeaderContent>
       <StackPanel >
         <Image Grid.Row="1" Grid.Column="1" Height="90" Margin="0" Source="avares://Pec.ProjectManagement.Ui/Assets/Logo-Horizontal.png"/>
-
-        <StackPanel Orientation="Horizontal">
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
           <Image Margin="5" Width="32">
             <Image.Source>
               <i:IconImage  Value="mdi-account-circle-outline" Brush="{DynamicResource ThemeAccentBrush}"  />
@@ -33,7 +32,7 @@
             <TextBlock Margin="5 5 5 0" FontWeight="Bold" FontSize="16" Text="{Binding CurrentUser.FirstName}"></TextBlock>
             <TextBlock Margin="5 0 5 0" FontStyle="Italic" Text="{Binding CurrentUser.Role.Name}"></TextBlock>
           </StackPanel>
-          <Button Padding="5 10" Command="{Binding Signout}">
+          <Button Padding="5 10" Command="{Binding Signout}" HorizontalAlignment="Right">
             <Image>
               <Image.Source>
                 <i:IconImage Value="mdi-exit-to-app"  Brush="{DynamicResource ThemeAccentBrush}" />
@@ -42,11 +41,10 @@
           </Button>
         </StackPanel>
         <Separator Background="{DynamicResource ThemeAccentBrush4}" Margin="0 20 0 10"/>
-
       </StackPanel>
     </suki:SukiSideMenu.HeaderContent>
     <suki:SukiSideMenu.Items>
-      <suki:SukiSideMenuItem Header="User Management">
+      <suki:SukiSideMenuItem Header="User Management" IsVisible="{Binding IsAdminUser}">
         <suki:SukiSideMenuItem.Icon>
           <Image>
             <Image.Source>

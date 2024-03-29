@@ -20,46 +20,48 @@
     <vm:TimesheetViewModel />
   </Design.DataContext>
   <ScrollViewer VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-    <suki:GlassCard VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="5">
+    <suki:GlassCard HorizontalAlignment="Stretch" Margin="5">
       <suki:GroupBox Header="Time Sheets" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-        <Grid RowDefinitions="Auto,Auto,Auto,*" ColumnDefinitions="*, Auto, Auto">
-          <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Margin="10">
-            <Button Classes="Flat" Command="{Binding LoadDataCommand}">
-              <Image>
-                <Image.Source>
-                  <i:IconImage Value="mdi-refresh" Brush="White" />
-                </Image.Source>
-              </Image>
-            </Button>
-            <Button Margin="5 0 0 0" Background="#3a9c22" Command="{Binding ShowTimeLoggerCommand}">
-              <StackPanel Orientation="Horizontal">
-                <Image Height="24" IsHitTestVisible="False">
+        <ScrollViewer>
+          <Grid RowDefinitions="Auto,Auto,Auto,*" ColumnDefinitions="*, Auto, Auto">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Margin="10">
+              <Button Classes="Flat" Command="{Binding LoadDataCommand}">
+                <Image>
                   <Image.Source>
-                    <i:IconImage Value="mdi-record-rec" Brush="White" />
+                    <i:IconImage Value="mdi-refresh" Brush="White" />
                   </Image.Source>
                 </Image>
-                <TextBlock Margin="2 0 0 0" VerticalAlignment="Center">Log Time</TextBlock>
-              </StackPanel>
-            </Button>
-          </StackPanel>
-          <suki:BusyArea Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Name="BusySignIn" Margin="10"
-                    BusyText="{Binding BusyText}"
-                    IsBusy="{Binding IsBusy}" VerticalAlignment="Stretch">
-            <DataGrid x:Name="TimeLogData" ItemsSource="{Binding TimeLogs}" x:DataType="sqlModels:TimeLog" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MinHeight="300"
-                    IsReadOnly="True" AreRowDetailsFrozen="False">
-              <DataGrid.Columns>
-                <DataGridTextColumn Header="ERF No." Binding="{Binding Project.ERFNumber}"/>
-                <DataGridTextColumn Header="Project Name" Binding="{Binding Project.ProjectName}"/>
-                <DataGridTextColumn Header="Start Date" Binding="{Binding StartDateTimeLocalString}"/>
-                <DataGridTextColumn Header="End Date" Binding="{Binding EndDateTimeLocalString}"/>
-                <DataGridTextColumn Header="Duration" Binding="{Binding Duration}"/>
-                <DataGridTextColumn Header="Team Type" Binding="{Binding TeamType}"/>
-                <DataGridTextColumn Header="Drawing Type" Binding="{Binding DrawingType}"/>
-                <DataGridTextColumn Header="Comment" Binding="{Binding Comment}"/>
-              </DataGrid.Columns>
-            </DataGrid>
-          </suki:BusyArea>
-        </Grid>
+              </Button>
+              <Button Margin="5 0 0 0" Background="#3a9c22" Command="{Binding ShowTimeLoggerCommand}">
+                <StackPanel Orientation="Horizontal">
+                  <Image Height="24" IsHitTestVisible="False">
+                    <Image.Source>
+                      <i:IconImage Value="mdi-record-rec" Brush="White" />
+                    </Image.Source>
+                  </Image>
+                  <TextBlock Margin="2 0 0 0" VerticalAlignment="Center">Log Time</TextBlock>
+                </StackPanel>
+              </Button>
+            </StackPanel>
+            <suki:BusyArea Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Name="BusySignIn" Margin="10"
+                      BusyText="{Binding BusyText}"
+                      IsBusy="{Binding IsBusy}" VerticalAlignment="Stretch">
+              <DataGrid x:Name="TimeLogData" ItemsSource="{Binding TimeLogs}" x:DataType="sqlModels:TimeLog" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MinHeight="300"
+                      IsReadOnly="True" AreRowDetailsFrozen="False">
+                <DataGrid.Columns>
+                  <DataGridTextColumn Header="ERF No." Binding="{Binding Project.ERFNumber}"/>
+                  <DataGridTextColumn Header="Project Name" Binding="{Binding Project.ProjectName}"/>
+                  <DataGridTextColumn Header="Start Date" Binding="{Binding StartDateTimeLocalString}"/>
+                  <DataGridTextColumn Header="End Date" Binding="{Binding EndDateTimeLocalString}"/>
+                  <DataGridTextColumn Header="Duration" Binding="{Binding Duration}"/>
+                  <DataGridTextColumn Header="Team Type" Binding="{Binding TeamType}"/>
+                  <DataGridTextColumn Header="Drawing Type" Binding="{Binding DrawingType}"/>
+                  <DataGridTextColumn Header="Comment" Binding="{Binding Comment}"/>
+                </DataGrid.Columns>
+              </DataGrid>
+            </suki:BusyArea>
+          </Grid>
+        </ScrollViewer>
       </suki:GroupBox>
     </suki:GlassCard>
   </ScrollViewer>
