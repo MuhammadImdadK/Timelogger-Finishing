@@ -4,12 +4,14 @@ using DynamicData;
 using Model.ModelSql;
 using ReactiveUI;
 using Service.Interface;
+using SukiUI.Controls;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using TimeLoggerView.Views;
 using TimeLoggerView.Views.Timesheet;
 
 namespace TimeLoggerView.ViewModels;
@@ -38,9 +40,11 @@ public class TimesheetViewModel : ModuleViewModel
     private bool isUser;
     private bool canSave;
     private bool isPlanningEngineer;
+    private bool canRunTimeRecorder = true;
     private readonly ITimeLogService timesheetService;
     private readonly IProjectService projectService;
     private readonly IUserService userService;
+    private TimeLog? currentTimeLog = null;
 
     public TimesheetViewModel()
     {
@@ -56,13 +60,35 @@ public class TimesheetViewModel : ModuleViewModel
         this.CloseDialogCommand = ReactiveCommand.Create(CloseDialog);
         this.LoadDataCommand = ReactiveCommand.Create(LoadData);
         this.ShowTimeLoggerCommand = ReactiveCommand.Create(ShowTimeLogger);
+        this.EditTimeLogCommand = ReactiveCommand.Create<TimeLog>(EditTimeLog);
         this.LoadData();
+    }
+
+    private void EditTimeLog(TimeLog log)
+    {
+        this.CurrentTimeLog = log;
+        this.CanRunTimeRecorder = false;
+        this.Comment = log.Comment ?? string.Empty;
+        this.StartDateTime = log.StartDateTime;
+        this.EndDateTime = log.EndDateTime;
+        this.Duration = log.Duration;
+        this.SelectedProject = this.Projects.FirstOrDefault(itm => itm.Id == log.ProjectID) ?? new();
+        this.TeamType = log.TeamType;
+        this.DisciplineType = log.DisciplineType;
+        this.DrawingType = log.DrawingType;
+        this.ScopeType = log.ScopeType;
+        var view = new TimesheetEditorView()
+        {
+            DataContext = this,
+        };
+        SukiHost.ShowDialog(App.WorkspaceInstance, view, allowBackgroundClose: false);
     }
 
     private void ShowTimeLogger()
     {
         if (TimeLoggerWindow.Instance == null)
         {
+            this.CanRunTimeRecorder = true;
             this.TeamType = App.CurrentUser.TeamType;
             var window = new TimeLoggerWindow();
             window.Show();
@@ -199,11 +225,13 @@ public class TimesheetViewModel : ModuleViewModel
     public ICommand StartTimerCommand { get; }
     public ICommand StopTimerCommand { get; }
     public ICommand SaveTimeLogCommand { get; }
+    public ICommand EditTimeLogCommand { get; }
     public ICommand CloseDialogCommand { get; }
     public ICommand LoadDataCommand { get; }
     public ICommand ShowTimeLoggerCommand { get; }
     public bool IsUser { get => this.isUser; set => this.RaiseAndSetIfChanged(ref this.isUser, value); }
     public bool IsPlanningEngineer { get => this.isPlanningEngineer; set => this.RaiseAndSetIfChanged(ref this.isPlanningEngineer, value); }
+    public bool CanRunTimeRecorder { get => this.canRunTimeRecorder; set => this.RaiseAndSetIfChanged(ref this.canRunTimeRecorder, value); }
     public ObservableCollection<Project> Projects { get; set; } = new ObservableCollection<Project>();
     public ObservableCollection<TimeLog> TimeLogs { get; set; } = new ObservableCollection<TimeLog>();
     public ObservableCollection<User> Users { get; set; } = new ObservableCollection<User>();
@@ -228,6 +256,7 @@ public class TimesheetViewModel : ModuleViewModel
     public bool EnteringTimeManually { get => this.enteringTimeManually; set => this.RaiseAndSetIfChanged(ref this.enteringTimeManually, value); }
     public bool TimerRunning { get => this.timerRunning; set => this.RaiseAndSetIfChanged(ref this.timerRunning, value); }
     public string TimerString { get => this.timerString; set => this.RaiseAndSetIfChanged(ref this.timerString, value); }
+    public TimeLog CurrentTimeLog { get => this.CurrentTimeLog; set => this.RaiseAndSetIfChanged(ref this.currentTimeLog, value); }
     public DateTimeOffset StartDateTimeOffset
     {
         get => new DateTimeOffset(this.StartDateTime);

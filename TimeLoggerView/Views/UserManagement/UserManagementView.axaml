@@ -55,7 +55,7 @@
                   <DataGridTextColumn Header="Role" Binding="{Binding Role.Name}"/>
                   <DataGridTextColumn Header="Team" Binding="{Binding TeamType,  Converter={StaticResource enumConverter}}">
                   </DataGridTextColumn>
-                  <DataGridTemplateColumn Header="Action">
+                  <DataGridTemplateColumn Header="Actions">
                     <DataGridTemplateColumn.CellTemplate>
                       <DataTemplate>
                         <StackPanel Orientation="Horizontal">

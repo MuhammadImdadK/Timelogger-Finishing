@@ -59,7 +59,21 @@
                   <DataGridTextColumn Header="Drawing Type" Binding="{Binding DrawingType}"/>
                   <DataGridTextColumn Header="Comment" Binding="{Binding Comment}"/>
                   <DataGridTextColumn Header="User" IsVisible="{Binding #TimeLoggerViewPanel((vm:TimesheetViewModel)DataContext).IsPlanningEngineer}" Binding="{Binding User.Username}"/>
-                  <DataGridTextColumn Header="Actions" IsVisible="{Binding #TimeLoggerViewPanel((vm:TimesheetViewModel)DataContext).IsPlanningEngineer}" />
+                  <DataGridTemplateColumn Header="Actions" IsVisible="{Binding #TimeLoggerViewPanel((vm:TimesheetViewModel)DataContext).IsPlanningEngineer}">
+                    <DataGridTemplateColumn.CellTemplate>
+                      <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                          <Button  Margin="5" Classes="Flat" Command="{Binding #TimeLoggerViewPanel((vm:TimesheetViewModel)DataContext).EditTimeLogCommand}" CommandParameter="{Binding}">
+                            <Image Height="16" IsHitTestVisible="False">
+                              <Image.Source>
+                                <i:IconImage Value="mdi-pencil" Brush="White" />
+                              </Image.Source>
+                            </Image>
+                          </Button>
+                        </StackPanel>
+                      </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                  </DataGridTemplateColumn>
                 </DataGrid.Columns>
               </DataGrid>
             </suki:BusyArea>

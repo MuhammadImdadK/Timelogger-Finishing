@@ -1,0 +1,26 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="600"
+             xmlns:vm="clr-namespace:TimeLoggerView.ViewModels"
+             xmlns:suki="clr-namespace:SukiUI.Controls;assembly=SukiUI"
+             xmlns:models="clr-namespace:SukiUI.Models;assembly=SukiUI"
+             xmlns:objectModel="clr-namespace:System.Collections.ObjectModel;assembly=System"
+             xmlns:theme="clr-namespace:SukiUI.Theme;assembly=SukiUI"
+             xmlns:views="using:TimeLoggerView.Views"
+             xmlns:i="https://github.com/projektanker/icons.avalonia"
+             x:DataType="vm:TimesheetViewModel"
+             x:Class="TimeLoggerView.Views.TimesheetEditorView">
+  <ScrollViewer VerticalScrollBarVisibility="Visible" VerticalAlignment="Top" MaxHeight="500">
+    <suki:BusyArea IsBusy="{Binding IsBusy}" BusyText="{Binding BusyText}">
+      <suki:GroupBox Margin="10" Header="Edit Time Log" VerticalAlignment="Stretch">
+        <Grid RowDefinitions="Auto,*,*,Auto" ColumnDefinitions="*,*">
+          <suki:GroupBox Margin="10" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" Header="Details">
+            <views:TimesheetEditorComponent DataContext="{Binding}"/>
+          </suki:GroupBox>
+        </Grid>
+      </suki:GroupBox>
+    </suki:BusyArea>
+  </ScrollViewer>
+</UserControl>

@@ -18,7 +18,7 @@
 		    ShowInTaskbar="True"
 		    Loaded="Window_Loaded"
 		    Closed="Window_Closed"
-        x:DataType="vm:TimesheetViewModel" 
+        x:DataType="vm:TimesheetViewModel"
         MinWidth="480"
         MaxHeight="500">
   <Design.DataContext>
@@ -27,74 +27,15 @@
     <vm:TimesheetViewModel />
   </Design.DataContext>
   <Border CornerRadius="5"  Background="#353535">
-    <ScrollViewer VerticalScrollBarVisibility="Visible">
+
     <Grid RowDefinitions="Auto,Auto">
       <TextBlock Grid.Row="0" Text="{Binding ErrorText}" Foreground="{DynamicResource ErrorBrush}" />
-      <Grid Grid.Row="1" x:Name="MainView" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="*,*" IsVisible="{Binding !TimerRunning}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-        <StackPanel Margin="10" HorizontalAlignment="Left">
-          <TextBlock>Project</TextBlock>
-          <ComboBox MinWidth="200" MaxWidth="200" ItemsSource="{Binding Projects}" SelectedItem="{Binding SelectedProject}"></ComboBox>
-        </StackPanel>
-        <StackPanel Grid.Column="1" Margin="10" HorizontalAlignment="Left">
-          <TextBlock>Discipline Type</TextBlock>
-          <ComboBox MinWidth="200" MaxWidth="200" ItemsSource="{Binding AvailableDisciplineTypes}"  SelectedItem="{Binding DisciplineType}"/>
-        </StackPanel>
-
-        <StackPanel Grid.Row="1" Margin="10" HorizontalAlignment="Left">
-          <TextBlock>Drawing Type</TextBlock>
-          <ComboBox MinWidth="200" MaxWidth="200" ItemsSource="{Binding AvailableDrawingTypes}" SelectedItem="{Binding DrawingType}"></ComboBox>
-        </StackPanel>
-        <StackPanel Grid.Row="1" Grid.Column="1" Margin="10" HorizontalAlignment="Left">
-          <TextBlock>Scope Type</TextBlock>
-          <ComboBox MinWidth="200" MaxWidth="200" ItemsSource="{Binding AvailableScopeTypes}"  SelectedItem="{Binding ScopeType}"/>
-        </StackPanel>
-
-        <StackPanel Grid.Row="2" Margin="10" HorizontalAlignment="Left">
-          <TextBlock>Team Type</TextBlock>
-          <ComboBox MinWidth="200" MaxWidth="200" ItemsSource="{Binding AvailableTeamTypes}" SelectedItem="{Binding TeamType}"></ComboBox>
-        </StackPanel>
-        
-        <StackPanel Margin="10" HorizontalAlignment="Stretch" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2">
-          <TextBlock>Comment</TextBlock>
-          <TextBox Margin="0 10 0 0" MinHeight="150" MaxHeight="100" Watermark="Comment" UseFloatingWatermark="True" Text="{Binding Comment}"/>
-        </StackPanel>
-        <StackPanel IsVisible="{Binding IsPlanningEngineer}" Margin="10" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2">
-          <CheckBox IsChecked="{Binding EnteringTimeManually}">Enter Time log manually</CheckBox>
-          <Grid Margin="10" IsVisible="{Binding EnteringTimeManually}" ColumnDefinitions="*,*" RowDefinitions="Auto,Auto">
-            <StackPanel HorizontalAlignment="Left">
-              <TextBlock Margin="10">Start Date</TextBlock>
-              <DatePicker Margin="10" MinWidth="200" MaxWidth="200" SelectedDate="{Binding StartDateTimeOffset}" />
-            </StackPanel>
-            <StackPanel HorizontalAlignment="Left" Grid.Column="1" Margin="10 10 0 0">
-              <TextBlock  Text="End Date">
-              </TextBlock>
-              <StackPanel Margin="0 10 0 0" Orientation="Horizontal">
-                <DatePicker Margin="10" MinWidth="200" MaxWidth="200" SelectedDate="{Binding EndDateTimeOffset}"  />
-              </StackPanel>
-            </StackPanel>
-            <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Left">
-              <TextBlock Margin="10">Duration</TextBlock>
-              <TimePicker Margin="10" MinWidth="200" SelectedTime="{Binding Duration}" />
-            </StackPanel>
-          </Grid>
-        </StackPanel>
-        <Grid ColumnDefinitions="*, Auto" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="5">
-          <TextBlock Margin="10" VerticalAlignment="Center" FontSize="16" FontWeight="Bold" Text="{Binding TimerString}" />
-          <StackPanel IsVisible="{Binding CanSave}" Grid.Column="1" Orientation="Horizontal">
-            <Button Command="{Binding RestartTimerCommand}" VerticalAlignment="Center">
-              Reset Timer
-            </Button>
-            <Button Classes="Flat" Command="{Binding SaveTimeLogCommand}" Margin="5 0 0 0">
-              Save
-            </Button>
-          </StackPanel>
-          <StackPanel IsVisible="{Binding !CanSave}" Grid.Column="1" Orientation="Horizontal">
-            <Button Classes="Flat" Command="{Binding StartTimerCommand}" Margin="5 0 0 0">
-              Start Recording Time
-            </Button>
-          </StackPanel>
+      <ScrollViewer VerticalScrollBarVisibility="Visible" MaxHeight="480" IsVisible="{Binding !TimerRunning}">
+        <Grid Grid.Row="1" x:Name="MainView" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+          <views:TimesheetEditorComponent DataContext="{Binding}"/>
         </Grid>
-      </Grid>
+      </ScrollViewer>
+
       <Grid IsVisible="{Binding TimerRunning}" x:Name="MiniView" ColumnDefinitions="Auto, *">
         <Border Background="LightGray" Opacity="0.4" PointerPressed="InputElement_OnPointerPressed"
             PointerReleased="InputElement_OnPointerReleased"
@@ -129,7 +70,6 @@
         </StackPanel>
       </Grid>
     </Grid>
-    </ScrollViewer>
   </Border>
 
 </Window>
