@@ -203,14 +203,29 @@ public class RequestsViewModel : ModuleViewModel
     {
         Task.Run(() =>
         {
-            if (!RequestValid)
+            ErrorText = string.Empty;
+            var valid = true;
+            var tempText = "The following validation errors were encountered:\n";
+            if(this.CurrentRequest.PlanningEngineer == null)
             {
-                this.CreateToast("Invalid Request", "Make sure you've added a planning engineer");
+                valid = false;
+                tempText += "- A planning engineer must be assigned\n";
+            }
+            if(this.CurrentRequest.Timestamp == null || this.CurrentRequest.Timestamp == TimeSpan.Zero)
+            {
+                valid = false;
+                tempText += "- A duration must be provided\n";
+            }
+            if(this.CurrentRequest.TimeLog == null)
+            {
+                valid = false;
+                tempText += "- The time log entry to modify must be provided\n";
+            }
+            if (!valid)
+            {
+                this.ErrorText = tempText;
                 return;
             }
-            ErrorText = string.Empty;
-            var tempText = "The following validation errors were encountered:\n";
-            var valid = true;
 
             this.IsBusy = true;
             this.BusyText = "Submitting Request";
@@ -353,6 +368,7 @@ public class RequestsViewModel : ModuleViewModel
                     return;
                 }
             }
+            CurrentRequest.TimeLog = null;
             CurrentRequest.Project = null;
             CurrentRequest.CreatedByUser = null;
             CurrentRequest.ModifiedByUser = null;
@@ -361,7 +377,18 @@ public class RequestsViewModel : ModuleViewModel
             var response = this.requestService.UpdateRequest(CurrentRequest);
             if (response)
             {
-                var commentResponse = CreateRequestComment(this.UpdateStatusComment, CurrentRequest.Id ?? 0);
+                var commentResponse = false;
+                if (!string.IsNullOrWhiteSpace(UpdateStatusComment))
+                {
+                    commentResponse = CreateRequestComment(this.UpdateStatusComment, CurrentRequest.Id ?? 0);
+                }
+                else
+                {
+                    this.CreateToast("Successfully modified status", "The status was changed successfully");
+                    this.CloseDialog();
+                    LoadRequests();
+                    return;
+                }
                 if (commentResponse)
                 {
                     this.CreateToast("Successfully modified status", "The status was changed successfully");
