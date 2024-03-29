@@ -15,7 +15,8 @@
   <ScrollViewer VerticalScrollBarVisibility="Visible" VerticalAlignment="Top" MaxHeight="500">
     <suki:BusyArea IsBusy="{Binding IsBusy}" BusyText="{Binding BusyText}">
       <suki:GroupBox Margin="10" Header="Edit Time Log" VerticalAlignment="Stretch">
-        <Grid RowDefinitions="Auto,*,*,Auto" ColumnDefinitions="*,*">
+        <Grid RowDefinitions="Auto,*,">
+          <TextBlock Text="{Binding ErrorText}" Foreground="{DynamicResource ErrorBrush}" />
           <suki:GroupBox Margin="10" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" Header="Details">
             <views:TimesheetEditorComponent DataContext="{Binding}"/>
           </suki:GroupBox>

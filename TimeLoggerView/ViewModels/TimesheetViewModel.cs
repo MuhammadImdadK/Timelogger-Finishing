@@ -8,6 +8,7 @@ using SukiUI.Controls;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -151,33 +152,69 @@ public class TimesheetViewModel : ModuleViewModel
         this.IsBusy = true;
         this.BusyText = "Inserting Time log";
 
-        var timeLog = new TimeLog()
-        {
-            Comment = this.Comment,
-            Created = DateTime.UtcNow,
-            CreatedBy = App.CurrentUser.Id,
-            Modified = DateTime.UtcNow,
-            ModifiedBy = App.CurrentUser.Id,
-            StartDateTime = this.StartDateTime,
-            EndDateTime = this.EndDateTime,
-            Duration = this.Duration ?? TimeSpan.Zero,
-            ProjectID = this.SelectedProject.Id ?? 0,
-            TeamType = this.TeamType,
-            DisciplineType = this.DisciplineType,
-            DrawingType = this.DrawingType,
-            ScopeType = this.ScopeType,
-            TimeLogStatus = TimeLogStatus.None,
-            IsActive = true,
-            UserID = App.CurrentUser.Id ?? 0,
-        };
+        var timeLog = new TimeLog();
 
-        var response = this.timesheetService.InsertTimeLog(timeLog);
+        if (this.CurrentTimeLog == null)
+        {
+            timeLog = new TimeLog()
+            {
+                Comment = this.Comment,
+                Created = DateTime.UtcNow,
+                CreatedBy = App.CurrentUser.Id,
+                Modified = DateTime.UtcNow,
+                ModifiedBy = App.CurrentUser.Id,
+                StartDateTime = this.StartDateTime,
+                EndDateTime = this.EndDateTime,
+                Duration = this.Duration ?? TimeSpan.Zero,
+                ProjectID = this.SelectedProject.Id ?? 0,
+                TeamType = this.TeamType,
+                DisciplineType = this.DisciplineType,
+                DrawingType = this.DrawingType,
+                ScopeType = this.ScopeType,
+                TimeLogStatus = TimeLogStatus.None,
+                IsActive = true,
+                UserID = App.CurrentUser.Id ?? 0,
+            };
+        }
+        else
+        {
+            timeLog = this.CurrentTimeLog;
+            timeLog.Comment = this.Comment;
+            timeLog.Modified = DateTime.UtcNow;
+            timeLog.ModifiedBy = App.CurrentUser.Id;
+            timeLog.StartDateTime = this.StartDateTime;
+            timeLog.EndDateTime = this.EndDateTime;
+            timeLog.Duration = this.Duration ?? TimeSpan.Zero;
+            timeLog.ProjectID = this.SelectedProject.Id ?? 0;
+            timeLog.TeamType = this.TeamType;
+            timeLog.DisciplineType = this.DisciplineType;
+            timeLog.DrawingType = this.DrawingType;
+            timeLog.ScopeType = this.ScopeType;
+            timeLog.TimeLogStatus = TimeLogStatus.None;
+        }
+
+        var response = false;
+
+        if (timeLog.Id == null)
+        {
+            response = this.timesheetService.InsertTimeLog(timeLog);
+        }
+        else
+        {
+            response = this.timesheetService.UpdateTimeLog(timeLog);
+        }
 
         if (response)
         {
             this.LoadData();
             this.CreateToast("Inserted Time Log", "Successfully inserted time log");
-            this.OnTriggerWindowClose?.Invoke(this, EventArgs.Empty);
+            if (this.CanRunTimeRecorder)
+            {
+                this.OnTriggerWindowClose?.Invoke(this, EventArgs.Empty);
+            } else
+            {
+                this.CloseDialog();
+            }
         }
         else
         {
