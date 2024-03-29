@@ -90,6 +90,7 @@ public class TimesheetViewModel : ModuleViewModel
 
     private void ShowTimeLogger()
     {
+        LoadData();
         this.ErrorText = string.Empty;
         if (TimeLoggerWindow.Instance == null)
         {

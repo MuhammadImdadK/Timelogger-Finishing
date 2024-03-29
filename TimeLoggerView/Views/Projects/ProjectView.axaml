@@ -130,7 +130,7 @@
                 <TextBox IsVisible="{Binding IsEditing}" MinHeight="300" TextWrapping="WrapWithOverflow" Text="{Binding CurrentProject.Description}" AcceptsReturn="True"></TextBox>
               </Grid>
             </controls:GroupBox>
-            <controls:GroupBox Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Header="Attachments" Margin="10">
+            <controls:GroupBox Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Header="Drawings" Margin="10">
               <DataGrid Margin="10" x:Name="ProjectAttachments" ItemsSource="{Binding CurrentDrawings}"
 									  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MinHeight="300"
 									  IsReadOnly="True" AreRowDetailsFrozen="False">
