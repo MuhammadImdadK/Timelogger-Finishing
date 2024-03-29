@@ -368,6 +368,7 @@ public class ProjectManagementViewModel : ModuleViewModel
 
     private void CreateProject()
     {
+        this.ErrorText = string.Empty;
         this.CurrentProject = new();
         var erf = (this.projectService.GetLatestProjectId() ?? 0) + ErfOffset;
         CurrentProject.ERFNumber = erf.ToString();
@@ -380,6 +381,31 @@ public class ProjectManagementViewModel : ModuleViewModel
 
     private void SubmitCreateProject()
     {
+        var tempText = "The following validation errors were encountered:\n";
+        var valid = false;
+        if(string.IsNullOrWhiteSpace(this.CurrentProject.ERFNumber))
+        {
+            valid = false;
+            tempText += "- ERF Number is required\n";
+        }
+        if(string.IsNullOrWhiteSpace(this.CurrentProject.ProjectName))
+        {
+            valid = false;
+            tempText += "- Project Name is required\n";
+        }
+        if(string.IsNullOrWhiteSpace(this.CurrentProject.ManhourBudget.ToString()) || this.CurrentProject.ManhourBudget <= 0)
+        {
+            valid = false;
+            tempText += "- An initial estimate more than zero is required\n";
+        }
+
+        if (!valid)
+        {
+            this.ErrorText = tempText;
+
+            return;
+        }
+
         Task.Run(() =>
         {
             this.IsBusy = true;
@@ -390,7 +416,7 @@ public class ProjectManagementViewModel : ModuleViewModel
             CurrentProject.Modified = DateTime.UtcNow;
             CurrentProject.ModifiedBy = App.CurrentUser.Id;
             CurrentProject.IsActive = true;
-            CurrentProject.ApprovalState = RequestStatus.None;
+            CurrentProject.ApprovalState = RequestStatus.Accepted;
             if (string.IsNullOrWhiteSpace(CurrentProject.ERFNumber?.Trim()))
             {
                 var erf = (this.projectService.GetLatestProjectId() ?? 0) + ErfOffset;
@@ -446,7 +472,7 @@ public class ProjectManagementViewModel : ModuleViewModel
                 CurrentRequest.Modified = DateTime.UtcNow;
                 CurrentRequest.ModifiedBy = App.CurrentUser.Id;
                 CurrentRequest.IsActive = true;
-                CurrentRequest.RequestStatus = RequestStatus.Open;
+                CurrentRequest.RequestStatus = RequestStatus.Accepted;
                 CurrentRequest.ProjectID = CurrentProject.Id ?? 0;
                 if (this.CurrentRequest.PlanningEngineer != null)
                 {

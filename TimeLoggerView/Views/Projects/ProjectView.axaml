@@ -168,7 +168,7 @@
           <Separator Margin="0 5 0 5" Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Background="{DynamicResource ThemeAccentBrush4}"/>
           <TextBlock Grid.Row="7" Grid.Column="0" FontWeight="Bold">Estimated Man-hours</TextBlock>
           <NumericUpDown Margin="5" IsEnabled="{Binding CanModifyBudget}" Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" theme:NumericUpDownExtensions.Unit="hours" Minimum="0" Increment="0.5" Value="{Binding CurrentProject.ManhourBudget}" />
-          <TextBlock Grid.Row="9" FontWeight="Bold">Status</TextBlock>
+          <!--<TextBlock Grid.Row="9" FontWeight="Bold">Status</TextBlock>
           <TextBlock Grid.Row="9" Grid.Column="1" Foreground="{Binding ApprovalStateBrush}" Text="{Binding ApprovalState}" FontWeight="Bold"/>
           <Button Grid.Row="10" Margin="0 10 0 0" IsVisible="{Binding CanSubmit}" Command="{Binding SubmitBudgetCommand}">
             <StackPanel Orientation="Horizontal">
@@ -179,7 +179,7 @@
               </Image>
               <TextBlock Margin="5 0 0 0 " VerticalAlignment="Center">Submit Budget</TextBlock>
             </StackPanel>
-          </Button>
+          </Button>-->
         </Grid>
       </controls:GroupBox>
     </Grid>
