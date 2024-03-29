@@ -21,7 +21,6 @@
   </Design.DataContext>
     <ScrollViewer VerticalScrollBarVisibility="Visible">
       <Grid RowDefinitions="Auto,Auto">
-        <TextBlock Grid.Row="0" Text="{Binding ErrorText}" Foreground="{DynamicResource ErrorBrush}" />
         <Grid Grid.Row="1" x:Name="MainView" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="*,*" IsVisible="{Binding !TimerRunning}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
           <StackPanel Margin="10" HorizontalAlignment="Left">
             <TextBlock>Project</TextBlock>

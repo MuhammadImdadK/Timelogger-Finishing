@@ -17,6 +17,8 @@ using TimeLoggerView.Views.Timesheet;
 
 namespace TimeLoggerView.ViewModels;
 
+
+
 public class TimesheetViewModel : ModuleViewModel
 {
     private DispatcherTimer timer = new DispatcherTimer();
@@ -37,7 +39,7 @@ public class TimesheetViewModel : ModuleViewModel
     private string comment;
     private TimeSpan? duration;
     private DateTime? endDateTime;
-    private DateTime startDateTime = DateTime.UtcNow;
+    private DateTime? startDateTime = DateTime.UtcNow;
     private bool isUser;
     private bool canSave;
     private bool isPlanningEngineer;
@@ -67,6 +69,7 @@ public class TimesheetViewModel : ModuleViewModel
 
     private void EditTimeLog(TimeLog log)
     {
+        this.ErrorText = string.Empty;
         this.CurrentTimeLog = log;
         this.CanRunTimeRecorder = false;
         this.Comment = log.Comment ?? string.Empty;
@@ -87,6 +90,7 @@ public class TimesheetViewModel : ModuleViewModel
 
     private void ShowTimeLogger()
     {
+        this.ErrorText = string.Empty;
         if (TimeLoggerWindow.Instance == null)
         {
             this.CanRunTimeRecorder = true;
@@ -149,6 +153,9 @@ public class TimesheetViewModel : ModuleViewModel
 
     private void SaveTimeLog()
     {
+        this.ErrorText = string.Empty;
+        var tempText = "The following validation errors were encountered:\n";
+        var valid = true;
         this.IsBusy = true;
         this.BusyText = "Inserting Time log";
 
@@ -163,7 +170,7 @@ public class TimesheetViewModel : ModuleViewModel
                 CreatedBy = App.CurrentUser.Id,
                 Modified = DateTime.UtcNow,
                 ModifiedBy = App.CurrentUser.Id,
-                StartDateTime = this.StartDateTime,
+                StartDateTime = this.StartDateTime ?? DateTime.UtcNow,
                 EndDateTime = this.EndDateTime,
                 Duration = this.Duration ?? TimeSpan.Zero,
                 ProjectID = this.SelectedProject.Id ?? 0,
@@ -182,7 +189,7 @@ public class TimesheetViewModel : ModuleViewModel
             timeLog.Comment = this.Comment;
             timeLog.Modified = DateTime.UtcNow;
             timeLog.ModifiedBy = App.CurrentUser.Id;
-            timeLog.StartDateTime = this.StartDateTime;
+            timeLog.StartDateTime = this.StartDateTime ?? DateTime.UtcNow;
             timeLog.EndDateTime = this.EndDateTime;
             timeLog.Duration = this.Duration ?? TimeSpan.Zero;
             timeLog.ProjectID = this.SelectedProject.Id ?? 0;
@@ -192,6 +199,35 @@ public class TimesheetViewModel : ModuleViewModel
             timeLog.ScopeType = this.ScopeType;
             timeLog.TimeLogStatus = TimeLogStatus.None;
         }
+
+        if(this.SelectedProject == null)
+        {
+            tempText += "- A Project must be selected\n";
+            valid = false;
+        }
+        if (this.TeamType == null || this.TeamType == TeamType.None)
+        {
+            tempText += "- A team must be selected\n";
+            valid = false;
+        }
+        if (this.StartDateTimeOffset == null || this.StartDateTime == null)
+        {
+            tempText += "- Start date must be set\n";
+            valid = false;
+        }
+        if(this.Duration == null || this.Duration == TimeSpan.Zero)
+        {
+            tempText += "- Duration must be set\n";
+            valid = false;
+        }
+
+        if (!valid)
+        {
+            this.ErrorText = tempText;
+            this.IsBusy = false;
+            return;
+        }
+
 
         var response = false;
 
@@ -210,6 +246,10 @@ public class TimesheetViewModel : ModuleViewModel
             this.CreateToast("Inserted Time Log", "Successfully inserted time log");
             if (this.CanRunTimeRecorder)
             {
+                if(App.WorkspaceInstance.DataContext is MainViewModel mvm)
+                {
+                    mvm.TimesheetModel.LoadData();
+                }
                 this.OnTriggerWindowClose?.Invoke(this, EventArgs.Empty);
             } else
             {
@@ -240,6 +280,27 @@ public class TimesheetViewModel : ModuleViewModel
 
     private void StartTimer()
     {
+        this.ErrorText = string.Empty;
+        var tempText = "The following validation errors were encountered:\n";
+        var valid = true;
+
+        if (this.SelectedProject == null)
+        {
+            tempText += "- A Project must be selected\n";
+            valid = false;
+        }
+        if (this.TeamType == null || this.TeamType == TeamType.None)
+        {
+            tempText += "- A team must be selected\n";
+            valid = false;
+        }
+
+        if (!valid)
+        {
+            this.ErrorText = tempText;
+            return;
+        }
+
         this.InCompactMode = true;
         this.OnCompactModeChanged?.Invoke(this, true);
         this.TimerRunning = true;
@@ -293,20 +354,27 @@ public class TimesheetViewModel : ModuleViewModel
     public bool EnteringTimeManually { get => this.enteringTimeManually; set => this.RaiseAndSetIfChanged(ref this.enteringTimeManually, value); }
     public bool TimerRunning { get => this.timerRunning; set => this.RaiseAndSetIfChanged(ref this.timerRunning, value); }
     public string TimerString { get => this.timerString; set => this.RaiseAndSetIfChanged(ref this.timerString, value); }
-    public TimeLog CurrentTimeLog { get => this.CurrentTimeLog; set => this.RaiseAndSetIfChanged(ref this.currentTimeLog, value); }
-    public DateTimeOffset StartDateTimeOffset
+    public TimeLog CurrentTimeLog { get => this.currentTimeLog; set => this.RaiseAndSetIfChanged(ref this.currentTimeLog, value); }
+    public DateTimeOffset? StartDateTimeOffset
     {
-        get => new DateTimeOffset(this.StartDateTime);
+        get => this.StartDateTime != null ? new DateTimeOffset((DateTime)this.StartDateTime) : null;
         set
         {
-            this.StartDateTime = value.UtcDateTime;
+            if (value != null)
+            {
+                this.StartDateTime = ((DateTimeOffset)value).UtcDateTime;
+            }
+            else
+            {
+                this.StartDateTime = null;
+            }
             if (this.EnteringTimeManually)
             {
                 this.EndDateTimeOffset = value;
             }
         }
     }
-    public DateTime StartDateTime
+    public DateTime? StartDateTime
     {
         get => startDateTime;
         set

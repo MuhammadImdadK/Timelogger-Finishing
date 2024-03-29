@@ -29,9 +29,9 @@
   <Border CornerRadius="5"  Background="#353535">
 
     <Grid RowDefinitions="Auto,Auto">
-      <TextBlock Grid.Row="0" Text="{Binding ErrorText}" Foreground="{DynamicResource ErrorBrush}" />
-      <ScrollViewer VerticalScrollBarVisibility="Visible" MaxHeight="480" IsVisible="{Binding !TimerRunning}">
-        <Grid Grid.Row="1" x:Name="MainView" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+      <!--<TextBlock Grid.Row="0" Text="{Binding ErrorText}" Foreground="{DynamicResource ErrorBrush}" />-->
+      <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Visible" MaxHeight="480" IsVisible="{Binding !TimerRunning}">
+        <Grid x:Name="MainView" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
           <views:TimesheetEditorComponent DataContext="{Binding}"/>
         </Grid>
       </ScrollViewer>
