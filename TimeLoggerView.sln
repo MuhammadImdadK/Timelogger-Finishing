@@ -15,6 +15,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Model", "Model\Model.csproj
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common", "Common\Common.csproj", "{42FF5A4E-757D-4335-96E2-7A6D5237726C}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "TimeloggerSetup", "TimeloggerSetup\TimeloggerSetup.vdproj", "{C7C7A2EB-114F-4A0C-8D10-0F640474E0BB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,8 @@ Global
 		{42FF5A4E-757D-4335-96E2-7A6D5237726C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{42FF5A4E-757D-4335-96E2-7A6D5237726C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{42FF5A4E-757D-4335-96E2-7A6D5237726C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7C7A2EB-114F-4A0C-8D10-0F640474E0BB}.Debug|Any CPU.ActiveCfg = Debug
+		{C7C7A2EB-114F-4A0C-8D10-0F640474E0BB}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -121,7 +121,7 @@ namespace Service.Service
                     var pass = Encoding.UTF8.GetBytes(user.Password);
                     var entry = Encoding.UTF8.GetBytes(authMan.GenerateHash(Encoding.UTF8.GetBytes( password), user.Salt));
 
-                    if (authMan.GetTimesafeDifference(pass, entry))
+                    if (authMan.GenerateHash(Encoding.UTF8.GetBytes(password),user.Salt).Equals(user.Password))
                     {
                         response = new Response()
                         {
@@ -139,12 +139,6 @@ namespace Service.Service
                         };
                     }
                 }
-                response = new Response()
-                {
-                    Data = user,
-                    Message = ResponseMessage.DefaultMessage[ResponseStatus.Success],
-                    Status = ResponseStatus.Success
-                };
             }
             else
             {
