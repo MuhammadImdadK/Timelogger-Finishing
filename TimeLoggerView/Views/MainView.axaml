@@ -44,18 +44,6 @@
       </StackPanel>
     </suki:SukiSideMenu.HeaderContent>
     <suki:SukiSideMenu.Items>
-      <suki:SukiSideMenuItem Header="User Management" IsVisible="{Binding IsAdminUser}">
-        <suki:SukiSideMenuItem.Icon>
-          <Image>
-            <Image.Source>
-              <i:IconImage Value="mdi-table-account" Brush="{DynamicResource ThemeAccentBrush}" />
-            </Image.Source>
-          </Image>
-        </suki:SukiSideMenuItem.Icon>
-        <suki:SukiSideMenuItem.PageContent>
-          <views:UserManagementView DataContext="{Binding UserManagement}" />
-        </suki:SukiSideMenuItem.PageContent>
-      </suki:SukiSideMenuItem>
       <suki:SukiSideMenuItem Header="Projects">
         <suki:SukiSideMenuItem.Icon>
           <Image>
@@ -68,6 +56,19 @@
           <views:ProjectMainView DataContext="{Binding ProjectManagement}" />
         </suki:SukiSideMenuItem.PageContent>
       </suki:SukiSideMenuItem>
+      <suki:SukiSideMenuItem Header="User Management" IsVisible="{Binding IsAdminUser}">
+        <suki:SukiSideMenuItem.Icon>
+          <Image>
+            <Image.Source>
+              <i:IconImage Value="mdi-table-account" Brush="{DynamicResource ThemeAccentBrush}" />
+            </Image.Source>
+          </Image>
+        </suki:SukiSideMenuItem.Icon>
+        <suki:SukiSideMenuItem.PageContent>
+          <views:UserManagementView DataContext="{Binding UserManagement}" />
+        </suki:SukiSideMenuItem.PageContent>
+      </suki:SukiSideMenuItem>
+   
       <suki:SukiSideMenuItem Header="Requests">
         <suki:SukiSideMenuItem.Icon>
           <Image>
