@@ -205,8 +205,8 @@ public class TimesheetViewModel : ModuleViewModel
                 CreatedBy = App.CurrentUser.Id,
                 Modified = DateTime.UtcNow,
                 ModifiedBy = App.CurrentUser.Id,
-                StartDateTime = this.StartDateTime ?? DateTime.UtcNow,
-                EndDateTime = this.EndDateTime,
+                StartDateTime = StartDateTime != null ? ((DateTime)StartDateTime).ToUniversalTime() : DateTime.UtcNow,
+                EndDateTime = EndDateTime != null ? ((DateTime)EndDateTime).ToUniversalTime() : DateTime.UtcNow,
                 Duration = this.Duration ?? TimeSpan.Zero,
                 ProjectID = this.SelectedProject?.Id ?? 0,
                 TeamType = this.TeamType,
@@ -225,8 +225,8 @@ public class TimesheetViewModel : ModuleViewModel
             timeLog.Comment = this.Comment;
             timeLog.Modified = DateTime.UtcNow;
             timeLog.ModifiedBy = App.CurrentUser.Id;
-            timeLog.StartDateTime = this.StartDateTime ?? DateTime.UtcNow;
-            timeLog.EndDateTime = this.EndDateTime;
+            timeLog.StartDateTime = StartDateTime != null ? ((DateTime)StartDateTime).ToUniversalTime() : DateTime.UtcNow;
+            timeLog.EndDateTime = EndDateTime != null ? ((DateTime)EndDateTime).ToUniversalTime() : DateTime.UtcNow;
             timeLog.Duration = this.Duration ?? TimeSpan.Zero;
             timeLog.ProjectID = this.SelectedProject?.Id ?? 0;
             timeLog.TeamType = this.TeamType;
@@ -413,7 +413,7 @@ public class TimesheetViewModel : ModuleViewModel
         {
             if (value != null)
             {
-                this.StartDateTime = ((DateTimeOffset)value).Date;
+                this.StartDateTime = ((DateTimeOffset)value).Date.Add(StartDateTimeSpan ?? TimeSpan.Zero);
             }
             else
             {

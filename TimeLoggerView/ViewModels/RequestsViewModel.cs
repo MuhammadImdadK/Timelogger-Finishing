@@ -116,7 +116,7 @@ public class RequestsViewModel : ModuleViewModel
         {
             if (value != null)
             {
-                this.StartDateTime = ((DateTimeOffset)value).Date;
+                this.StartDateTime = ((DateTimeOffset)value).Date.Add(StartDateTimeSpan ?? TimeSpan.Zero);
             }
             else
             {
