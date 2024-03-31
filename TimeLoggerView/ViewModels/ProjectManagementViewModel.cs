@@ -283,7 +283,14 @@ public class ProjectManagementViewModel : ModuleViewModel
                 this.IsEditing = false;
 
                 MainViewModel.TimesheetManagement.LoadDataCommand.Execute(Unit.Default);
+                Dispatcher.UIThread.Invoke(() =>
+                {
 
+                    if (App.WorkspaceInstance.DataContext is MainViewModel mvm)
+                    {
+                        mvm.ProjectManagement.LoadProjectCommand.Execute(Unit.Default);
+                    }
+                });
                 ViewProject();
             }
             else
@@ -341,7 +348,14 @@ public class ProjectManagementViewModel : ModuleViewModel
                 this.IsEditing = false;
                 this.CreateToast("Project closed", "The project was successfully marked as closed");
                 MainViewModel.TimesheetManagement.LoadDataCommand.Execute(Unit.Default);
+                Dispatcher.UIThread.Invoke(() =>
+                {
 
+                    if (App.WorkspaceInstance.DataContext is MainViewModel mvm)
+                    {
+                        mvm.ProjectManagement.LoadProjectCommand.Execute(Unit.Default);
+                    }
+                });
                 LoadProjects();
                 ViewProject();
             }
@@ -401,7 +415,13 @@ public class ProjectManagementViewModel : ModuleViewModel
                 this.IsAddingAttachment = false;
                 this.CurrentAttachment = new();
                 MainViewModel.TimesheetManagement.LoadDataCommand.Execute(Unit.Default);
-
+                Dispatcher.UIThread.Invoke(() =>
+                {
+                    if (App.WorkspaceInstance.DataContext is MainViewModel mvm)
+                    {
+                        mvm.ProjectManagement.LoadProjectCommand.Execute(Unit.Default);
+                    }
+                });
                 ViewProject();
             }
             else
@@ -493,7 +513,10 @@ public class ProjectManagementViewModel : ModuleViewModel
                 {
                     this.CloseDialog();
                     MainViewModel.TimesheetManagement.LoadDataCommand.Execute(Unit.Default);
-
+                    if (App.WorkspaceInstance.DataContext is MainViewModel mvm)
+                    {
+                        mvm.ProjectManagement.LoadProjectCommand.Execute(Unit.Default);
+                    }
                     this.CreateToast("Successfully created project", $"Project '{CurrentProject.ProjectName}' was created");
                     this.LoadProjects();
                 });
