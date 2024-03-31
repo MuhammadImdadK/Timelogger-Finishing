@@ -61,7 +61,7 @@ public partial class App : Application
         services.AddTransient<IUserService, UserService>();
         services.AddTransient<ITimeLogService, TimeLogService>();
         services.AddTransient<IProjectService, ProjectService>();
-        services.AddScoped<IAttachmentService, AttachmentService>();
+        services.AddTransient<IAttachmentService, AttachmentService>();
         services.AddTransient<IRequestService, RequestService>();
         services.AddTransient<IRequestCommentService, RequestCommentService>();
 

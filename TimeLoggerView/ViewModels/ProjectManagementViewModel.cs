@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reactive;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -24,6 +25,7 @@ namespace TimeLoggerView.ViewModels;
 public class ProjectManagementViewModel : ModuleViewModel
 {
     private const int ErfOffset = 100001;
+    private const int PlanningEngineerRoleId = 2;
     private bool canModifyBudget;
     private bool isEditing;
     private bool isAddingAttachment;
@@ -35,11 +37,14 @@ public class ProjectManagementViewModel : ModuleViewModel
     private Project currentProject = new Project();
     private User? modifiedByUser;
     private User? createdByUser;
+    private bool isPlanningEngineer;
     private readonly IProjectService projectService;
     private readonly IAttachmentService attachmentService;
     private readonly IUserService userService;
     private readonly IRequestService requestService;
+    private readonly ITimeLogService timesheetService;
 
+    public bool IsPlanningEngineer { get => isPlanningEngineer; set => this.RaiseAndSetIfChanged(ref isPlanningEngineer, value); }
     public bool CanModifyBudget { get => this.canModifyBudget; set => this.RaiseAndSetIfChanged(ref this.canModifyBudget, value); }
     public bool IsEditing
     {
@@ -74,8 +79,11 @@ public class ProjectManagementViewModel : ModuleViewModel
     public ICommand MarkProjectAsClosedCommand { get; }
     public ICommand SubmitMarkProjectAsClosedCommand { get; }
     public ICommand CancelMarkProjectAsClosedCommand { get; }
+    public ICommand SubmitDeleteDeliverableCommand { get; }
 
     public ICommand AddAttachmentCommand { get; }
+    public ICommand EditDeliverableCommand { get; }
+    public ICommand DeleteDeliverableCommand { get; }
     public ICommand LogTimeCommand { get; }
     public ICommand SubmitAttachmentCommand { get; }
     public ICommand CancelAttachmentCommand { get; }
@@ -124,6 +132,8 @@ public class ProjectManagementViewModel : ModuleViewModel
         this.attachmentService = (IAttachmentService)App.Container.GetService(typeof(IAttachmentService));
         this.userService = (IUserService)App.Container.GetService(typeof(IUserService));
         this.requestService = (IRequestService)App.Container.GetService(typeof(IRequestService));
+        this.timesheetService = (ITimeLogService)App.Container.GetService(typeof(ITimeLogService));
+        this.IsPlanningEngineer = App.CurrentUser.RoleID == PlanningEngineerRoleId || App.CurrentUser.RoleID == 1;
         this.ViewProjectCommand = ReactiveCommand.Create<Project>(ViewProject);
         this.BeginEditCommand = ReactiveCommand.Create(BeginEdit);
         this.SaveEditCommand = ReactiveCommand.Create(SaveEdit);
@@ -133,17 +143,49 @@ public class ProjectManagementViewModel : ModuleViewModel
         this.PerformSubmitBudgetCommand = ReactiveCommand.Create(PerformSubmitBudget);
         this.MarkProjectAsClosedCommand = ReactiveCommand.Create(MarkProjectAsClosed);
         this.AddAttachmentCommand = ReactiveCommand.Create(AddAttachment);
+        this.EditDeliverableCommand = ReactiveCommand.Create<Model.ModelSql.Drawing>(EditAttachment);
+        this.DeleteDeliverableCommand = ReactiveCommand.Create<Model.ModelSql.Drawing>(DeleteAttachment);
         this.SubmitAttachmentCommand = ReactiveCommand.Create(SubmitAttachment);
         this.CancelAttachmentCommand = ReactiveCommand.Create(CancelAttachment);
         this.LogTimeCommand = ReactiveCommand.Create(LogTime);
         this.CloseDialogCommand = ReactiveCommand.Create(CloseDialog);
         this.SubmitMarkProjectAsClosedCommand = ReactiveCommand.Create(SubmitMarkProjectAsClosed);
         this.CancelMarkProjectAsClosedCommand = ReactiveCommand.Create(CancelMarkProjectAsClosed);
+        this.SubmitDeleteDeliverableCommand = ReactiveCommand.Create(SubmitDeleteDeliverable);
         this.CreateProjectCommand = ReactiveCommand.Create(CreateProject);
         this.SubmitCreateProjectCommand = ReactiveCommand.Create(SubmitCreateProject);
         this.CloseProjectViewCommand = ReactiveCommand.Create(CloseProjectView);
         this.LoadProjectCommand = ReactiveCommand.Create(LoadProjects);
         this.LoadProjects();
+    }
+
+    private void SubmitDeleteDeliverable()
+    {
+        Task.Run(() =>
+        {
+            ErrorText = string.Empty;
+            var hasTimelogs = this.timesheetService.GetTimeLogs().Any(itm => itm.DeliverableID == CurrentAttachment.Id);
+            if (hasTimelogs)
+            {
+                ErrorText = $"{CurrentAttachment.Name} has time logged against it, so it cannot be deleted.";
+                return;
+            }
+
+            this.attachmentService.DeleteAttachment(CurrentAttachment);
+
+            this.CloseDialog();
+            this.ViewProject();
+        });
+    }
+
+    private void DeleteAttachment(Model.ModelSql.Drawing deliverable)
+    {
+        CurrentAttachment = deliverable;
+        var view = new ConfirmDeleteDeliverable()
+        {
+            DataContext = this
+        };
+        SukiHost.ShowDialog(App.WorkspaceInstance, view, allowBackgroundClose: false);
     }
 
     private void LoadProjects()
@@ -239,6 +281,9 @@ public class ProjectManagementViewModel : ModuleViewModel
             if (result)
             {
                 this.IsEditing = false;
+
+                MainViewModel.TimesheetManagement.LoadDataCommand.Execute(Unit.Default);
+
                 ViewProject();
             }
             else
@@ -295,6 +340,7 @@ public class ProjectManagementViewModel : ModuleViewModel
             {
                 this.IsEditing = false;
                 this.CreateToast("Project closed", "The project was successfully marked as closed");
+                MainViewModel.TimesheetManagement.LoadDataCommand.Execute(Unit.Default);
 
                 LoadProjects();
                 ViewProject();
@@ -309,6 +355,7 @@ public class ProjectManagementViewModel : ModuleViewModel
 
     private void CancelMarkProjectAsClosed()
     {
+        this.ErrorText = string.Empty;
         this.CloseDialog();
         this.ViewProject();
     }
@@ -319,12 +366,18 @@ public class ProjectManagementViewModel : ModuleViewModel
         this.CurrentAttachment = new();
     }
 
+    private void EditAttachment(Model.ModelSql.Drawing attachment)
+    {
+        this.IsAddingAttachment = true;
+        this.CurrentAttachment = attachment;
+    }
+
     private void SubmitAttachment()
     {
         Task.Run(() =>
         {
             this.IsBusy = true;
-            this.BusyText = "Adding Drawing";
+            this.BusyText = this.CurrentAttachment.Id != null ? "Updating Deliverable" : "Adding Deliverable";
             this.CurrentAttachment.ProjectId = this.CurrentProject.Id ?? 0;
             this.CurrentAttachment.ModifiedByUser = null;
             this.CurrentAttachment.CreatedByUser = null;
@@ -333,13 +386,22 @@ public class ProjectManagementViewModel : ModuleViewModel
             this.CurrentAttachment.ModifiedBy = App.CurrentUser.Id;
             this.CurrentAttachment.Modified = DateTime.UtcNow;
 
-            var result = this.attachmentService.InsertAttachment(this.CurrentAttachment);
-
+            var result = false;
+            if (this.CurrentAttachment.Id == null)
+            {
+                result = this.attachmentService.InsertAttachment(this.CurrentAttachment);
+            }
+            else
+            {
+                result = this.attachmentService.UpdateAttachment(this.CurrentAttachment);
+            }
             if (result)
             {
                 this.IsEditing = false;
                 this.IsAddingAttachment = false;
                 this.CurrentAttachment = new();
+                MainViewModel.TimesheetManagement.LoadDataCommand.Execute(Unit.Default);
+
                 ViewProject();
             }
             else
@@ -382,17 +444,17 @@ public class ProjectManagementViewModel : ModuleViewModel
     {
         var tempText = "The following validation errors were encountered:\n";
         var valid = true;
-        if(string.IsNullOrWhiteSpace(this.CurrentProject.ERFNumber))
+        if (string.IsNullOrWhiteSpace(this.CurrentProject.ERFNumber))
         {
             valid = false;
             tempText += "- ERF Number is required\n";
         }
-        if(string.IsNullOrWhiteSpace(this.CurrentProject.ProjectName))
+        if (string.IsNullOrWhiteSpace(this.CurrentProject.ProjectName))
         {
             valid = false;
             tempText += "- Project Name is required\n";
         }
-        if(string.IsNullOrWhiteSpace(this.CurrentProject.ManhourBudget.ToString()) || this.CurrentProject.ManhourBudget <= 0)
+        if (string.IsNullOrWhiteSpace(this.CurrentProject.ManhourBudget.ToString()) || this.CurrentProject.ManhourBudget <= 0)
         {
             valid = false;
             tempText += "- An initial estimate more than zero is required\n";
@@ -430,6 +492,8 @@ public class ProjectManagementViewModel : ModuleViewModel
                 Dispatcher.UIThread.Invoke(() =>
                 {
                     this.CloseDialog();
+                    MainViewModel.TimesheetManagement.LoadDataCommand.Execute(Unit.Default);
+
                     this.CreateToast("Successfully created project", $"Project '{CurrentProject.ProjectName}' was created");
                     this.LoadProjects();
                 });
@@ -509,6 +573,8 @@ public class ProjectManagementViewModel : ModuleViewModel
     }
     public void CloseProjectView()
     {
+        this.IsAddingAttachment = false;
+        this.CurrentAttachment = new();
         this.CloseDialog();
         Task.Run(() =>
         {

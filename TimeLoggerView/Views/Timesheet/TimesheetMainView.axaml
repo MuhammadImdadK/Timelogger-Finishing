@@ -54,6 +54,7 @@
                 <DataGrid.Columns>
                   <DataGridTextColumn Header="ERF No." Binding="{Binding Project.ERFNumber}"/>
                   <DataGridTextColumn Header="Project Name" Binding="{Binding Project.ProjectName}"/>
+                  <DataGridTextColumn Header="Deliverable" Binding="{Binding Deliverable.Name}"/>
                   <DataGridTextColumn Header="Start Date" Binding="{Binding StartDateTimeLocalString}"/>
                   <DataGridTextColumn Header="End Date" Binding="{Binding EndDateTimeLocalString}"/>
                   <DataGridTextColumn Header="Duration" Binding="{Binding Duration}"/>

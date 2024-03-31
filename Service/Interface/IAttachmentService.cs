@@ -6,5 +6,8 @@ namespace Service.Interface
     {
         public bool InsertAttachment(Drawing drawing);
         public List<Drawing> GetDrawingsByProjectId(int projectId);
+        public List<Drawing> GetDrawings();
+        public bool UpdateAttachment(Drawing currentAttachment);
+        public bool DeleteAttachment(Drawing drawing);
     }
 }

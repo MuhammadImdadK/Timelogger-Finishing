@@ -68,6 +68,7 @@
       </Grid>
     </suki:GlassCard>
     <Button Name="ButtonSignIn"
+            IsDefault="True"
             Width="160"
             Height="40"
             Margin="0,0,0,7"

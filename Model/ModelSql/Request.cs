@@ -18,7 +18,7 @@ namespace Model.ModelSql
         public int? PlanningEngineerID { get; set; }
         public int? ProjectID { get; set; }
         public int? TimeLogID { get; set; }
-
+        public int? DeliverableID { get; set; }
         public RequestType RequestType { get; set; } = RequestType.Project;
 
         [NotMapped]
@@ -49,6 +49,9 @@ namespace Model.ModelSql
         public virtual Project? Project { get; set; }
         [ForeignKey("TimeLogID")]
         public virtual TimeLog? TimeLog { get; set; }
+
+        [ForeignKey("DeliverableID")]
+        public virtual Drawing? Deliverable { get; set; }
 
         [NotMapped]
         public List<RequestComment> RequestComments { get; set; }

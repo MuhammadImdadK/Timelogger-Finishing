@@ -6,6 +6,14 @@ namespace Service.Service
 {
     public class AttachmentService(IRepository repository) : IAttachmentService
     {
+        public List<Drawing> GetDrawings()
+        {
+            List<Drawing> response = repository.GetQueryableWithOutTracking<Drawing>()
+                .OrderByDescending(itm => itm.Modified)
+                .ToList();
+            return response;
+        }
+
         public List<Drawing> GetDrawingsByProjectId(int projectId)
         {
             List<Drawing> response = repository.GetQueryableWithOutTracking<Drawing>()
@@ -21,6 +29,38 @@ namespace Service.Service
             {
                 repository.InsertModel(drawing);
                 return repository.Save() > 0;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        public bool UpdateAttachment(Drawing currentAttachment)
+        {
+            try
+            {
+                repository.UpdateRange(new List<Drawing>() { currentAttachment });
+                repository.Save();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public bool DeleteAttachment(Drawing drawing)
+        {
+            try
+            {
+                if (drawing == null)
+                {
+                    return false;
+                }
+
+                repository.RemoveRange<Drawing>(new List<Drawing> { drawing });
+                return true;
             }
             catch (Exception ex)
             {

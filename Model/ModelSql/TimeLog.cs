@@ -17,6 +17,8 @@ namespace Model.ModelSql
         public int UserID { get; set; }
         public int ProjectID { get; set; }
         public DateTime StartDateTime { get; set; }
+
+        public int? DeliverableID { get; set; }
         [NotMapped]
         public string StartDateTimeLocalString => StartDateTime != null
             ? ((DateTime)StartDateTime).ToLocalTime().ToString("f", CultureInfo.CurrentCulture)
@@ -42,6 +44,9 @@ namespace Model.ModelSql
 
         [ForeignKey("ProjectID")]
         public virtual Project Project { get; set; }
+
+        [ForeignKey("DeliverableID")]
+        public virtual Drawing? Deliverable { get; set; }
 
         public override string ToString()
         {

@@ -27,7 +27,7 @@
             <TextBlock>Project</TextBlock>
             <ComboBox MinWidth="200" MaxWidth="200" ItemsSource="{Binding Projects}" SelectedItem="{Binding SelectedProject}"></ComboBox>
           </StackPanel>
-          <StackPanel Grid.Column="1" Margin="10" HorizontalAlignment="Left">
+          <StackPanel Grid.Row="1" Grid.Column="0" Margin="10" HorizontalAlignment="Left">
             <TextBlock>Discipline Type</TextBlock>
             <ComboBox MinWidth="200" MaxWidth="200" ItemsSource="{Binding AvailableDisciplineTypes}"  SelectedItem="{Binding DisciplineType}">
               <ComboBox.ItemTemplate>
@@ -38,7 +38,18 @@
             </ComboBox>
           </StackPanel>
 
-          <StackPanel Grid.Row="1" Margin="10" HorizontalAlignment="Left">
+          <StackPanel Grid.Row="0" Grid.Column="1" Margin="10" HorizontalAlignment="Left">
+            <TextBlock>Deliverable</TextBlock>
+            <ComboBox MinWidth="200" MaxWidth="200" ItemsSource="{Binding AvailableDeliverables}" SelectedItem="{Binding SelectedDeliverable}">
+              <ComboBox.ItemTemplate>
+                <DataTemplate x:DataType="modelEnums:DrawingType">
+                  <TextBlock Text="{Binding, Converter={StaticResource enumConverter}}" />
+                </DataTemplate>
+              </ComboBox.ItemTemplate>
+            </ComboBox>
+          </StackPanel>
+
+          <StackPanel Grid.Row="1" Grid.Column="1" Margin="10" HorizontalAlignment="Left">
             <TextBlock>Drawing Type</TextBlock>
             <ComboBox MinWidth="200" MaxWidth="200" ItemsSource="{Binding AvailableDrawingTypes}" SelectedItem="{Binding DrawingType}">
               <ComboBox.ItemTemplate>
@@ -48,7 +59,8 @@
               </ComboBox.ItemTemplate>
             </ComboBox>
           </StackPanel>
-          <StackPanel Grid.Row="1" Grid.Column="1" Margin="10" HorizontalAlignment="Left">
+          
+          <StackPanel Grid.Row="2" Grid.Column="0" Margin="10" HorizontalAlignment="Left">
             <TextBlock>Scope Type</TextBlock>
             <ComboBox MinWidth="200" MaxWidth="200" ItemsSource="{Binding AvailableScopeTypes}"  SelectedItem="{Binding ScopeType}">
               <ComboBox.ItemTemplate>
@@ -59,7 +71,7 @@
             </ComboBox>
           </StackPanel>
 
-          <StackPanel Grid.Row="2" Margin="10" HorizontalAlignment="Left">
+          <StackPanel Grid.Row="2" Grid.Column="1" Margin="10" HorizontalAlignment="Left">
             <TextBlock>Team Type</TextBlock>
             <ComboBox MinWidth="200" MaxWidth="200" ItemsSource="{Binding AvailableTeamTypes}" SelectedItem="{Binding TeamType}">
               <ComboBox.ItemTemplate>

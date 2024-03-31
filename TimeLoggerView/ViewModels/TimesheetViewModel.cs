@@ -11,14 +11,14 @@ using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
+using System.Reactive;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using TimeLoggerView.Views;
 using TimeLoggerView.Views.Timesheet;
 
 namespace TimeLoggerView.ViewModels;
-
-
 
 public class TimesheetViewModel : ModuleViewModel
 {
@@ -48,14 +48,17 @@ public class TimesheetViewModel : ModuleViewModel
     private readonly ITimeLogService timesheetService;
     private readonly IProjectService projectService;
     private readonly IUserService userService;
+    private readonly IAttachmentService attachmentService;
     private TimeLog? currentTimeLog = null;
     private string endDateLocalTime = "Unknown";
+    private Drawing? selectedDeliverable;
 
     public TimesheetViewModel()
     {
         this.timesheetService = (ITimeLogService)App.Container.GetService(typeof(ITimeLogService));
         this.projectService = (IProjectService)App.Container.GetService(typeof(IProjectService));
         this.userService = (IUserService)App.Container.GetService(typeof(IUserService));
+        this.attachmentService = (IAttachmentService)App.Container.GetService(typeof(IAttachmentService));
         this.IsUser = App.CurrentUser.RoleID == UserRoleId;
         this.IsPlanningEngineer = App.CurrentUser.RoleID == PlanningEngineerRoleId || App.CurrentUser.RoleID == 1;
         this.RestartTimerCommand = ReactiveCommand.Create(RestartTimer);
@@ -83,10 +86,17 @@ public class TimesheetViewModel : ModuleViewModel
         this.DisciplineType = log.DisciplineType;
         this.DrawingType = log.DrawingType;
         this.ScopeType = log.ScopeType;
+        this.SelectedDeliverable = log.Deliverable;
+
+        var deliverables = this.attachmentService.GetDrawingsByProjectId(this.SelectedProject.Id ?? 0);
+        this.SelectedDeliverable = deliverables.FirstOrDefault(itm => itm.Id == log.DeliverableID);
+        this.AvailableDeliverables.AddRange(deliverables);
+
         var view = new TimesheetEditorView()
         {
             DataContext = this,
         };
+
         SukiHost.ShowDialog(App.WorkspaceInstance, view, allowBackgroundClose: false);
     }
 
@@ -109,6 +119,17 @@ public class TimesheetViewModel : ModuleViewModel
 
     private void LoadData()
     {
+        Project? reattach = null;
+        Drawing? reattachDeliverable = null;
+        if(SelectedProject != null)
+        {
+            reattach = SelectedProject;
+        }
+        if(SelectedDeliverable != null)
+        {
+            reattachDeliverable = SelectedDeliverable;
+        }
+
         Dispatcher.UIThread.Invoke(() =>
         {
             this.IsBusy = true;
@@ -119,6 +140,7 @@ public class TimesheetViewModel : ModuleViewModel
         {
             var availableUsers = this.userService.GetUsers();
             var availableProjects = this.projectService.GetProjects();
+            var availableDeliverables = this.attachmentService.GetDrawings();
 
             //if (this.IsUser)
             //{
@@ -139,6 +161,7 @@ public class TimesheetViewModel : ModuleViewModel
             {
                 timelog.Project = availableProjects.FirstOrDefault(itm => itm.Id == timelog.ProjectID) ?? new();
                 timelog.User = availableUsers.FirstOrDefault(itm => itm.Id == timelog.UserID) ?? new();
+                timelog.Deliverable = availableDeliverables.FirstOrDefault(itm => itm.Id == timelog.DeliverableID) ?? new();
             }
 
             Dispatcher.UIThread.Invoke(() =>
@@ -150,6 +173,15 @@ public class TimesheetViewModel : ModuleViewModel
                 this.TimeLogs.AddRange(availableTimeLogs);
                 this.Users.AddRange(availableUsers);
                 this.IsBusy = false;
+
+                if(reattach != null)
+                {
+                    this.SelectedProject = this.Projects.FirstOrDefault(itm => itm.Id == reattach.Id) ?? new();
+                }
+                if(reattachDeliverable != null)
+                {
+                    this.SelectedDeliverable = this.AvailableDeliverables.FirstOrDefault(itm => itm.Id == reattachDeliverable.Id) ?? new();
+                }
             });
         });
     }
@@ -184,6 +216,7 @@ public class TimesheetViewModel : ModuleViewModel
                 TimeLogStatus = TimeLogStatus.None,
                 IsActive = true,
                 UserID = App.CurrentUser.Id ?? 0,
+                DeliverableID =  SelectedDeliverable?.Id ?? 0
             };
         }
         else
@@ -201,11 +234,17 @@ public class TimesheetViewModel : ModuleViewModel
             timeLog.DrawingType = this.DrawingType;
             timeLog.ScopeType = this.ScopeType;
             timeLog.TimeLogStatus = TimeLogStatus.None;
+            timeLog.DeliverableID = SelectedDeliverable?.Id ?? 0;
         }
 
         if (this.SelectedProject == null)
         {
             tempText += "- A Project must be selected\n";
+            valid = false;
+        }
+        if (this.SelectedDeliverable == null)
+        {
+            tempText += "- A Deliverable must be selected\n";
             valid = false;
         }
         if (this.TeamType == null || this.TeamType == TeamType.None)
@@ -252,6 +291,7 @@ public class TimesheetViewModel : ModuleViewModel
                 if (App.WorkspaceInstance.DataContext is MainViewModel mvm)
                 {
                     mvm.TimesheetModel.LoadData();
+                    mvm.RequestsViewModel.ReloadRequestsCommand.Execute(Unit.Default);
                 }
                 this.OnTriggerWindowClose?.Invoke(this, EventArgs.Empty);
             }
@@ -291,6 +331,11 @@ public class TimesheetViewModel : ModuleViewModel
         if (this.SelectedProject == null)
         {
             tempText += "- A Project must be selected\n";
+            valid = false;
+        }
+        if (this.SelectedDeliverable == null)
+        {
+            tempText += "- A Deliverable must be selected\n";
             valid = false;
         }
         if (this.TeamType == null || this.TeamType == TeamType.None)
@@ -337,6 +382,8 @@ public class TimesheetViewModel : ModuleViewModel
     public ObservableCollection<Project> Projects { get; set; } = new ObservableCollection<Project>();
     public ObservableCollection<TimeLog> TimeLogs { get; set; } = new ObservableCollection<TimeLog>();
     public ObservableCollection<User> Users { get; set; } = new ObservableCollection<User>();
+    public ObservableCollection<Drawing> AvailableDeliverables { get; set; } = new ObservableCollection<Drawing>();
+    public Drawing? SelectedDeliverable { get => selectedDeliverable; set => this.RaiseAndSetIfChanged(ref selectedDeliverable, value); }
     public DateTimeOffset? EndDateTimeOffset
     {
         get
@@ -487,5 +534,17 @@ public class TimesheetViewModel : ModuleViewModel
         TeamType.AdditionalTeam
     };
     public TeamType TeamType { get => teamType; set => this.RaiseAndSetIfChanged(ref this.teamType, value); }
-    public Project SelectedProject { get => selectedProject; set => this.RaiseAndSetIfChanged(ref this.selectedProject, value); }
+    public Project SelectedProject
+    {
+        get => selectedProject; 
+        set {
+            this.RaiseAndSetIfChanged(ref this.selectedProject, value);
+            this.AvailableDeliverables.Clear();
+            if (value != null)
+            {
+                var deliverables = this.attachmentService.GetDrawingsByProjectId(value.Id ?? 0);
+                this.AvailableDeliverables.AddRange(deliverables);
+            }
+        }
+    }
 }

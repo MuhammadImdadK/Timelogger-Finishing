@@ -17,6 +17,11 @@ namespace Model.ModelSql
 
         [ForeignKey("ProjectId")]
         public virtual Project Project { get; set; }
+
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 
 
