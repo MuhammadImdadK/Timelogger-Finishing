@@ -369,6 +369,7 @@ public class RequestsViewModel : ModuleViewModel
             CurrentRequest.IsActive = true;
             CurrentRequest.RequestStatus = RequestStatus.Open;
             CurrentRequest.RequestType = RequestType.TimeLog;
+            CurrentRequest.EndTime = CurrentRequest.StartTime.Add(CurrentRequest.Timestamp ?? TimeSpan.Zero);
 
             CurrentRequest.ProjectID = CurrentRequest.Project?.Id;
             CurrentRequest.Project = null;
@@ -425,6 +426,7 @@ public class RequestsViewModel : ModuleViewModel
     private void UpdateRequestStatus(Request request)
     {
         this.CurrentRequest = request;
+        this.CurrentRequest.PendingComment = string.Empty;
         var view = new UpdateRequestStatusView()
         {
             DataContext = this
@@ -480,7 +482,7 @@ public class RequestsViewModel : ModuleViewModel
                 CurrentRequest.TimeLog.ModifiedBy = App.CurrentUser.Id;
                 CurrentRequest.TimeLog.Modified = DateTime.UtcNow;
                 CurrentRequest.TimeLog.StartDateTime = CurrentRequest.StartTime;
-                CurrentRequest.TimeLog.EndDateTime = CurrentRequest.EndTime;
+                CurrentRequest.TimeLog.EndDateTime = CurrentRequest.StartTime.Add(CurrentRequest.Timestamp ?? TimeSpan.Zero);
                 CurrentRequest.TimeLog.ProjectID = CurrentRequest.TimeLog.Project.Id ?? 0;
                 CurrentRequest.TimeLog.Project = null;
                 if (CurrentRequest.Timestamp != null)
