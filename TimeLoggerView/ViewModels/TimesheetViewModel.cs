@@ -413,7 +413,7 @@ public class TimesheetViewModel : ModuleViewModel
         {
             if (value != null)
             {
-                this.StartDateTime = ((DateTimeOffset)value).UtcDateTime;
+                this.StartDateTime = ((DateTimeOffset)value).Date;
             }
             else
             {

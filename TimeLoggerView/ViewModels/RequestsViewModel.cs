@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using TimeLoggerView.Views;
@@ -115,7 +116,7 @@ public class RequestsViewModel : ModuleViewModel
         {
             if (value != null)
             {
-                this.StartDateTime = ((DateTimeOffset)value).UtcDateTime;
+                this.StartDateTime = ((DateTimeOffset)value).Date;
             }
             else
             {
@@ -131,10 +132,10 @@ public class RequestsViewModel : ModuleViewModel
         set
         {
             this.RaiseAndSetIfChanged(ref this.startDateTime, value);
-                this.EndDateTime = value;
-                this.EndDateLocalTime = EndDateTime != null
-                    ? ((DateTime)EndDateTime).ToLocalTime().ToString("f", CultureInfo.CurrentCulture)
-                    : "Unknown";
+            this.EndDateTime = value;
+            this.EndDateLocalTime = EndDateTime != null
+                ? ((DateTime)EndDateTime).ToLocalTime().ToString("f", CultureInfo.CurrentCulture)
+                : "Unknown";
         }
     }
     public DateTime? EndDateTime
@@ -144,7 +145,7 @@ public class RequestsViewModel : ModuleViewModel
         {
             if (StartDateTime != null && Duration != null)
             {
-                this.RaiseAndSetIfChanged(ref this.endDateTime, ((DateTime)this.StartDateTime).Add((TimeSpan)Duration));
+                this.RaiseAndSetIfChanged(ref this.endDateTime, (((DateTimeOffset)this.StartDateTimeOffset).UtcDateTime).Add((TimeSpan)Duration));
                 this.EndDateLocalTime = EndDateTime != null
                     ? ((DateTime)EndDateTime).ToLocalTime().ToString("f", CultureInfo.CurrentCulture)
                     : "Unknown";
@@ -180,13 +181,7 @@ public class RequestsViewModel : ModuleViewModel
         set
         {
             this.RaiseAndSetIfChanged(ref this.duration, value);
-            if (value != null)
-            {
-                this.EndDateTime = DateTime.UtcNow;
-            }
-            else
-            {
-            }
+            this.EndDateTime = DateTime.UtcNow;
         }
     }
 
@@ -327,19 +322,20 @@ public class RequestsViewModel : ModuleViewModel
             var tempText = "The following validation errors were encountered:\n";
             if (this.CurrentRequest.TimeLog != null)
             {
-                this.CurrentRequest.TimeLog.StartDateTime = StartDateTime ?? DateTime.UtcNow;
-                this.CurrentRequest.TimeLog.EndDateTime = EndDateTime ?? DateTime.UtcNow;
-                this.CurrentRequest.TimeLog.Duration = EndDateTime - StartDateTime ?? TimeSpan.Zero;
+                this.CurrentRequest.TimeLog.StartDateTime = StartDateTime != null ? ((DateTime) StartDateTime).ToUniversalTime() : DateTime.UtcNow;
+                this.CurrentRequest.TimeLog.EndDateTime = EndDateTime != null ? ((DateTime)EndDateTime).ToUniversalTime() : DateTime.UtcNow;
+                this.CurrentRequest.TimeLog.Duration = Duration ?? TimeSpan.Zero;
+                this.CurrentRequest.StartTime = StartDateTime != null ? ((DateTime)StartDateTime).ToUniversalTime() : DateTime.UtcNow;
+                this.CurrentRequest.EndTime = EndDateTime != null ? ((DateTime)EndDateTime).ToUniversalTime() : DateTime.UtcNow;
+                this.CurrentRequest.Timestamp = Duration ?? TimeSpan.Zero;
             }
-            this.CurrentRequest.StartTime = StartDateTime ?? DateTime.UtcNow;
-            this.CurrentRequest.EndTime = EndDateTime ?? DateTime.UtcNow;
-            this.CurrentRequest.Timestamp = EndDateTime - StartDateTime ?? TimeSpan.Zero;
+
             if (this.CurrentRequest.PlanningEngineer == null)
             {
                 valid = false;
                 tempText += "- A planning engineer must be assigned\n";
             }
-            if (this.CurrentRequest.Timestamp == null || this.CurrentRequest.Timestamp == TimeSpan.Zero)
+            if (this.Duration == null || this.Duration == TimeSpan.Zero)
             {
                 valid = false;
                 tempText += "- A duration must be provided\n";
@@ -369,14 +365,14 @@ public class RequestsViewModel : ModuleViewModel
             CurrentRequest.IsActive = true;
             CurrentRequest.RequestStatus = RequestStatus.Open;
             CurrentRequest.RequestType = RequestType.TimeLog;
-            CurrentRequest.EndTime = CurrentRequest.StartTime.Add(CurrentRequest.Timestamp ?? TimeSpan.Zero);
-
+            CurrentRequest.Deliverable = null;
             CurrentRequest.ProjectID = CurrentRequest.Project?.Id;
             CurrentRequest.Project = null;
             if (CurrentRequest.TimeLog != null && SelectedRequestType == RequestType.TimeLog)
             {
                 CurrentRequest.TimeLogID = CurrentRequest.TimeLog.Id;
                 CurrentRequest.ProjectID = CurrentRequest.TimeLog.ProjectID;
+                CurrentRequest.DeliverableID = CurrentRequest.TimeLog.DeliverableID;
                 CurrentRequest.TimeLog = null;
             }
             if (this.CurrentRequest.PlanningEngineer != null)
@@ -384,18 +380,8 @@ public class RequestsViewModel : ModuleViewModel
                 CurrentRequest.PlanningEngineerID = this.CurrentRequest.PlanningEngineer.Id;
                 this.CurrentRequest.PlanningEngineer = null;
             }
-            if (!this.IsAddingEndTime)
-            {
-                CurrentRequest.EndTime = null;
-            }
-            else if (this.CurrentRequest.EndTimeOffset != null)
-            {
-                CurrentRequest.EndTime = ((DateTimeOffset)CurrentRequest.EndTimeOffset).UtcDateTime;
-            }
-            if (this.CurrentRequest.StartTimeOffset != null)
-            {
-                CurrentRequest.StartTime = ((DateTimeOffset)CurrentRequest.StartTimeOffset).UtcDateTime;
-            }
+
+
             this.CurrentRequest.UserID = App.CurrentUser.Id ?? 0;
             var response = false;
 
@@ -407,16 +393,22 @@ public class RequestsViewModel : ModuleViewModel
             {
                 response = this.requestService.UpdateRequest(CurrentRequest);
             }
-
             if (response)
             {
                 this.IsBusy = false;
+                this.StartDateTime = null;
+                this.EndDateTime = null;
+                this.Duration = null;
+
                 CreateToast("Request Submitted", "Your request was successfully submitted");
                 CloseDialog();
                 LoadRequests();
             }
             else
             {
+                CurrentRequest.TimeLog = AvailableTimelogs.FirstOrDefault(itm => itm.Id == CurrentRequest.TimeLogID);
+                CurrentRequest.Project = AvailableProjects.FirstOrDefault(itm => itm.Id == CurrentRequest.ProjectID);
+                CurrentRequest.PlanningEngineer = AvailablePlanningEngineers.FirstOrDefault(itm => itm.Id == CurrentRequest.PlanningEngineerID);    
                 this.IsBusy = false;
                 CreateToast("Couldn't create your request", "Request creation ran into an error, please try again later.");
             }
@@ -481,8 +473,8 @@ public class RequestsViewModel : ModuleViewModel
                 CurrentRequest.TimeLog.ModifiedByUser = null;
                 CurrentRequest.TimeLog.ModifiedBy = App.CurrentUser.Id;
                 CurrentRequest.TimeLog.Modified = DateTime.UtcNow;
-                CurrentRequest.TimeLog.StartDateTime = CurrentRequest.StartTime;
-                CurrentRequest.TimeLog.EndDateTime = CurrentRequest.StartTime.Add(CurrentRequest.Timestamp ?? TimeSpan.Zero);
+                CurrentRequest.TimeLog.StartDateTime = this.StartDateTime ?? DateTime.UtcNow;
+                CurrentRequest.TimeLog.EndDateTime = (this.StartDateTime ?? DateTime.UtcNow).Add(CurrentRequest.Timestamp ?? TimeSpan.Zero);
                 CurrentRequest.TimeLog.ProjectID = CurrentRequest.TimeLog.Project.Id ?? 0;
                 CurrentRequest.TimeLog.Project = null;
                 if (CurrentRequest.Timestamp != null)
