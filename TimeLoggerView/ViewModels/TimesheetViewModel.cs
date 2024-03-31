@@ -104,6 +104,7 @@ public class TimesheetViewModel : ModuleViewModel
     {
         LoadData();
         this.ErrorText = string.Empty;
+
         if (TimeLoggerWindow.Instance == null)
         {
             this.CanRunTimeRecorder = true;
@@ -303,7 +304,7 @@ public class TimesheetViewModel : ModuleViewModel
         else
         {
             this.LoadData();
-            this.CreateToast("Failed to insert Time Long", "Something went wrong whilst attempting to inserting the time log, please try again later.");
+            this.CreateToast("Failed to insert Time Log", "Something went wrong whilst attempting to inserting the time log, please try again later.");
         }
     }
     private void RestartTimer()
