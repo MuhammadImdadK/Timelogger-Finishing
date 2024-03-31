@@ -78,8 +78,8 @@ public class TimesheetViewModel : ModuleViewModel
         this.CurrentTimeLog = log;
         this.CanRunTimeRecorder = false;
         this.Comment = log.Comment ?? string.Empty;
-        this.StartDateTime = log.StartDateTime;
-        this.EndDateTime = log.EndDateTime;
+        this.StartDateTime = log.StartDateTime.ToLocalTime();
+        this.EndDateTime = log.EndDateTime != null ? ((DateTime)log.EndDateTime).ToLocalTime() : null;
         this.Duration = log.Duration;
         this.SelectedProject = this.Projects.FirstOrDefault(itm => itm.Id == log.ProjectID) ?? new();
         this.TeamType = log.TeamType;
@@ -121,11 +121,11 @@ public class TimesheetViewModel : ModuleViewModel
     {
         Project? reattach = null;
         Drawing? reattachDeliverable = null;
-        if(SelectedProject != null)
+        if (SelectedProject != null)
         {
             reattach = SelectedProject;
         }
-        if(SelectedDeliverable != null)
+        if (SelectedDeliverable != null)
         {
             reattachDeliverable = SelectedDeliverable;
         }
@@ -174,11 +174,11 @@ public class TimesheetViewModel : ModuleViewModel
                 this.Users.AddRange(availableUsers);
                 this.IsBusy = false;
 
-                if(reattach != null)
+                if (reattach != null)
                 {
                     this.SelectedProject = this.Projects.FirstOrDefault(itm => itm.Id == reattach.Id) ?? new();
                 }
-                if(reattachDeliverable != null)
+                if (reattachDeliverable != null)
                 {
                     this.SelectedDeliverable = this.AvailableDeliverables.FirstOrDefault(itm => itm.Id == reattachDeliverable.Id) ?? new();
                 }
@@ -216,7 +216,7 @@ public class TimesheetViewModel : ModuleViewModel
                 TimeLogStatus = TimeLogStatus.None,
                 IsActive = true,
                 UserID = App.CurrentUser.Id ?? 0,
-                DeliverableID =  SelectedDeliverable?.Id ?? 0
+                DeliverableID = SelectedDeliverable?.Id ?? 0
             };
         }
         else
@@ -536,8 +536,9 @@ public class TimesheetViewModel : ModuleViewModel
     public TeamType TeamType { get => teamType; set => this.RaiseAndSetIfChanged(ref this.teamType, value); }
     public Project SelectedProject
     {
-        get => selectedProject; 
-        set {
+        get => selectedProject;
+        set
+        {
             this.RaiseAndSetIfChanged(ref this.selectedProject, value);
             this.AvailableDeliverables.Clear();
             if (value != null)
