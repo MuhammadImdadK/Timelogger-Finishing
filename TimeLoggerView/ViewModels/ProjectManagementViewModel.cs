@@ -181,6 +181,7 @@ public class ProjectManagementViewModel : ModuleViewModel
     private void DeleteAttachment(Model.ModelSql.Drawing deliverable)
     {
         CurrentAttachment = deliverable;
+        this.ErrorText = string.Empty;
         var view = new ConfirmDeleteDeliverable()
         {
             DataContext = this
