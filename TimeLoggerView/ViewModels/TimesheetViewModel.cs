@@ -40,7 +40,7 @@ public class TimesheetViewModel : ModuleViewModel
     private string comment;
     private TimeSpan? duration;
     private DateTime? endDateTime;
-    private DateTime? startDateTime = DateTime.UtcNow;
+    private DateTime? startDateTime = DateTime.Now;
     private bool isUser;
     private bool canSave;
     private bool isPlanningEngineer;
@@ -354,7 +354,7 @@ public class TimesheetViewModel : ModuleViewModel
         this.OnCompactModeChanged?.Invoke(this, true);
         this.TimerRunning = true;
         this.Duration = TimeSpan.Zero;
-        this.StartDateTime = DateTime.UtcNow;
+        this.StartDateTime = DateTime.Now;
         timer.Interval = TimeSpan.FromSeconds(1);
         timer.Tick += DispatcherTimer_Tick;
         timer.Start();
