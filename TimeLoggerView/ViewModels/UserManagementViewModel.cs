@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Reactive;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -245,8 +246,14 @@ public class UserManagementViewModel : ViewModelBase
             this.userService.AddUser(this.ModifyingUser!);
             this.IsEditing = false;
 
+
+
             Dispatcher.UIThread.Invoke(() =>
             {
+                if (App.WorkspaceInstance.DataContext is MainViewModel mvm)
+                {
+                    mvm.RequestsViewModel.ReloadRequestsCommand.Execute(Unit.Default);
+                }
                 var tb = new TextBlock();
                 tb.Text = $"User {ModifyingUser.Username} was created";
                 tb.Margin = new(5);
