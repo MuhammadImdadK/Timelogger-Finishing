@@ -290,6 +290,7 @@ public class ProjectManagementViewModel : ModuleViewModel
                     if (App.WorkspaceInstance.DataContext is MainViewModel mvm)
                     {
                         mvm.ProjectManagement.LoadProjectCommand.Execute(Unit.Default);
+                        mvm.RequestsViewModel.ReloadRequestsCommand.Execute(Unit.Default);
                     }
                 });
                 ViewProject();
@@ -355,6 +356,7 @@ public class ProjectManagementViewModel : ModuleViewModel
                     if (App.WorkspaceInstance.DataContext is MainViewModel mvm)
                     {
                         mvm.ProjectManagement.LoadProjectCommand.Execute(Unit.Default);
+                        mvm.RequestsViewModel.ReloadRequestsCommand.Execute(Unit.Default);
                     }
                 });
                 LoadProjects();
@@ -421,6 +423,7 @@ public class ProjectManagementViewModel : ModuleViewModel
                     if (App.WorkspaceInstance.DataContext is MainViewModel mvm)
                     {
                         mvm.ProjectManagement.LoadProjectCommand.Execute(Unit.Default);
+                        mvm.RequestsViewModel.ReloadRequestsCommand.Execute(Unit.Default);
                     }
                 });
                 ViewProject();
@@ -517,6 +520,7 @@ public class ProjectManagementViewModel : ModuleViewModel
                     if (App.WorkspaceInstance.DataContext is MainViewModel mvm)
                     {
                         mvm.ProjectManagement.LoadProjectCommand.Execute(Unit.Default);
+                        mvm.RequestsViewModel.ReloadRequestsCommand.Execute(Unit.Default);
                     }
                     this.CreateToast("Successfully created project", $"Project '{CurrentProject.ProjectName}' was created");
                     this.LoadProjects();
