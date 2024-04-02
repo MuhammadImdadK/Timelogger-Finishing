@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Avalonia.Threading;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Model.ModelSql;
 using ReactiveUI;
 using Service.Interface;
@@ -13,6 +15,7 @@ namespace TimeLoggerView.ViewModels
 {
     public class LoginViewModel : ViewModelBase
     {
+        private readonly ILogger<LoginViewModel> logger;
         private bool isLoggingIn;
         private bool isSuccess = true;
 
@@ -24,6 +27,7 @@ namespace TimeLoggerView.ViewModels
         {
             LoginCommand = ReactiveCommand.Create(Login);
             AuthenticationService = authenticationService;
+            this.logger = App.Container.GetService<ILogger<LoginViewModel>>();
         }
 
         public EventHandler<User> OnLoginSuccessful;
@@ -44,37 +48,44 @@ namespace TimeLoggerView.ViewModels
             this.IsLoggingIn = true;
             this.IsSuccess = true;
             this.ErrorText = string.Empty;
+            this.logger.LogInformation("Attempted login");
             Task.Run(() =>
             {
-                var response = AuthenticationService.Login(Username, Password);
-
-                if (response.Status == Common.Enums.ResponseStatus.Success)
+                try
                 {
-                    if (response.Data is User user)
+                    var response = AuthenticationService.Login(Username, Password);
+
+                    if (response.Status == Common.Enums.ResponseStatus.Success)
                     {
-                        this.IsLoggingIn = false;
-
-                        if (user.IsActive)
+                        if (response.Data is User user)
                         {
-                            this.IsSuccess = true;
-                            this.Username = string.Empty;
-                            this.Password = string.Empty;
-                            user.Role = Constants.Roles.FirstOrDefault(itm => itm.Id == user.RoleID) ?? new Role { Id = user.RoleID, Name = "Unknown" };
+                            this.IsLoggingIn = false;
 
-                            Dispatcher.UIThread.Invoke(() => this.OnLoginSuccessful?.Invoke(this, user));
-                        } 
-                        else
-                        {
-                            this.IsSuccess = false;
-                            this.ErrorText = "Unauthorized\nYour account is inactive";
+                            if (user.IsActive)
+                            {
+                                this.IsSuccess = true;
+                                this.Username = string.Empty;
+                                this.Password = string.Empty;
+                                user.Role = Constants.Roles.FirstOrDefault(itm => itm.Id == user.RoleID) ?? new Role { Id = user.RoleID, Name = "Unknown" };
+
+                                Dispatcher.UIThread.Invoke(() => this.OnLoginSuccessful?.Invoke(this, user));
+                            }
+                            else
+                            {
+                                this.IsSuccess = false;
+                                this.ErrorText = "Unauthorized\nYour account is inactive";
+                            }
                         }
                     }
-                }
-                else
+                    else
+                    {
+                        this.IsLoggingIn = false;
+                        this.IsSuccess = false;
+                        this.ErrorText = response.Message;
+                    }
+                } catch (Exception ex)
                 {
-                    this.IsLoggingIn = false;
-                    this.IsSuccess = false;
-                    this.ErrorText = response.Message;
+                    logger.LogError("Something went wrong during login process: {message} {ex}", ex.Message, ex);
                 }
             });
         }

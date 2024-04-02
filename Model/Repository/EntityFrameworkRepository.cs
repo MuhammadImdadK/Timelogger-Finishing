@@ -1,6 +1,7 @@
 ﻿using Common.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Model.Database;
 using Model.EntityModel;
 using Model.Interface;
@@ -17,12 +18,16 @@ namespace Model.Repository
     public class EntityFrameworkRepository : EntityFrameworkRepositoryReadOnly, IRepository
     {
         private readonly TimeLoggerContext _DbContext;
+        private readonly ILogger<EntityFrameworkRepository> logger;
+
         public EntityFrameworkRepository(
-         TimeLoggerContext context
+         TimeLoggerContext context,
+         ILogger<EntityFrameworkRepository> logger
          )
          : base(context)
         {
             _DbContext = context;
+            this.logger = logger;
         }
 
         public void DeleteModel<T>(int modelId) where T : class
@@ -53,6 +58,7 @@ namespace Model.Repository
             }
             catch (Exception ex)
             {
+                this.logger.LogError("Failed to insert {type}: {message} {exception}", typeof(T), ex.Message, ex);
                 throw;
             }
         }
@@ -77,6 +83,8 @@ namespace Model.Repository
             }
             catch (Exception ex)
             {
+                this.logger.LogError("Failed to insert multiple {type}: {message} {exception}", typeof(T), ex.Message, ex);
+
                 throw;
             }
         }
@@ -89,6 +97,7 @@ namespace Model.Repository
             }
             catch (Exception ex)
             {
+                this.logger.LogError("Failed to remove {type}: {message} {exception} {collection}", typeof(T), ex.Message, ex, objects);
             }
         }
         public void UpdateRange<T>(IEnumerable<T> objects, bool IsAuditable = true) where T : class
@@ -100,6 +109,7 @@ namespace Model.Repository
             }
             catch (Exception ex)
             {
+                this.logger.LogError("Failed to update {type}: {message} {exception} {coll}", typeof(T), ex.Message, ex, objects);
             }
         }
 
@@ -114,8 +124,8 @@ namespace Model.Repository
             }
             catch (DbUpdateException ex)
             {
+                this.logger.LogError("Failed to save: {message} {exception}", ex.Message, ex);
                 return 0;
-                throw ex;
             }
         }
 
@@ -127,20 +137,24 @@ namespace Model.Repository
             }
             catch (DbUpdateException ex)
             {
-                throw ex;
+                this.logger.LogError("Failed to save: {message} {exception}", ex.Message, ex);
+
+                throw;
             }
         }
 
-        public bool RunMigrations(IConfigurationRoot configuration)
+        public bool RunMigrations(IConfigurationRoot configuration, ILogger<DbContext> logger)
         {
             try
             {
-                new TimeLoggerContext(new(), configuration).Database.Migrate();
+                new TimeLoggerContext(new(), configuration, logger).Database.Migrate();
 
                 return true;
             }
             catch (Exception ex)
             {
+                this.logger.LogError("Failed to run migrations: {message} {exception}", ex.Message, ex);
+
                 return false;
             }
         }

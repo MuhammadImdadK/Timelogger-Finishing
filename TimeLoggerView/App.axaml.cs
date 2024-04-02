@@ -17,11 +17,14 @@ using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using Model.ModelSql;
 using Pec.ProjectManagement.Ui.Views;
+using Microsoft.Extensions.Logging;
+using NLog.Extensions.Logging;
 
 namespace TimeLoggerView;
 
 public partial class App : Application
 {
+    private ILogger<App> logger;
     public static IServiceProvider Container { get; private set; }
 
     public static MainWindow? WorkspaceInstance { get; set; }
@@ -53,9 +56,13 @@ public partial class App : Application
 
         var dbString = connectionStrings["TimeLoggerDatabase"];
 
-        services.AddRepository(dbString);
 
         services.AddSingleton<IConfigurationRoot>(configuration);
+        services.AddLogging(loggingBuilder => {
+            loggingBuilder.AddNLog("nlog.config");
+        });
+
+        services.AddRepository(dbString);
         services.AddTransient<IRepository, EntityFrameworkRepository>();
         services.AddScoped<IAuthenticationService, AuthenticationService>();
         services.AddTransient<IUserService, UserService>();
@@ -64,11 +71,16 @@ public partial class App : Application
         services.AddTransient<IAttachmentService, AttachmentService>();
         services.AddTransient<IRequestService, RequestService>();
         services.AddTransient<IRequestCommentService, RequestCommentService>();
+        var provider = services.BuildServiceProvider();
+
+
+        this.logger = provider.GetService<ILogger<App>>();
 
         Container = services.BuildServiceProvider();
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
+            this.logger.LogInformation("Creating desktop lifetime");
             var vm = new LoginViewModel((IAuthenticationService)Container.GetService(typeof(IAuthenticationService)));
             var loginPage = new LoginWindow()
             {
@@ -79,7 +91,7 @@ public partial class App : Application
 
             SukiTheme.GetInstance().ChangeBaseTheme(ThemeVariant.Dark);
             desktop.MainWindow.Hide();
-
+            this.logger.LogInformation("Displaying splash screen");
             var splash = new SplashWindow();
             splash.Show();
             splash.Loaded += Splash_Loaded;
@@ -101,6 +113,7 @@ public partial class App : Application
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
+            this.logger.LogInformation("Splash init completed. Showing login page");
             desktop.MainWindow!.Show();
         }
     }
@@ -114,6 +127,7 @@ public partial class App : Application
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
+            this.logger.LogInformation($"Logged in successfully as user {user.Username}");
             if (!user.IsActive)
             {
                 return;

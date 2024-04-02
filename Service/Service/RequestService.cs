@@ -1,4 +1,5 @@
-﻿using Model.Interface;
+﻿using Microsoft.Extensions.Logging;
+using Model.Interface;
 using Model.ModelSql;
 using Service.Interface;
 using System;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Service.Service
 {
-    public class RequestService(IRepository repository) : IRequestService
+    public class RequestService(IRepository repository, ILogger<RequestService> logger) : IRequestService
     {
         public Request? GetRequestById(int id)
         {
@@ -33,6 +34,8 @@ namespace Service.Service
             }
             catch (Exception ex)
             {
+                logger.LogError("Failed to insert request: {message} {exception}", ex.Message, ex);
+
                 return false;
             }
         }
@@ -45,8 +48,10 @@ namespace Service.Service
                 repository.Save();
                 return true;
             }
-            catch
+            catch (Exception ex)
             {
+                logger.LogError("Failed to update request: {message} {exception}", ex.Message, ex);
+
                 return false;
             }
         }

@@ -1,5 +1,7 @@
 ﻿using Common.Enums;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Model.EntityModel;
 using System;
 using System.Collections.Generic;
@@ -11,7 +13,7 @@ namespace Model.Interface
 {
     public interface IRepository : IRepositoryReadOnly
     {
-        bool RunMigrations(IConfigurationRoot config);
+        bool RunMigrations(IConfigurationRoot config, ILogger<DbContext> logger);
         void InsertModel<T>(T model) where T : class;
         void ResetChangeTracker();
         void DeleteModel<T>(int modelId) where T : class;

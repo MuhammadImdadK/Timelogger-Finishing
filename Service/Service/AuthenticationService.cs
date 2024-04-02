@@ -1,6 +1,7 @@
 ﻿using Common.Enums;
 using Common.Messages;
 using Common.ResponseModels;
+using Microsoft.Extensions.Logging;
 using Model.Interface;
 using Model.ModelSql;
 using Service.Interface;
@@ -79,20 +80,25 @@ namespace Service.Service
 
     public class AuthenticationService : IAuthenticationService
     {
-        private readonly IRepository _iRepository;
+        private readonly IRepository repository;
+        private readonly ILogger<AuthenticationService> logger;
+
         public AuthenticationService(
-            IRepository repository
+            IRepository repository,
+            ILogger<AuthenticationService> logger
             )
         {
-            _iRepository = repository;
+            this.repository = repository;
+            this.logger = logger;
         }
         Response IAuthenticationService.Login(string username, string password)
         {
             Response response = null;
+            IEnumerable<User> users = repository.GetQueryableWithOutTracking<User>();
 
-            User user = _iRepository.GetQueryableWithOutTracking<User>().Where(x => x.Username.Equals(username)).FirstOrDefault();
-            
-            
+            logger.LogError("Users found: {count}", users.Count());
+
+            User user = users.Where(x => x.Username.Equals(username)).FirstOrDefault();
 
             if (user != null)
             {
