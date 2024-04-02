@@ -84,8 +84,8 @@ namespace Service.Service
                 itm.FirstName.ToLower().Contains(searchTerm) ||
                 (itm.LastName?.ToLower().Contains(searchTerm) ?? false) ||
                 itm.Email.ToLower().Contains(searchTerm) ||
-                itm.EmployeeNumber.ToLower().Contains(searchTerm) ||
-                (itm.Designation?.ToLower().Contains(searchTerm) ?? false)).ToList();
+                itm.EmployeeNumber.ToLower().Contains(searchTerm)
+            ).ToList();
         }
     }
 }

@@ -12,7 +12,7 @@ namespace Model.ModelSql
 {
 
     // User entity model
-    public class User: BasicEntity, ICloneable
+    public class User : BasicEntity, ICloneable
     {
         private const int UserRoleId = 3;
         public int RoleID { get; set; } = UserRoleId;
@@ -25,7 +25,7 @@ namespace Model.ModelSql
         public byte[] Salt { get; set; } = Array.Empty<byte>();
         public string FirstName { get; set; }
         public string? LastName { get; set; }
-        public string? Designation { get; set; }
+        public int? DesignationID { get; set; } 
         public string Email { get; set; }
         public TeamType TeamType { get; set; } = TeamType.None;
 
@@ -33,10 +33,14 @@ namespace Model.ModelSql
         [ForeignKey("RoleID")]
         public virtual Role Role { get; set; }
 
+        [ForeignKey("DesignationID")]
+        public virtual Designation Designation { get; set; }
+
         public object Clone()
         {
             return this.MemberwiseClone();
         }
+
         public override string ToString()
         {
             var lastName = this.LastName != null ? $" {this.LastName}" : string.Empty;
