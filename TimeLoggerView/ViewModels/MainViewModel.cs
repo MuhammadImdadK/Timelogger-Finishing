@@ -16,6 +16,7 @@ public class MainViewModel : ModuleViewModel
     private UserManagementViewModel userManagement;
     private ProjectManagementViewModel projectManagement;
     private RequestsViewModel requestsViewModel;
+    private ReportsViewModel reportsViewModel;
 
     public bool ShouldQuit { get; private set; } = true;
     public User CurrentUser { get; set; }
@@ -26,6 +27,7 @@ public class MainViewModel : ModuleViewModel
     public static TimesheetViewModel TimesheetManagement { get; set; }
     public TimesheetViewModel TimesheetModel { get => timesheetModel; set => this.RaiseAndSetIfChanged(ref timesheetModel, value); }
     public RequestsViewModel RequestsViewModel { get => this.requestsViewModel; set => this.RaiseAndSetIfChanged(ref this.requestsViewModel, value); }
+    public ReportsViewModel ReportsViewModel { get => this.reportsViewModel; set => this.RaiseAndSetIfChanged(ref this.reportsViewModel, value); }
     
     public EventHandler OnSignout;
     private TimesheetViewModel timesheetModel;
@@ -42,6 +44,7 @@ public class MainViewModel : ModuleViewModel
         this.RequestsViewModel = new RequestsViewModel();
         TimesheetManagement = new TimesheetViewModel();
         this.TimesheetModel = new TimesheetViewModel();
+        this.ReportsViewModel = new ReportsViewModel();
         Signout = ReactiveCommand.Create(PerformSignout);
         this.IsAdminUser = this.CurrentUser.RoleID == 1;
     }

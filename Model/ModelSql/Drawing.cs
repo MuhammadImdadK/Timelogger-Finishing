@@ -23,6 +23,4 @@ namespace Model.ModelSql
             return Name;
         }
     }
-
-
 }

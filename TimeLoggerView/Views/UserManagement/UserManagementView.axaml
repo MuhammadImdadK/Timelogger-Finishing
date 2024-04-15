@@ -24,7 +24,6 @@
         <TabControl VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
           <TabItem Header="Users" VerticalAlignment="Stretch">
             <Grid RowDefinitions="Auto,Auto,Auto,*" ColumnDefinitions="*, Auto, Auto">
-              
               <TextBox Margin="0 10" HorizontalAlignment="Stretch" Watermark="Search" Text="{Binding SearchTerm}"  theme:TextBoxExtensions.AddDeleteButton="True"></TextBox>
               <Button Grid.Column="1" Classes="Flat" Margin="5 15" Command="{Binding PerformSearchCommand}">
                 <Image>
@@ -82,8 +81,56 @@
               </suki:BusyArea>
             </Grid>
           </TabItem>
-          <TabItem Header="Roles" IsVisible="False">
-            <TextBlock Margin="5">Roles</TextBlock>
+          <TabItem Header="Designations">
+            <Grid RowDefinitions="Auto,Auto,Auto,*" ColumnDefinitions="*, Auto, Auto">
+              <TextBox Margin="0 10" HorizontalAlignment="Stretch" Watermark="Search" Text="{Binding SearchTerm}"  theme:TextBoxExtensions.AddDeleteButton="True"></TextBox>
+              <Button Grid.Column="1" Classes="Flat" Margin="5 15" Command="{Binding PerformSearchCommand}">
+                <Image>
+                  <Image.Source>
+                    <i:IconImage Value="mdi-magnify" Brush="White" />
+                  </Image.Source>
+                </Image>
+              </Button>
+              <Button Grid.Column="2" Classes="Flat" Margin="5 15" Background="#3a9c22" Command="{Binding AddUserCommand}">
+                <Image>
+                  <Image.Source>
+                    <i:IconImage Value="mdi-shield-plus-outline" Brush="White" />
+                  </Image.Source>
+                </Image>
+              </Button>
+              <suki:BusyArea Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Name="BusyDesignations" Margin="10"
+                       BusyText="{Binding BusyText}"
+                       IsBusy="{Binding IsBusy}" VerticalAlignment="Stretch">
+                <DataGrid x:Name="DesignationTable" ItemsSource="{Binding Designations}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MinHeight="300"
+                        IsReadOnly="True" AreRowDetailsFrozen="False">
+                  <DataGrid.Columns>
+                    <DataGridTextColumn Header="Designation Name" Binding="{Binding EmployeeNumber}"/>
+                    <DataGridTemplateColumn Header="Actions">
+                      <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                          <StackPanel Orientation="Horizontal">
+                            <Button  Margin="5" Classes="Flat" Click="Edit_Click">
+                              <Image Height="16" PointerPressed="Image_PointerPressed" IsHitTestVisible="False">
+                                <Image.Source>
+                                  <i:IconImage Value="mdi-pencil" Brush="White" />
+                                </Image.Source>
+                              </Image>
+                            </Button>
+                            <Button Margin="4" Background="{DynamicResource ErrorBrush}" Click="Delete_Click">
+                              <Image Height="16" PointerPressed="Image_PointerPressed" IsHitTestVisible="False">
+                                <Image.Source>
+                                  <i:IconImage Value="mdi-delete" Brush="White" />
+                                </Image.Source>
+                              </Image>
+                            </Button>
+                          </StackPanel>
+                        </DataTemplate>
+                      </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                  </DataGrid.Columns>
+                </DataGrid>
+              </suki:BusyArea>
+            </Grid>
           </TabItem>
         </TabControl>
       </suki:GroupBox>

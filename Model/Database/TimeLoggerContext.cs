@@ -37,6 +37,8 @@ namespace Model.Database
         public DbSet<RolePermission> RolePermissions { get; set; }
         public DbSet<TimeLog> TimeLogs { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<Designation> Designations { get; set; }
+        public DbSet<DesignationRates> DesignationRates { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

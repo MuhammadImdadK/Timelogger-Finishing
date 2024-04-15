@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Model.Database;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Model.Migrations
 {
     [DbContext(typeof(TimeLoggerContext))]
-    partial class TimeLoggerContextModelSnapshot : ModelSnapshot
+    [Migration("20240401225723_AddDesignationTable")]
+    partial class AddDesignationTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -91,6 +94,9 @@ namespace Model.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int?>("Id"));
 
+                    b.Property<float>("BaseRate")
+                        .HasColumnType("real");
+
                     b.Property<DateTime?>("Created")
                         .HasColumnType("timestamp with time zone");
 
@@ -104,48 +110,15 @@ namespace Model.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.HasKey("Id");
-
-                    b.ToTable("Designations");
-                });
-
-            modelBuilder.Entity("Model.ModelSql.DesignationRates", b =>
-                {
-                    b.Property<int?>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int?>("Id"));
-
-                    b.Property<float>("BaseRate")
-                        .HasColumnType("real");
-
-                    b.Property<DateTime?>("Created")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("DesignationID")
-                        .HasColumnType("integer");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTime?>("Modified")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<float>("OutsideHourRate")
                         .HasColumnType("real");
 
                     b.Property<float>("OvertimeRate")
                         .HasColumnType("real");
 
-                    b.Property<int>("TeamType")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("DesignationID");
-
-                    b.ToTable("DesignationRates");
+                    b.ToTable("Designations");
                 });
 
             modelBuilder.Entity("Model.ModelSql.Drawing", b =>
@@ -645,17 +618,6 @@ namespace Model.Migrations
                     b.Navigation("ModifiedByUser");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Model.ModelSql.DesignationRates", b =>
-                {
-                    b.HasOne("Model.ModelSql.Designation", "Designation")
-                        .WithMany()
-                        .HasForeignKey("DesignationID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Designation");
                 });
 
             modelBuilder.Entity("Model.ModelSql.Drawing", b =>
