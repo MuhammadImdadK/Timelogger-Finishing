@@ -27,6 +27,7 @@ public class ProjectManagementViewModel : ModuleViewModel
     private const int ErfOffset = 100001;
     private const int PlanningEngineerRoleId = 2;
     private bool canModifyBudget;
+    private bool canAddProject;
     private bool isEditing;
     private bool isAddingAttachment;
     private bool isAddingEndTime;
@@ -46,6 +47,7 @@ public class ProjectManagementViewModel : ModuleViewModel
 
     public bool IsPlanningEngineer { get => isPlanningEngineer; set => this.RaiseAndSetIfChanged(ref isPlanningEngineer, value); }
     public bool CanModifyBudget { get => this.canModifyBudget; set => this.RaiseAndSetIfChanged(ref this.canModifyBudget, value); }
+    public bool CanAddProject { get => this.canAddProject; set => this.RaiseAndSetIfChanged(ref this.canAddProject, value); }
     public bool IsEditing
     {
         get => this.isEditing;
@@ -128,6 +130,7 @@ public class ProjectManagementViewModel : ModuleViewModel
 
     public ProjectManagementViewModel()
     {
+
         this.projectService = (IProjectService)App.Container.GetService(typeof(IProjectService));
         this.attachmentService = (IAttachmentService)App.Container.GetService(typeof(IAttachmentService));
         this.userService = (IUserService)App.Container.GetService(typeof(IUserService));
@@ -193,6 +196,7 @@ public class ProjectManagementViewModel : ModuleViewModel
     {
         Dispatcher.UIThread.Invoke(() =>
         {
+            this.IsPlanningEngineer = App.CurrentUser.RoleID == PlanningEngineerRoleId || App.CurrentUser.RoleID == 1;
             this.IsBusy = true;
             this.BusyText = "Loading Projects";
         });
@@ -468,10 +472,21 @@ public class ProjectManagementViewModel : ModuleViewModel
     {
         var tempText = "The following validation errors were encountered:\n";
         var valid = true;
+        this.CurrentProject.ProjectPrefix = this.CurrentProject.ProjectPrefix?.ToUpper();
+        if (string.IsNullOrWhiteSpace(this.CurrentProject.ProjectPrefix))
+        {
+            valid = false;
+            tempText += "- Project Prefix is required";
+        }
+        if((this.CurrentProject.ProjectPrefix?.Length ?? 0) > 3)
+        {
+            valid = false;
+            tempText += "- Project Profix can not be more than 3 characters long";
+        }
         if (string.IsNullOrWhiteSpace(this.CurrentProject.ERFNumber))
         {
             valid = false;
-            tempText += "- ERF Number is required\n";
+            tempText += "- Project Number is required\n";
         }
         if (string.IsNullOrWhiteSpace(this.CurrentProject.ProjectName))
         {

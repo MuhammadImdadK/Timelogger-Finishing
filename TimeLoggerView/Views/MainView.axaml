@@ -93,7 +93,7 @@
           <views:TimesheetMainView DataContext="{Binding TimesheetModel}" />
         </suki:SukiSideMenuItem.PageContent>
       </suki:SukiSideMenuItem>
-      <suki:SukiSideMenuItem Header="Reports">
+      <suki:SukiSideMenuItem Header="Reports" IsVisible="False">
         <suki:SukiSideMenuItem.Icon>
           <Image>
             <Image.Source>

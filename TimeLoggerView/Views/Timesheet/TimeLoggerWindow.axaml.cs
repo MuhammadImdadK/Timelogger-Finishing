@@ -39,6 +39,7 @@ namespace TimeLoggerView.Views.Timesheet
                 vm.ScopeType = ScopeType.None;
                 vm.SelectedDeliverable = null;
                 vm.AvailableDeliverables.Clear();
+                vm.TimerString = "00:00:00";
             }
         }
         private bool _mouseDownForWindowMoving = false;

@@ -85,6 +85,11 @@
                             <TextBlock Margin="10" FontWeight="Bold" Text="Request Type"/>
                             <TextBlock Margin="10" MinWidth="200" MaxWidth="200" Text="{Binding RequestType}"/>
                           </StackPanel>
+                          <StackPanel Margin="10" HorizontalAlignment="Left" Grid.Column="1">
+                            <TextBlock Margin="10" HorizontalAlignment="Left" FontWeight="Bold" Text="Log Entry Type"/>
+                            <TextBlock Margin="10" HorizontalAlignment="Left" MinWidth="200" MaxWidth="200" IsVisible="{Binding IsNewTimeLog}" Text="New Log Entry" />
+                            <TextBlock Margin="10" HorizontalAlignment="Left" MinWidth="200" MaxWidth="200" IsVisible="{Binding !IsNewTimeLog}" Text="Edit Existing Entry" />
+                          </StackPanel>
                           <StackPanel Grid.Row="1" Margin="10" HorizontalAlignment="Left">
                             <TextBlock Margin="10" FontWeight="Bold" Text="Start Time"/>
                             <TextBlock Margin="10" MinWidth="200" MaxWidth="200" Text="{Binding StartTimeLocalString}"/>

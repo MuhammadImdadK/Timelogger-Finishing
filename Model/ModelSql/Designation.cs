@@ -5,7 +5,7 @@ using System.Globalization;
 
 namespace Model.ModelSql
 {
-    public class Designation
+    public class Designation : ICloneable
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -27,6 +27,25 @@ namespace Model.ModelSql
 
         public string Name { get; set; }
 
+        [NotMapped]
+        public virtual List<DesignationRates> DesignationRatesTemplate { get; set; } = new() 
+        {
+            new() { TeamType = Common.Enums.TeamType.CoreTeam, IsActive = true, OutsideHourRate = 0, OvertimeRate = 0, BaseRate = 0 },
+            new() { TeamType = Common.Enums.TeamType.AdditionalTeam, IsActive = true, OutsideHourRate = 0, OvertimeRate = 0, BaseRate = 0 },
+        };
+
+        public object Clone()
+        {
+            var obj = this.MemberwiseClone() as Designation;
+            var cloneTemplate = new List<DesignationRates>();
+            foreach(var kvp in DesignationRatesTemplate)
+            {
+                if (kvp == null) continue;
+                cloneTemplate.Add(kvp!.Clone() as DesignationRates);
+            }
+            obj.DesignationRatesTemplate = cloneTemplate;
+            return obj;
+        }
 
         public override string ToString()
         {

@@ -108,7 +108,7 @@
             </Grid>
           </StackPanel>
           <Grid ColumnDefinitions="*, Auto" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="5">
-            <TextBlock Margin="10" VerticalAlignment="Center" FontSize="16" FontWeight="Bold" Text="{Binding TimerString}" />
+            <TextBlock x:Name="TimerString" Margin="10" VerticalAlignment="Center" FontSize="16" FontWeight="Bold" Text="{Binding TimerString}" />
             <StackPanel IsVisible="{Binding CanSave}" Grid.Column="1" Orientation="Horizontal">
               <Button IsVisible="{Binding CanRunTimeRecorder}" Command="{Binding RestartTimerCommand}" VerticalAlignment="Center">
                 Reset Timer

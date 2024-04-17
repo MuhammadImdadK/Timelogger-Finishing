@@ -93,7 +93,7 @@ namespace Service.Service
             }
             catch (Exception ex)
             {
-                this.logger.LogError("Failed to delet user: {message} {exception}", ex.Message, ex);
+                this.logger.LogError("Failed to delete user: {message} {exception}", ex.Message, ex);
             }
         }
 

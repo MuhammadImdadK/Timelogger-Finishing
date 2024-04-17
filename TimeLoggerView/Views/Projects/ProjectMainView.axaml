@@ -29,7 +29,7 @@
                     </Image.Source>
                   </Image>
                 </Button>
-                <Button Margin="5 0 0 0" Classes="Flat" Background="#3a9c22" Command="{Binding CreateProjectCommand}">
+                <Button Margin="5 0 0 0" Classes="Flat" IsVisible="{Binding IsPlanningEngineer}" Background="#3a9c22" Command="{Binding CreateProjectCommand}">
                   <Image Height="16" IsHitTestVisible="False">
                     <Image.Source>
                       <i:IconImage Value="mdi-plus" Brush="White" />

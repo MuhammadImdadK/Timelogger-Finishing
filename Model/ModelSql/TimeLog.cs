@@ -18,6 +18,9 @@ namespace Model.ModelSql
         public int ProjectID { get; set; }
         public DateTime StartDateTime { get; set; }
 
+        public bool IsNewTimeLog { get; set; }
+        public bool IsVisibleToUser { get; set; }
+
         public int? DeliverableID { get; set; }
         [NotMapped]
         public string StartDateTimeLocalString => StartDateTime != null
@@ -33,10 +36,16 @@ namespace Model.ModelSql
         public string? Comment { get; set; }
 
         //Other Fields
-        public DisciplineType  DisciplineType{ get; set; }
-        public DrawingType DrawingType { get; set; }
-        public ScopeType ScopeType { get; set; }
-        public TeamType TeamType { get; set; }
+        public DisciplineType? DisciplineType{ get; set; }
+        public DrawingType? DrawingType { get; set; }
+        public ScopeType? ScopeType { get; set; }
+        public TeamType? TeamType { get; set; }
+
+        // ui fields 
+        [NotMapped]
+        public string ProjectNumber { get; set; }
+        [NotMapped]
+        public string ProjectPrefix { get; set; }
 
         // Navigation properties
         [ForeignKey("UserID")]
@@ -50,7 +59,7 @@ namespace Model.ModelSql
 
         public override string ToString()
         {
-            return TimeLogStatus == null ? "Not set" : $"ERF-{ProjectID + 10001} - {StartDateTimeLocalString}";
+            return TimeLogStatus == null ? "Not set" : $"{ProjectPrefix}-{ProjectNumber} - {StartDateTimeLocalString}-{EndDateTimeLocalString}";
         }
     }
 }

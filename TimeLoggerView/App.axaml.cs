@@ -71,6 +71,8 @@ public partial class App : Application
         services.AddTransient<IAttachmentService, AttachmentService>();
         services.AddTransient<IRequestService, RequestService>();
         services.AddTransient<IRequestCommentService, RequestCommentService>();
+        services.AddTransient<IDesignationService, DesignationService>();
+        services.AddTransient<IDesignationRateService, DesignationRateService>();
         var provider = services.BuildServiceProvider();
 
 

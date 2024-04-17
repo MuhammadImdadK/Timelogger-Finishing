@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Model.Database;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Model.Migrations
 {
     [DbContext(typeof(TimeLoggerContext))]
-    partial class TimeLoggerContextModelSnapshot : ModelSnapshot
+    [Migration("20240415220020_AddNewFieldsToTimeLog")]
+    partial class AddNewFieldsToTimeLog
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -301,9 +304,6 @@ namespace Model.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
-                    b.Property<bool>("IsNewTimeLog")
-                        .HasColumnType("boolean");
-
                     b.Property<DateTime?>("Modified")
                         .HasColumnType("timestamp with time zone");
 
@@ -504,10 +504,10 @@ namespace Model.Migrations
                     b.Property<int?>("DeliverableID")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("DisciplineType")
+                    b.Property<int>("DisciplineType")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("DrawingType")
+                    b.Property<int>("DrawingType")
                         .HasColumnType("integer");
 
                     b.Property<TimeSpan>("Duration")
@@ -534,13 +534,13 @@ namespace Model.Migrations
                     b.Property<int>("ProjectID")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("ScopeType")
+                    b.Property<int>("ScopeType")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("StartDateTime")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int?>("TeamType")
+                    b.Property<int>("TeamType")
                         .HasColumnType("integer");
 
                     b.Property<int?>("TimeLogStatus")

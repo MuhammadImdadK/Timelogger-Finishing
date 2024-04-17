@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Model.Database;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Model.Migrations
 {
     [DbContext(typeof(TimeLoggerContext))]
-    partial class TimeLoggerContextModelSnapshot : ModelSnapshot
+    [Migration("20240415203610_AddProjectPrefixToTable")]
+    partial class AddProjectPrefixToTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -81,71 +84,6 @@ namespace Model.Migrations
                     b.HasIndex("UserID");
 
                     b.ToTable("Audits");
-                });
-
-            modelBuilder.Entity("Model.ModelSql.Designation", b =>
-                {
-                    b.Property<int?>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int?>("Id"));
-
-                    b.Property<DateTime?>("Created")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTime?>("Modified")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Designations");
-                });
-
-            modelBuilder.Entity("Model.ModelSql.DesignationRates", b =>
-                {
-                    b.Property<int?>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int?>("Id"));
-
-                    b.Property<float>("BaseRate")
-                        .HasColumnType("real");
-
-                    b.Property<DateTime?>("Created")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("DesignationID")
-                        .HasColumnType("integer");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTime?>("Modified")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<float>("OutsideHourRate")
-                        .HasColumnType("real");
-
-                    b.Property<float>("OvertimeRate")
-                        .HasColumnType("real");
-
-                    b.Property<int>("TeamType")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DesignationID");
-
-                    b.ToTable("DesignationRates");
                 });
 
             modelBuilder.Entity("Model.ModelSql.Drawing", b =>
@@ -299,9 +237,6 @@ namespace Model.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("IsNewTimeLog")
                         .HasColumnType("boolean");
 
                     b.Property<DateTime?>("Modified")
@@ -504,10 +439,10 @@ namespace Model.Migrations
                     b.Property<int?>("DeliverableID")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("DisciplineType")
+                    b.Property<int>("DisciplineType")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("DrawingType")
+                    b.Property<int>("DrawingType")
                         .HasColumnType("integer");
 
                     b.Property<TimeSpan>("Duration")
@@ -519,12 +454,6 @@ namespace Model.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
-                    b.Property<bool>("IsNewTimeLog")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("IsVisibleToUser")
-                        .HasColumnType("boolean");
-
                     b.Property<DateTime?>("Modified")
                         .HasColumnType("timestamp with time zone");
 
@@ -534,13 +463,13 @@ namespace Model.Migrations
                     b.Property<int>("ProjectID")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("ScopeType")
+                    b.Property<int>("ScopeType")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("StartDateTime")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int?>("TeamType")
+                    b.Property<int>("TeamType")
                         .HasColumnType("integer");
 
                     b.Property<int?>("TimeLogStatus")
@@ -578,8 +507,8 @@ namespace Model.Migrations
                     b.Property<int?>("CreatedBy")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("DesignationID")
-                        .HasColumnType("integer");
+                    b.Property<string>("Designation")
+                        .HasColumnType("text");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -627,8 +556,6 @@ namespace Model.Migrations
 
                     b.HasIndex("CreatedBy");
 
-                    b.HasIndex("DesignationID");
-
                     b.HasIndex("ModifiedBy");
 
                     b.HasIndex("RoleID");
@@ -657,17 +584,6 @@ namespace Model.Migrations
                     b.Navigation("ModifiedByUser");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Model.ModelSql.DesignationRates", b =>
-                {
-                    b.HasOne("Model.ModelSql.Designation", "Designation")
-                        .WithMany()
-                        .HasForeignKey("DesignationID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Designation");
                 });
 
             modelBuilder.Entity("Model.ModelSql.Drawing", b =>
@@ -848,10 +764,6 @@ namespace Model.Migrations
                         .WithMany()
                         .HasForeignKey("CreatedBy");
 
-                    b.HasOne("Model.ModelSql.Designation", "Designation")
-                        .WithMany()
-                        .HasForeignKey("DesignationID");
-
                     b.HasOne("Model.ModelSql.User", "ModifiedByUser")
                         .WithMany()
                         .HasForeignKey("ModifiedBy");
@@ -863,8 +775,6 @@ namespace Model.Migrations
                         .IsRequired();
 
                     b.Navigation("CreatedByUser");
-
-                    b.Navigation("Designation");
 
                     b.Navigation("ModifiedByUser");
 

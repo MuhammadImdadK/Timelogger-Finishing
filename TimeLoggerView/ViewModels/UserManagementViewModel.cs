@@ -28,6 +28,7 @@ public class UserManagementViewModel : ViewModelBase
     private int skip = 0;
     private int take = 50;
     private readonly IUserService userService;
+    private readonly IDesignationService designationService;
     private User currentUser;
     private string busyText = "Loading Users";
     private bool isBusy = true;
@@ -36,10 +37,14 @@ public class UserManagementViewModel : ViewModelBase
     private User? modifyingUser;
     private string searchTerm;
     private string primaryActionText = "Add";
+    private Designation? selectedDesignation;
+    private DesignationManagementViewModel designationManagementViewModel;
+
 
     public UserManagementViewModel()
     {
         this.userService = (IUserService)App.Container.GetService(typeof(IUserService));
+        this.designationService = (IDesignationService)App.Container.GetService(typeof(IDesignationService));
         this.AddUserCommand = ReactiveCommand.Create(this.AddUser);
         this.EditUserCommand = ReactiveCommand.Create<User>(this.EditUser);
         this.DeleteUserCommand = ReactiveCommand.Create<User>(this.DeleteUser);
@@ -48,6 +53,7 @@ public class UserManagementViewModel : ViewModelBase
         this.CloseDialogCommand = ReactiveCommand.Create(this.CloseDialog);
         this.PerformSearchCommand = ReactiveCommand.Create(this.PerformSearch);
         this.CurrentUser = App.CurrentUser;
+        this.DesignationModel = new(this);
         this.LoadUsers();
     }
 
@@ -69,6 +75,9 @@ public class UserManagementViewModel : ViewModelBase
     public int Take { get => this.take; set => this.RaiseAndSetIfChanged(ref this.take, value); }
 
     public ObservableCollection<User> Users { get; set; } = new ObservableCollection<User>();
+    public ObservableCollection<Designation> Designations { get; set; } = new();
+    public Designation? SelectedDesignation { get => selectedDesignation; set => this.RaiseAndSetIfChanged(ref selectedDesignation, value); }
+    public DesignationManagementViewModel DesignationModel { get => this.designationManagementViewModel; set => this.RaiseAndSetIfChanged(ref this.designationManagementViewModel, value); }
     public string SearchTerm { get => this.searchTerm; set => this.RaiseAndSetIfChanged(ref this.searchTerm, value); }
     public string BusyText { get => this.busyText; set => this.RaiseAndSetIfChanged(ref this.busyText, value); }
     public string PrimaryActionText { get => this.primaryActionText; set => this.RaiseAndSetIfChanged(ref this.primaryActionText, value); }
@@ -86,6 +95,8 @@ public class UserManagementViewModel : ViewModelBase
         this.ModifyingUser = new();
         this.IsEditing = true;
         this.ErrorText = string.Empty;
+        this.Designations.Clear();
+        this.Designations.AddRange(this.designationService.GetAllDesignations());
         var userEdit = new UserEditorView();
         this.PrimaryActionText = "Add User";
         this.ModifyingUser.Role = this.AvailableRoles.FirstOrDefault(itm => itm.Id == ModifyingUser.RoleID);
@@ -96,6 +107,9 @@ public class UserManagementViewModel : ViewModelBase
     private void EditUser(User user)
     {
         this.ModifyingUser = user.Clone() as User;
+        this.Designations.Clear();
+        this.Designations.AddRange(this.designationService.GetAllDesignations());
+        this.SelectedDesignation = this.Designations.FirstOrDefault(itm => itm.Id == (this.ModifyingUser?.DesignationID ?? 0));
         this.IsEditing = true;
         this.ErrorText = string.Empty;
         var userEdit = new UserEditorView();
@@ -114,19 +128,35 @@ public class UserManagementViewModel : ViewModelBase
         SukiHost.ShowDialog(App.WorkspaceInstance, deleteDialog, allowBackgroundClose: true);
     }
 
-    private void LoadUsers()
+    public void LoadUsers()
     {
         this.IsBusy = true;
         this.BusyText = "Loading User List";
         Task.Run(() =>
         {
             var result = this.userService.GetUsers(Skip, Take);
+            var designationsResult = this.designationService.GetAllDesignations();
+
+            lock (Designations)
+            {
+                Dispatcher.UIThread.Invoke(() =>
+                {
+                    this.Designations.Clear();
+                    this.Designations.AddRange(designationsResult);
+                });
+            }
+            var updated = new List<User>();
+            foreach(var user in result)
+            {
+                user.Designation = Designations.FirstOrDefault(itm => itm.Id == user.DesignationID);
+                updated.Add(user);
+            }
             lock (Users)
             {
                 Dispatcher.UIThread.Invoke(() =>
                 {
                     Users.Clear();
-                    Users.AddRange(result);
+                    Users.AddRange(updated);
                 });
             }
             Dispatcher.UIThread.Invoke(() => this.IsBusy = false);
@@ -152,7 +182,7 @@ public class UserManagementViewModel : ViewModelBase
         Task.Run(() =>
         {
             var results = this.userService.SearchFor(this.SearchTerm);
-            if(results.Count == 0)
+            if (results.Count == 0)
             {
                 Dispatcher.UIThread.Invoke(() =>
                 {
@@ -195,8 +225,8 @@ public class UserManagementViewModel : ViewModelBase
             {
                 this.ModifyingUser.RoleID = this.ModifyingUser.Role.Id;
             }
-            
-            if(string.IsNullOrWhiteSpace(this.ModifyingUser.EmployeeNumber))
+
+            if (string.IsNullOrWhiteSpace(this.ModifyingUser.EmployeeNumber))
             {
                 valid = false;
                 tempText += "- Employee number is required\n";
@@ -216,7 +246,8 @@ public class UserManagementViewModel : ViewModelBase
                 valid = false;
                 tempText += "- First Name is required\n";
             }
-            if (string.IsNullOrWhiteSpace(this.ModifyingUser.Email)){
+            if (string.IsNullOrWhiteSpace(this.ModifyingUser.Email))
+            {
                 valid = false;
                 tempText += "- Email is required\n";
             }
@@ -243,9 +274,13 @@ public class UserManagementViewModel : ViewModelBase
             this.ModifyingUser.Created = DateTime.UtcNow;
             this.ModifyingUser.Modified = DateTime.UtcNow;
             this.ModifyingUser.ModifiedBy = this.currentUser.Id;
+            this.ModifyingUser.Designation = null;
+            if (this.SelectedDesignation != null)
+            {
+                this.ModifyingUser.DesignationID = this.SelectedDesignation.Id;
+            }
             this.userService.AddUser(this.ModifyingUser!);
             this.IsEditing = false;
-
 
 
             Dispatcher.UIThread.Invoke(() =>
@@ -319,10 +354,15 @@ public class UserManagementViewModel : ViewModelBase
                 this.ModifyingUser.Password = hash;
                 this.ModifyingUser.Salt = salt;
             }
-            
+
             this.ModifyingUser.Modified = DateTime.UtcNow;
             this.ModifyingUser.ModifiedBy = this.currentUser.Id;
             this.ModifyingUser.Role = null;
+            this.ModifyingUser.Designation = null;
+            if (this.SelectedDesignation != null)
+            {
+                this.ModifyingUser.DesignationID = this.SelectedDesignation.Id;
+            }
 
             Thread.Sleep(1000);
             this.userService.EditUser(this.ModifyingUser);

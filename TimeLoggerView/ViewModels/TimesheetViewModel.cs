@@ -33,10 +33,10 @@ public class TimesheetViewModel : ModuleViewModel
     public EventHandler<bool> OnCompactModeChanged;
     public EventHandler OnTriggerWindowClose;
     private Project selectedProject;
-    private TeamType teamType = TeamType.None;
-    private ScopeType scopeType = ScopeType.None;
-    private DrawingType drawingType = DrawingType.None;
-    private DisciplineType disciplineType = DisciplineType.None;
+    private Common.Enums.TeamType? teamType = Common.Enums.TeamType.None;
+    private Common.Enums.ScopeType? scopeType = Common.Enums.ScopeType.None;
+    private Common.Enums.DrawingType? drawingType = Common.Enums.DrawingType.None;
+    private Common.Enums.DisciplineType? disciplineType = Common.Enums.DisciplineType.None;
     private string comment;
     private TimeSpan? duration;
     private DateTime? endDateTime;
@@ -155,7 +155,7 @@ public class TimesheetViewModel : ModuleViewModel
             }
             else
             {
-                availableTimeLogs = this.timesheetService.GetTimeLogsByUserId(App.CurrentUser.Id ?? 0);
+                availableTimeLogs = this.timesheetService.GetTimeLogsByUserId(App.CurrentUser.Id ?? 0).Where(itm => itm.IsVisibleToUser).ToList();
             }
 
             foreach (var timelog in availableTimeLogs)
@@ -170,6 +170,8 @@ public class TimesheetViewModel : ModuleViewModel
                 this.Projects.Clear();
                 this.TimeLogs.Clear();
                 this.Users.Clear();
+                this.AvailableDeliverables.Clear();
+                this.AvailableDeliverables.Add(availableDeliverables);
                 this.Projects.AddRange(availableProjects);
                 this.TimeLogs.AddRange(availableTimeLogs);
                 this.Users.AddRange(availableUsers);
@@ -217,7 +219,9 @@ public class TimesheetViewModel : ModuleViewModel
                 TimeLogStatus = TimeLogStatus.None,
                 IsActive = true,
                 UserID = App.CurrentUser.Id ?? 0,
-                DeliverableID = SelectedDeliverable?.Id ?? 0
+                DeliverableID = SelectedDeliverable?.Id ?? 0,
+                IsVisibleToUser = true,
+                IsNewTimeLog = false,
             };
         }
         else
@@ -248,7 +252,7 @@ public class TimesheetViewModel : ModuleViewModel
             tempText += "- A Deliverable must be selected\n";
             valid = false;
         }
-        if (this.TeamType == null || this.TeamType == TeamType.None)
+        if (this.TeamType == null || this.TeamType == Common.Enums.TeamType.None)
         {
             tempText += "- A team must be selected\n";
             valid = false;
@@ -339,7 +343,7 @@ public class TimesheetViewModel : ModuleViewModel
             tempText += "- A Deliverable must be selected\n";
             valid = false;
         }
-        if (this.TeamType == null || this.TeamType == TeamType.None)
+        if (this.TeamType == null || this.TeamType == Common.Enums.TeamType.None)
         {
             tempText += "- A team must be selected\n";
             valid = false;
@@ -499,42 +503,42 @@ public class TimesheetViewModel : ModuleViewModel
     public string Comment { get => comment; set => this.RaiseAndSetIfChanged(ref this.comment, value); }
     public List<DisciplineType> AvailableDisciplineTypes { get; } = new List<DisciplineType>()
     {
-        DisciplineType.None,
-        DisciplineType.Process,
-        DisciplineType.Piping,
-        DisciplineType.IE,
-        DisciplineType.Civil
+        Common.Enums.DisciplineType.None,
+        Common.Enums.DisciplineType.Process,
+        Common.Enums.DisciplineType.Piping,
+        Common.Enums.DisciplineType.IE,
+        Common.Enums.DisciplineType.Civil
     };
-    public DisciplineType DisciplineType { get => disciplineType; set => this.RaiseAndSetIfChanged(ref this.disciplineType, value); }
+    public DisciplineType? DisciplineType { get => disciplineType; set => this.RaiseAndSetIfChanged(ref this.disciplineType, value); }
     public List<DrawingType> AvailableDrawingTypes { get; } = new List<DrawingType>()
     {
-        DrawingType.None,
-        DrawingType.PipingAndInstrimentDiagram,
-        DrawingType.CauseAndEffect,
-        DrawingType.ProcessFlowDiagram,
-        DrawingType.MasterEquipmentList,
-        DrawingType.MasterLinetList,
-        DrawingType.Calculation,
-        DrawingType.Report
+        Common.Enums.DrawingType.None,
+        Common.Enums.DrawingType.PipingAndInstrimentDiagram,
+        Common.Enums.DrawingType.CauseAndEffect,
+        Common.Enums.DrawingType.ProcessFlowDiagram,
+        Common.Enums.DrawingType.MasterEquipmentList,
+        Common.Enums.DrawingType.MasterLinetList,
+        Common.Enums.DrawingType.Calculation,
+        Common.Enums.DrawingType.Report
     };
-    public DrawingType DrawingType { get => drawingType; set => this.RaiseAndSetIfChanged(ref this.drawingType, value); }
+    public DrawingType? DrawingType { get => drawingType; set => this.RaiseAndSetIfChanged(ref this.drawingType, value); }
     public List<ScopeType> AvailableScopeTypes { get; } = new List<ScopeType>()
     {
-        ScopeType.None,
-        ScopeType.Installation,
-        ScopeType.Demolation,
-        ScopeType.AsBuilt,
-        ScopeType.Relocation,
-        ScopeType.Standard
+        Common.Enums.ScopeType.None,
+        Common.Enums.ScopeType.Installation,
+        Common.Enums.ScopeType.Demolation,
+        Common.Enums.ScopeType.AsBuilt,
+        Common.Enums.ScopeType.Relocation,
+        Common.Enums.ScopeType.Standard
     };
-    public ScopeType ScopeType { get => scopeType; set => this.RaiseAndSetIfChanged(ref this.scopeType, value); }
+    public ScopeType? ScopeType { get => scopeType; set => this.RaiseAndSetIfChanged(ref this.scopeType, value); }
     public List<TeamType> AvailableTeamTypes { get; } = new List<TeamType>()
     {
-        TeamType.None,
-        TeamType.CoreTeam,
-        TeamType.AdditionalTeam
+        Common.Enums.TeamType.None,
+        Common.Enums.TeamType.CoreTeam,
+        Common.Enums.TeamType.AdditionalTeam
     };
-    public TeamType TeamType { get => teamType; set => this.RaiseAndSetIfChanged(ref this.teamType, value); }
+    public TeamType? TeamType { get => teamType; set => this.RaiseAndSetIfChanged(ref this.teamType, value); }
     public Project SelectedProject
     {
         get => selectedProject;
