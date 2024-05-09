@@ -39,7 +39,10 @@ public class UserManagementViewModel : ViewModelBase
     private string primaryActionText = "Add";
     private Designation? selectedDesignation;
     private DesignationManagementViewModel designationManagementViewModel;
-
+    private bool isAdminUser;
+    private bool isPlanUser;
+    private ActivityTypeManagementViewModel activityModel;
+    private DeliverableDrawingTypeManagementViewModel deliverablesModel;
 
     public UserManagementViewModel()
     {
@@ -53,7 +56,17 @@ public class UserManagementViewModel : ViewModelBase
         this.CloseDialogCommand = ReactiveCommand.Create(this.CloseDialog);
         this.PerformSearchCommand = ReactiveCommand.Create(this.PerformSearch);
         this.CurrentUser = App.CurrentUser;
-        this.DesignationModel = new(this);
+        this.IsAdminUser = App.CurrentUser.RoleID == 1;
+        this.IsPlanUser = this.IsAdminUser || App.CurrentUser.RoleID == 2;
+        this.DesignationModel = new();
+        this.DesignationModel.UpdateUsers += OnUsersUpdated;
+        this.ActivityModel = new();
+        this.DeliverablesModel = new();
+        this.LoadUsers();
+    }
+
+    private void OnUsersUpdated(object sender, EventArgs e)
+    {
         this.LoadUsers();
     }
 
@@ -78,6 +91,8 @@ public class UserManagementViewModel : ViewModelBase
     public ObservableCollection<Designation> Designations { get; set; } = new();
     public Designation? SelectedDesignation { get => selectedDesignation; set => this.RaiseAndSetIfChanged(ref selectedDesignation, value); }
     public DesignationManagementViewModel DesignationModel { get => this.designationManagementViewModel; set => this.RaiseAndSetIfChanged(ref this.designationManagementViewModel, value); }
+    public ActivityTypeManagementViewModel ActivityModel { get => this.activityModel; set => this.RaiseAndSetIfChanged(ref activityModel, value); }
+    public DeliverableDrawingTypeManagementViewModel DeliverablesModel { get => this.deliverablesModel; set => this.RaiseAndSetIfChanged(ref this.deliverablesModel, value); }
     public string SearchTerm { get => this.searchTerm; set => this.RaiseAndSetIfChanged(ref this.searchTerm, value); }
     public string BusyText { get => this.busyText; set => this.RaiseAndSetIfChanged(ref this.busyText, value); }
     public string PrimaryActionText { get => this.primaryActionText; set => this.RaiseAndSetIfChanged(ref this.primaryActionText, value); }
@@ -89,6 +104,8 @@ public class UserManagementViewModel : ViewModelBase
 
     public User? ModifyingUser { get => this.modifyingUser; set => this.RaiseAndSetIfChanged(ref this.modifyingUser, value); }
     public User CurrentUser { get => this.currentUser; set => this.RaiseAndSetIfChanged(ref this.currentUser, value); }
+    public bool IsAdminUser { get => isAdminUser; set => this.RaiseAndSetIfChanged(ref isAdminUser, value); }
+    public bool IsPlanUser { get => isPlanUser; set => this.RaiseAndSetIfChanged(ref isPlanUser, value); }
 
     private void AddUser()
     {
@@ -236,6 +253,11 @@ public class UserManagementViewModel : ViewModelBase
                 valid = false;
                 tempText += "- Username is required\n";
             }
+            if(((IUserService)App.Container.GetService(typeof(IUserService))).GetUsers().Any(itm => itm.Username.ToLower() == this.ModifyingUser.Username.ToLower()))
+            {
+                valid = false;
+                tempText += $"- Username '{this.ModifyingUser.Username}' is already taken.\n";
+            }
             if (this.ModifyingUser.Id == null && string.IsNullOrEmpty(this.ModifyingUser.NewPassword))
             {
                 valid = false;
@@ -326,6 +348,11 @@ public class UserManagementViewModel : ViewModelBase
             {
                 valid = false;
                 tempText += "- Username is required\n";
+            }
+            if (((IUserService)App.Container.GetService(typeof(IUserService))).GetUsers().Any(itm => itm.Username.ToLower() == this.ModifyingUser.Username.ToLower()))
+            {
+                valid = false;
+                tempText += $"- Username '{this.ModifyingUser.Username}' is already taken.\n";
             }
             if (string.IsNullOrWhiteSpace(this.ModifyingUser.FirstName))
             {

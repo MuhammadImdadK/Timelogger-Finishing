@@ -27,7 +27,13 @@
             <TextBlock>Project</TextBlock>
             <ComboBox MinWidth="200" MaxWidth="200" ItemsSource="{Binding Projects}" SelectedItem="{Binding SelectedProject}"></ComboBox>
           </StackPanel>
+
           <StackPanel Grid.Row="1" Grid.Column="0" Margin="10" HorizontalAlignment="Left">
+            <TextBlock>Deliverable</TextBlock>
+            <AutoCompleteBox Name="DeliverableAuto" GotFocus="AutoCompleteBox_GotFocus"  MinWidth="200" MaxWidth="200" ItemsSource="{Binding AvailableDeliverableTypes}" SelectedItem="{Binding SelectedDeliverableType}" />
+          </StackPanel>
+          
+          <StackPanel Grid.Row="1" Grid.Column="1" Margin="10" HorizontalAlignment="Left">
             <TextBlock>Discipline Type</TextBlock>
             <ComboBox MinWidth="200" MaxWidth="200" ItemsSource="{Binding AvailableDisciplineTypes}"  SelectedItem="{Binding DisciplineType}">
               <ComboBox.ItemTemplate>
@@ -39,7 +45,7 @@
           </StackPanel>
 
           <StackPanel Grid.Row="0" Grid.Column="1" Margin="10" HorizontalAlignment="Left">
-            <TextBlock>Deliverable</TextBlock>
+            <TextBlock>Activity</TextBlock>
             <ComboBox MinWidth="200" MaxWidth="200" ItemsSource="{Binding AvailableDeliverables}" SelectedItem="{Binding SelectedDeliverable}">
               <ComboBox.ItemTemplate>
                 <DataTemplate x:DataType="modelEnums:DrawingType">
@@ -49,16 +55,6 @@
             </ComboBox>
           </StackPanel>
 
-          <StackPanel Grid.Row="1" Grid.Column="1" Margin="10" HorizontalAlignment="Left">
-            <TextBlock>Drawing Type</TextBlock>
-            <ComboBox MinWidth="200" MaxWidth="200" ItemsSource="{Binding AvailableDrawingTypes}" SelectedItem="{Binding DrawingType}">
-              <ComboBox.ItemTemplate>
-                <DataTemplate x:DataType="modelEnums:DrawingType">
-                  <TextBlock Text="{Binding, Converter={StaticResource enumConverter}}" />
-                </DataTemplate>
-              </ComboBox.ItemTemplate>
-            </ComboBox>
-          </StackPanel>
           
           <StackPanel Grid.Row="2" Grid.Column="0" Margin="10" HorizontalAlignment="Left">
             <TextBlock>Scope Type</TextBlock>

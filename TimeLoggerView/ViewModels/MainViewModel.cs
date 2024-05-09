@@ -25,6 +25,7 @@ public class MainViewModel : ModuleViewModel
     public ProjectManagementViewModel ProjectManagement { get => this.projectManagement; set => this.RaiseAndSetIfChanged(ref this.projectManagement, value); }
 
     public static TimesheetViewModel TimesheetManagement { get; set; }
+    public static MainViewModel Current { get; set; }
     public TimesheetViewModel TimesheetModel { get => timesheetModel; set => this.RaiseAndSetIfChanged(ref timesheetModel, value); }
     public RequestsViewModel RequestsViewModel { get => this.requestsViewModel; set => this.RaiseAndSetIfChanged(ref this.requestsViewModel, value); }
     public ReportsViewModel ReportsViewModel { get => this.reportsViewModel; set => this.RaiseAndSetIfChanged(ref this.reportsViewModel, value); }
@@ -32,9 +33,11 @@ public class MainViewModel : ModuleViewModel
     public EventHandler OnSignout;
     private TimesheetViewModel timesheetModel;
     private bool isAdminUser;
+    private bool isPlanUser;
 
     public ICommand Signout { get; }
-    public bool IsAdminUser { get => isAdminUser; set => isAdminUser = value; }
+    public bool IsAdminUser { get => isAdminUser; set => this.RaiseAndSetIfChanged(ref isAdminUser, value); }
+    public bool IsPlanUser { get => isPlanUser; set => this.RaiseAndSetIfChanged(ref isPlanUser, value); }
 
     public MainViewModel()
     {
@@ -47,6 +50,8 @@ public class MainViewModel : ModuleViewModel
         this.ReportsViewModel = new ReportsViewModel();
         Signout = ReactiveCommand.Create(PerformSignout);
         this.IsAdminUser = this.CurrentUser.RoleID == 1;
+        this.IsPlanUser = this.IsAdminUser || this.CurrentUser.RoleID == 2;
+        Current = this;
     }
 
     public void PerformSignout()

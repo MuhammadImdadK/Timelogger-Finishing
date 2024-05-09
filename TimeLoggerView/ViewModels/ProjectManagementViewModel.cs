@@ -1,5 +1,6 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Media;
+using Avalonia.Rendering.Composition;
 using Avalonia.Threading;
 using Common.Enums;
 using DynamicData;
@@ -39,11 +40,13 @@ public class ProjectManagementViewModel : ModuleViewModel
     private User? modifiedByUser;
     private User? createdByUser;
     private bool isPlanningEngineer;
+    private ActivityType selectedActivityType;
     private readonly IProjectService projectService;
     private readonly IAttachmentService attachmentService;
     private readonly IUserService userService;
     private readonly IRequestService requestService;
     private readonly ITimeLogService timesheetService;
+    private readonly IActivityTypeService activityTypeService;
 
     public bool IsPlanningEngineer { get => isPlanningEngineer; set => this.RaiseAndSetIfChanged(ref isPlanningEngineer, value); }
     public bool CanModifyBudget { get => this.canModifyBudget; set => this.RaiseAndSetIfChanged(ref this.canModifyBudget, value); }
@@ -98,6 +101,9 @@ public class ProjectManagementViewModel : ModuleViewModel
     public ObservableCollection<Model.ModelSql.Drawing> CurrentDrawings { get; set; } = new();
 
     public ObservableCollection<User> AvailableProjectEngineers { get; set; } = new();
+    public ObservableCollection<ActivityType> AvailableActivityTypes { get; set; } = new();
+
+    public ActivityType SelectedActivityType { get => selectedActivityType; set => this.RaiseAndSetIfChanged(ref selectedActivityType, value); }
 
     public bool IsTicketApproved => CurrentProject.IsActive && CurrentProject.ApprovalState == Common.Enums.RequestStatus.Accepted;
     public bool CanSubmit => CurrentProject.IsActive && CurrentProject.ManhourBudget > 0 && (
@@ -136,6 +142,8 @@ public class ProjectManagementViewModel : ModuleViewModel
         this.userService = (IUserService)App.Container.GetService(typeof(IUserService));
         this.requestService = (IRequestService)App.Container.GetService(typeof(IRequestService));
         this.timesheetService = (ITimeLogService)App.Container.GetService(typeof(ITimeLogService));
+        this.activityTypeService = (IActivityTypeService)App.Container.GetService(typeof(IActivityTypeService));
+
         this.IsPlanningEngineer = App.CurrentUser.RoleID == PlanningEngineerRoleId || App.CurrentUser.RoleID == 1;
         this.ViewProjectCommand = ReactiveCommand.Create<Project>(ViewProject);
         this.BeginEditCommand = ReactiveCommand.Create(BeginEdit);
@@ -192,7 +200,7 @@ public class ProjectManagementViewModel : ModuleViewModel
         SukiHost.ShowDialog(App.WorkspaceInstance, view, allowBackgroundClose: false);
     }
 
-    private void LoadProjects()
+    public void LoadProjects()
     {
         Dispatcher.UIThread.Invoke(() =>
         {
@@ -202,7 +210,9 @@ public class ProjectManagementViewModel : ModuleViewModel
         });
         Task.Run(() =>
         {
-            var projects = this.projectService.GetProjects();
+            var projects = ((IProjectService)App.Container.GetService(typeof(IProjectService))).GetProjects();
+            var activityTypes = ((IActivityTypeService)App.Container.GetService(typeof(IActivityTypeService))).GetActivityTypes();
+
             Dispatcher.UIThread.Invoke(() =>
             {
                 this.IsBusy = false;
@@ -210,6 +220,11 @@ public class ProjectManagementViewModel : ModuleViewModel
                 {
                     this.Projects.Clear();
                     this.Projects.AddRange(projects);
+                }
+                lock (this.AvailableActivityTypes)
+                {
+                    this.AvailableActivityTypes.Clear();
+                    this.AvailableActivityTypes.AddRange(activityTypes);
                 }
             });
         });
@@ -356,7 +371,6 @@ public class ProjectManagementViewModel : ModuleViewModel
                 MainViewModel.TimesheetManagement.LoadDataCommand.Execute(Unit.Default);
                 Dispatcher.UIThread.Invoke(() =>
                 {
-
                     if (App.WorkspaceInstance.DataContext is MainViewModel mvm)
                     {
                         mvm.ProjectManagement.LoadProjectCommand.Execute(Unit.Default);
@@ -406,6 +420,11 @@ public class ProjectManagementViewModel : ModuleViewModel
             this.CurrentAttachment.Created = DateTime.UtcNow;
             this.CurrentAttachment.ModifiedBy = App.CurrentUser.Id;
             this.CurrentAttachment.Modified = DateTime.UtcNow;
+
+            if (this.SelectedActivityType != null && this.CurrentAttachment.Name.Trim().ToLower() == this.SelectedActivityType.Name.Trim().ToLower())
+            {
+                this.CurrentAttachment.ActivityTypeId = this.SelectedActivityType.Id;
+            }
 
             var result = false;
             if (this.CurrentAttachment.Id == null)
@@ -478,7 +497,7 @@ public class ProjectManagementViewModel : ModuleViewModel
             valid = false;
             tempText += "- Project Prefix is required";
         }
-        if((this.CurrentProject.ProjectPrefix?.Length ?? 0) > 3)
+        if ((this.CurrentProject.ProjectPrefix?.Length ?? 0) > 3)
         {
             valid = false;
             tempText += "- Project Profix can not be more than 3 characters long";
@@ -524,14 +543,45 @@ public class ProjectManagementViewModel : ModuleViewModel
             }
             var result = this.projectService.InsertProject(CurrentProject);
 
-            Thread.Sleep(1000);
 
             if (result)
             {
+                var b = (IProjectService)App.Container.GetService(typeof(IProjectService));
+                var atsb = (IActivityTypeService)App.Container.GetService(typeof(IActivityTypeService));
+                var insertedProject = ((IProjectService)App.Container.GetService(typeof(IProjectService))).GetProjects()
+                    .Where(x =>
+                        x.CreatedBy == App.CurrentUser.Id &&
+                        x.ProjectName == CurrentProject.ProjectName &&
+                        x.ERFNumber == CurrentProject.ERFNumber
+                     )
+                    .FirstOrDefault();
+
+                var availableTypes = ((IActivityTypeService)App.Container.GetService(typeof(IActivityTypeService))).GetActivityTypes().Where(x => x.IsDefault).ToList();
+                Thread.Sleep(250);
+                var toInsert = new List<Model.ModelSql.Drawing>();
+                foreach (var availableType in availableTypes)
+                {
+                    var activity = new Model.ModelSql.Drawing()
+                    {
+                        ActivityTypeId = availableType.Id,
+                        ProjectId = insertedProject?.Id ?? 0,
+                        Name = availableType.Name,
+                        CreatedBy = App.CurrentUser.Id,
+                        ModifiedBy = App.CurrentUser.Id,
+                        Created = DateTime.UtcNow,
+                        Modified = DateTime.UtcNow
+                    };
+                    toInsert.Add(activity);
+                }
+                var res = this.attachmentService.InsertManyAttachment(toInsert);
+                Thread.Sleep(250);
+
                 Dispatcher.UIThread.Invoke(() =>
                 {
                     this.CloseDialog();
                     MainViewModel.TimesheetManagement.LoadDataCommand.Execute(Unit.Default);
+                    Thread.Sleep(250);
+
                     if (App.WorkspaceInstance.DataContext is MainViewModel mvm)
                     {
                         mvm.ProjectManagement.LoadProjectCommand.Execute(Unit.Default);
@@ -539,6 +589,9 @@ public class ProjectManagementViewModel : ModuleViewModel
                     }
                     this.CreateToast("Successfully created project", $"Project '{CurrentProject.ProjectName}' was created");
                     this.LoadProjects();
+                    Thread.Sleep(250);
+
+                    this.ViewProject(b.GetProjectById(insertedProject?.Id ?? 0));
                 });
             }
             else

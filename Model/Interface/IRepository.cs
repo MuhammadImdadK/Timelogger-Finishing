@@ -15,6 +15,8 @@ namespace Model.Interface
     {
         bool RunMigrations(IConfigurationRoot config, ILogger<DbContext> logger);
         void InsertModel<T>(T model) where T : class;
+        void InsertModels<T>(IEnumerable<T> model) where T : class;
+
         void ResetChangeTracker();
         void DeleteModel<T>(int modelId) where T : class;
         void DeleteModel<T>(string modelId) where T : class;

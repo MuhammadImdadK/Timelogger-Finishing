@@ -69,10 +69,10 @@
                     </Image.Source>
                   </Image>
                 </Button>
-                <Button Margin="5 0 0 0" Classes="Flat" Background="#3a9c22" Command="{Binding AddAttachmentCommand}">
+                <Button Margin="5 0 0 0" Classes="Flat" Background="#3a9c22" IsVisible="{Binding IsPlanningEngineer}" Command="{Binding AddAttachmentCommand}">
                   <Image Height="24" IsHitTestVisible="False">
                     <Image.Source>
-                      <i:IconImage Value="mdi-paperclip-plus"  Brush="White" />
+                      <i:IconImage Value="mdi-checkbox-marked-circle-plus-outline"  Brush="White" />
                     </Image.Source>
                   </Image>
                 </Button>
@@ -95,16 +95,16 @@
               </StackPanel>
             </Grid>
 
-            <controls:GroupBox IsVisible="{Binding IsAddingAttachment}" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Header="Add Deliverable" Margin="10">
+            <controls:GroupBox IsVisible="{Binding IsAddingAttachment}" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Header="Add Activity" Margin="10">
               <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto">
-                <StackPanel HorizontalAlignment="Left">
+                <StackPanel HorizontalAlignment="Stretch">
                   <TextBlock>Name</TextBlock>
-                  <TextBox HorizontalAlignment="Left" MinWidth="200" MaxWidth="200" Text="{Binding CurrentAttachment.Name}" Watermark="Name"></TextBox>
+                  <AutoCompleteBox HorizontalAlignment="Stretch" MinWidth="200" ItemsSource="{Binding AvailableActivityTypes}" SelectedItem="{Binding SelectedActivityType}" Text="{Binding CurrentAttachment.Name}" Watermark="Name"></AutoCompleteBox>
                 </StackPanel>
-                <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
+                <!--<StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
                   <TextBlock>Description</TextBlock>
                   <TextBox MinHeight="100" MaxHeight="200" Watermark="Description"  Text="{Binding CurrentAttachment.Description}" TextWrapping="WrapWithOverflow" AcceptsReturn="True"></TextBox>
-                </StackPanel>
+                </StackPanel>-->
                 <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Right" Orientation="Horizontal">
                   <Button Margin="5 5 0 5" Background="#cc0000" Command="{Binding CancelAttachmentCommand}">
                     <Image Height="20" IsHitTestVisible="False">
@@ -134,7 +134,7 @@
                 <TextBox IsVisible="{Binding IsEditing}" TextWrapping="WrapWithOverflow" Text="{Binding CurrentProject.Description}" AcceptsReturn="True"></TextBox>
               </Grid>
             </controls:GroupBox>
-            <controls:GroupBox Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Header="Deliverables" Margin="10">
+            <controls:GroupBox Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Header="Activities" Margin="10">
               <DataGrid Margin="10" x:Name="ProjectAttachments" ItemsSource="{Binding CurrentDrawings}"
 									  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MinHeight="300"
 									  IsReadOnly="True" AreRowDetailsFrozen="False">
@@ -146,18 +146,18 @@
                 </DataGrid.Styles>
                 <DataGrid.Columns>
                   <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
-                  <DataGridTextColumn  Header="Description" Binding="{Binding Description}"/>
+                  <!--<DataGridTextColumn  Header="Description" Binding="{Binding Description}"/>-->
                   <DataGridTemplateColumn Header="Actions" IsVisible="{Binding #ProjectEditView((vm:ProjectManagementViewModel)DataContext).IsPlanningEngineer}">
                     <DataGridTemplateColumn.CellTemplate>
                       <DataTemplate>
                         <StackPanel Orientation="Horizontal">
-                          <Button  Margin="5" Classes="Flat" Command="{Binding #ProjectEditView((vm:ProjectManagementViewModel)DataContext).EditDeliverableCommand}" CommandParameter="{Binding}">
+                          <!--<Button  Margin="5" Classes="Flat" Command="{Binding #ProjectEditView((vm:ProjectManagementViewModel)DataContext).EditDeliverableCommand}" CommandParameter="{Binding}">
                             <Image Height="16" IsHitTestVisible="False">
                               <Image.Source>
                                 <i:IconImage Value="mdi-pencil" Brush="White" />
                               </Image.Source>
                             </Image>
-                          </Button>
+                          </Button>-->
                           <Button  Margin="5" Background="{DynamicResource ErrorBrush}" Command="{Binding #ProjectEditView((vm:ProjectManagementViewModel)DataContext).DeleteDeliverableCommand}" CommandParameter="{Binding}">
                             <Image Height="16" IsHitTestVisible="False">
                               <Image.Source>
@@ -181,7 +181,7 @@
       <Border Grid.Column="1" BorderBrush="{DynamicResource ThemeAccentBrush4}" Background="{DynamicResource ThemeAccentBrush4}" Width="2" BorderThickness="1" VerticalAlignment="Stretch" Margin="5 25 5 25"></Border>
       <controls:GroupBox Grid.Column="2" Margin="5" Header="Details" MinWidth="200">
         <Grid ColumnDefinitions="*, Auto" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
-          <Button Margin="0 0 0 10" IsVisible="{Binding CurrentProject.IsActive}" Command="{Binding MarkProjectAsClosedCommand}" >Complete Project</Button>
+          <Button Margin="0 0 0 10" IsVisible="{Binding CurrentProject.IsActive}" IsEnabled="{Binding IsPlanningEngineer}" Command="{Binding MarkProjectAsClosedCommand}" >Complete Project</Button>
           <TextBlock Grid.Row="1" FontWeight="Bold">Created By:</TextBlock>
           <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding CreatedByUser}"/>
           <TextBlock Grid.Row="2" FontWeight="Bold">Created On:</TextBlock>
@@ -193,7 +193,8 @@
           <TextBlock Grid.Row="5" Grid.Column="1" Text="{Binding CurrentProject.ModifiedLocalString}"/>
           <Separator Margin="0 5 0 5" Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Background="{DynamicResource ThemeAccentBrush4}"/>
           <TextBlock  Grid.Row="7" Grid.Column="0" FontWeight="Bold">Estimated Man-hours</TextBlock>
-          <NumericUpDown IsEnabled="{Binding IsEditing}" Margin="5" Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" theme:NumericUpDownExtensions.Unit="hours" Minimum="0" Increment="0.5" Value="{Binding CurrentProject.ManhourBudget}" />
+          <NumericUpDown IsVisible="{Binding IsPlanningEngineer}" IsEnabled="{Binding IsEditing}" Margin="5" Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" theme:NumericUpDownExtensions.Unit="hours" Minimum="0" Increment="0.5" Value="{Binding CurrentProject.ManhourBudget}" />
+          <NumericUpDown IsVisible="{Binding !IsPlanningEngineer}" IsEnabled="False" Margin="5" Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" theme:NumericUpDownExtensions.Unit="hours" Minimum="0" Increment="0.5" Value="{Binding CurrentProject.ManhourBudget}" />
           <!--<TextBlock Grid.Row="9" FontWeight="Bold">Status</TextBlock>
           <TextBlock Grid.Row="9" Grid.Column="1" Foreground="{Binding ApprovalStateBrush}" Text="{Binding ApprovalState}" FontWeight="Bold"/>
           <Button Grid.Row="10" Margin="0 10 0 0" IsVisible="{Binding CanSubmit}" Command="{Binding SubmitBudgetCommand}">

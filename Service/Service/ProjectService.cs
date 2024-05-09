@@ -29,7 +29,7 @@ namespace Service.Service
 
         public List<Project> GetProjects()
         {
-            List<Project> response = repository.GetQueryableWithOutTracking<Project>()
+            List<Project> response = repository.GetQueryableWithOutTracking<Project>().ToList()
                 .OrderByDescending(x => x.Modified)
                 .ToList();
             return response;

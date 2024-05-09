@@ -14,11 +14,6 @@
              xmlns:sqlModels="clr-namespace:Common.Enums;assembly=Model"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:DataType="vm:DesignationManagementViewModel">
-  <Design.DataContext>
-    <!-- This only sets the DataContext for the previewer in an IDE,
-         to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-    <vm:DesignationManagementViewModel />
-  </Design.DataContext>
   <ScrollViewer x:Name="ScrollView" VerticalScrollBarVisibility="Visible" MaxHeight="380" Margin="0 0 0 20">
     <suki:GroupBox>
       <suki:GroupBox.Header>

@@ -63,6 +63,18 @@ namespace Model.Repository
             }
         }
 
+        public void InsertModels<T>(IEnumerable<T> model) where T : class
+        {
+            try
+            {
+                _DbContext.Set<T>().AddRange(model);
+            }
+            catch (Exception ex)
+            {
+                this.logger.LogError("Failed to insert {type}: {message} {exception}", typeof(T), ex.Message, ex);
+                throw;
+            }
+        }
 
         public void ResetChangeTracker()
         {

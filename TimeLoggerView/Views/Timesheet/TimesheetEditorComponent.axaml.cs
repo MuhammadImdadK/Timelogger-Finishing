@@ -8,5 +8,12 @@ namespace TimeLoggerView.Views
         {
             InitializeComponent();
         }
+
+        private void AutoCompleteBox_GotFocus(object? sender, Avalonia.Input.GotFocusEventArgs e)
+        {
+            this.DeliverableAuto.MinimumPrefixLength = 1;
+            this.DeliverableAuto.IsDropDownOpen = true;
+
+        }
     }
 }

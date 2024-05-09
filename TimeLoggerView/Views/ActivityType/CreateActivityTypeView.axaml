@@ -1,0 +1,54 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             x:Class="Pec.ProjectManagement.Ui.Views.Designations.CreateActivityTypeView"
+             xmlns:i="https://github.com/projektanker/icons.avalonia"
+             xmlns:vm="clr-namespace:TimeLoggerView.ViewModels"
+             xmlns:suki="clr-namespace:SukiUI.Controls;assembly=SukiUI"
+             xmlns:models="clr-namespace:SukiUI.Models;assembly=SukiUI"
+             xmlns:objectModel="clr-namespace:System.Collections.ObjectModel;assembly=System"
+             xmlns:theme="clr-namespace:SukiUI.Theme;assembly=SukiUI"
+             xmlns:views="using:TimeLoggerView.Views"
+             xmlns:converters="clr-namespace:Pec.ProjectManagement.Ui.Converters;assembly=Pec.ProjectManagement.Ui"
+             xmlns:sqlModels="clr-namespace:Common.Enums;assembly=Model"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:DataType="vm:ActivityTypeManagementViewModel">
+  <ScrollViewer x:Name="ScrollView" VerticalScrollBarVisibility="Visible" MaxHeight="380" Margin="0 0 0 20">
+    <suki:GroupBox>
+      <suki:GroupBox.Header>
+        <StackPanel Orientation="Horizontal">
+          <TextBlock MinWidth="200" MaxWidth="200" VerticalAlignment="Center" Margin="5 10 0 0" FontSize="16" FontWeight="Bold">Activity Type Editor</TextBlock>
+        </StackPanel>
+      </suki:GroupBox.Header>
+      <Grid RowDefinitions="Auto, Auto, Auto, Auto, *, Auto">
+        <Grid Grid.Row="0" RowDefinitions="Auto,Auto" ColumnDefinitions="*,*">
+          <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding ErrorText}" Foreground="{DynamicResource ErrorBrush}" />
+          <StackPanel Grid.Row="1" Grid.Column="0" Margin="10">
+            <TextBlock MinWidth="200" MaxWidth="200" Text="Activity Type Name" />
+            <TextBox MinWidth="200" MaxWidth="200" Watermark="Activity Type Name" Text="{Binding ModifyingUser.Name}"  x:Name="txtEmployeeNumber"/>
+          </StackPanel>
+          <StackPanel Grid.Row="1" Grid.Column="1" Margin="10" VerticalAlignment="Center">
+            <CheckBox Background="DarkGray" Margin="10 20 10 10" VerticalAlignment="Center" IsChecked="{Binding ModifyingUser.IsDefault}">
+              <TextBlock  Text="Add To Projects By Default">
+              </TextBlock>
+            </CheckBox>
+          </StackPanel>
+        </Grid>
+        <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,20,0,10">
+          <Button
+            x:Name="btnCancel"
+            Content="Cancel"
+            Command="{Binding CloseDialogCommand}"/>
+          <Button
+            Classes="Flat"
+            x:Name="btnAdd"
+            Command="{Binding PerformEditCommand}"
+            Content="{Binding PrimaryActionText}"
+            Margin="5,0,5,0"/>
+        </StackPanel>
+      </Grid>
+
+    </suki:GroupBox>
+  </ScrollViewer>
+</UserControl>

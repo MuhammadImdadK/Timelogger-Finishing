@@ -22,22 +22,26 @@ namespace Model.ModelSql
         public bool IsVisibleToUser { get; set; }
 
         public int? DeliverableID { get; set; }
+        public int? DeliverableDrawingTypeID { get; set; }
+
         [NotMapped]
         public string StartDateTimeLocalString => StartDateTime != null
             ? ((DateTime)StartDateTime).ToLocalTime().ToString("f", CultureInfo.CurrentCulture)
             : "Unknown";
+
         public DateTime? EndDateTime { get; set; }
+        
         [NotMapped]
         public string EndDateTimeLocalString => EndDateTime != null
         ? ((DateTime)EndDateTime).ToLocalTime().ToString("f", CultureInfo.CurrentCulture)
         : "Unknown";
+        
         public TimeSpan Duration { get; set; }
         public TimeLogStatus? TimeLogStatus { get; set; }
         public string? Comment { get; set; }
 
         //Other Fields
         public DisciplineType? DisciplineType{ get; set; }
-        public DrawingType? DrawingType { get; set; }
         public ScopeType? ScopeType { get; set; }
         public TeamType? TeamType { get; set; }
 
@@ -56,6 +60,9 @@ namespace Model.ModelSql
 
         [ForeignKey("DeliverableID")]
         public virtual Drawing? Deliverable { get; set; }
+
+        [ForeignKey("DeliverableDrawingTypeID")]
+        public virtual DeliverableDrawingType? DeliverableDrawingType { get; set; }
 
         public override string ToString()
         {

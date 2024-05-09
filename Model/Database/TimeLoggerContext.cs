@@ -39,6 +39,8 @@ namespace Model.Database
         public DbSet<User> Users { get; set; }
         public DbSet<Designation> Designations { get; set; }
         public DbSet<DesignationRates> DesignationRates { get; set; }
+        public DbSet<ActivityType> ActivityTypes { get; set; }
+        public DbSet<DeliverableDrawingType> DeliverableDrawingTypes { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

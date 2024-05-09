@@ -19,6 +19,7 @@ using Model.ModelSql;
 using Pec.ProjectManagement.Ui.Views;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
+using System.Security.Authentication.ExtendedProtection;
 
 namespace TimeLoggerView;
 
@@ -73,6 +74,8 @@ public partial class App : Application
         services.AddTransient<IRequestCommentService, RequestCommentService>();
         services.AddTransient<IDesignationService, DesignationService>();
         services.AddTransient<IDesignationRateService, DesignationRateService>();
+        services.AddTransient<IActivityTypeService, ActivityTypeService>();
+        services.AddTransient<IDeliverableDrawingTypeService, DeliverableDrawingTypeService>();
         var provider = services.BuildServiceProvider();
 
 

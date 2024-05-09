@@ -28,6 +28,7 @@ public class RequestsViewModel : ModuleViewModel
     private readonly ITimeLogService timeLogService;
     private readonly IProjectService projectService;
     private readonly IAttachmentService attachmentService;
+    private readonly IDeliverableDrawingTypeService deliverableService;
     private bool isUser;
     private bool isPlanningEngineer;
     private bool isNewTimeLog;
@@ -46,9 +47,9 @@ public class RequestsViewModel : ModuleViewModel
     private Project? selectedProject;
     private Drawing selectedDeliverable;
     private DisciplineType? disciplineType;
-    private DrawingType? drawingType;
     private ScopeType? scopeType;
     private TeamType? teamType;
+    private DeliverableDrawingType? selectedDeliverableType;
 
     public bool IsUser { get => this.isUser; set => this.RaiseAndSetIfChanged(ref this.isUser, value); }
     public bool IsPlanningEngineer { get => this.isPlanningEngineer; set => this.RaiseAndSetIfChanged(ref this.isPlanningEngineer, value); }
@@ -243,17 +244,6 @@ public class RequestsViewModel : ModuleViewModel
         Common.Enums.DisciplineType.IE,
         Common.Enums.DisciplineType.Civil
     };
-    public List<DrawingType> AvailableDrawingTypes { get; } = new List<DrawingType>()
-    {
-        Common.Enums.DrawingType.None,
-        Common.Enums.DrawingType.PipingAndInstrimentDiagram,
-        Common.Enums.DrawingType.CauseAndEffect,
-        Common.Enums.DrawingType.ProcessFlowDiagram,
-        Common.Enums.DrawingType.MasterEquipmentList,
-        Common.Enums.DrawingType.MasterLinetList,
-        Common.Enums.DrawingType.Calculation,
-        Common.Enums.DrawingType.Report
-    };
     public List<ScopeType> AvailableScopeTypes { get; } = new List<ScopeType>()
     {
         Common.Enums.ScopeType.None,
@@ -274,7 +264,6 @@ public class RequestsViewModel : ModuleViewModel
     public ObservableCollection<Drawing> AvailableDeliverables { get; set; } = new();
     public ObservableCollection<User> Users { get; set; } = new();
     public DisciplineType? DisciplineType { get => disciplineType; set => this.RaiseAndSetIfChanged(ref disciplineType, value); }
-    public DrawingType? DrawingType { get => drawingType; set => this.RaiseAndSetIfChanged(ref drawingType, value); }
     public ScopeType? ScopeType { get => scopeType; set => this.RaiseAndSetIfChanged(ref scopeType, value); }
     public TeamType? TeamType { get => teamType; set => this.RaiseAndSetIfChanged(ref teamType, value); }
 
@@ -286,6 +275,7 @@ public class RequestsViewModel : ModuleViewModel
         this.timeLogService = (ITimeLogService)App.Container.GetService(typeof(ITimeLogService));
         this.projectService = (IProjectService)App.Container.GetService(typeof(IProjectService));
         this.attachmentService = (IAttachmentService)App.Container.GetService(typeof(IAttachmentService));
+        this.deliverableService = (IDeliverableDrawingTypeService)App.Container.GetService(typeof(IDeliverableDrawingTypeService));
         this.IsUser = App.CurrentUser.RoleID == UserRoleId;
         this.IsPlanningEngineer = App.CurrentUser.RoleID == PlanningEngineerRoleId || App.CurrentUser.RoleID == 1;
         this.ReloadRequestsCommand = ReactiveCommand.Create(LoadRequests);
@@ -303,6 +293,8 @@ public class RequestsViewModel : ModuleViewModel
     {
         Project? reattach = null;
         Drawing? reattachDeliverable = null;
+        DeliverableDrawingType? reattachDeliverableType = null;
+
         if (SelectedProject != null)
         {
             reattach = SelectedProject;
@@ -321,8 +313,9 @@ public class RequestsViewModel : ModuleViewModel
         Task.Run(() =>
         {
             var availableUsers = this.userService.GetUsers();
-            var availableProjects = this.projectService.GetProjects();
+            var availableProjects = ((IProjectService)App.Container.GetService(typeof(IProjectService))).GetProjects();
             var availableDeliverables = this.attachmentService.GetDrawings();
+            var availableDeliverableDrawingTypes = this.deliverableService.GetDeliverableDrawingTypes();
 
             Dispatcher.UIThread.Invoke(() =>
             {
@@ -395,7 +388,8 @@ public class RequestsViewModel : ModuleViewModel
                 this.AvailablePlanningEngineers.AddRange(availableUsers.Where(itm => itm.RoleID == PlanningEngineerRoleId));
                 this.AvailableTimelogs.Clear();
                 this.AvailableTimelogs.AddRange(availableTimelogs);
-
+                this.AvailableDeliverableTypes.Clear();
+                this.AvailableDeliverableTypes.AddRange(availableDeliverableDrawingTypes);
                 this.AvailableProjects.Clear();
                 this.AvailableProjects.AddRange(availableProjects);
                 this.AvailableRequests.AddRange(requests);
@@ -414,6 +408,10 @@ public class RequestsViewModel : ModuleViewModel
                 {
                     this.SelectedDeliverable = this.AvailableDeliverables.FirstOrDefault(itm => itm.Id == reattachDeliverable.Id) ?? new();
                 }
+                if (reattachDeliverableType != null)
+                {
+                    this.SelectedDeliverableType = this.AvailableDeliverableTypes.FirstOrDefault(itm => itm.Id == reattachDeliverableType.Id) ?? new();
+                }
             });
         });
     }
@@ -429,7 +427,6 @@ public class RequestsViewModel : ModuleViewModel
         this.IsNewTimeLog = false;
         this.IsAddingEndTime = true;
         this.DisciplineType = null;
-        this.DrawingType = null;
         this.TeamType = null;
         this.ScopeType = null;
 
@@ -509,17 +506,17 @@ public class RequestsViewModel : ModuleViewModel
                 }
                 if (this.SelectedDeliverable == null)
                 {
+                    tempText += "- An Activity must be selected\n";
+                    valid = false;
+                }
+                if (this.SelectedDeliverableType == null)
+                {
                     tempText += "- A Deliverable must be selected\n";
                     valid = false;
                 }
                 if (this.DisciplineType == null)
                 {
                     tempText += "- A discipline type must be selected\n";
-                    valid = false;
-                }
-                if (this.DrawingType == null)
-                {
-                    tempText += "- A drawing type must be selected\n";
                     valid = false;
                 }
                 if (this.ScopeType == null)
@@ -567,9 +564,9 @@ public class RequestsViewModel : ModuleViewModel
                     tl.ModifiedBy = App.CurrentUser.Id;
                     tl.ProjectID = SelectedProject?.Id ?? 0;
                     tl.DeliverableID = SelectedDeliverable?.Id ?? 0;
+                    tl.DeliverableDrawingTypeID = SelectedDeliverableType?.Id ?? 0;
                     tl.UserID = App.CurrentUser.Id ?? 0;
                     tl.DisciplineType = this.DisciplineType;
-                    tl.DrawingType = this.DrawingType;
                     tl.ScopeType = this.ScopeType;
                     tl.TeamType = this.TeamType;
                     tl.StartDateTime = (this.StartDateTime ?? DateTime.UtcNow).ToUniversalTime();
@@ -608,7 +605,6 @@ public class RequestsViewModel : ModuleViewModel
                 CurrentRequest.PlanningEngineerID = this.CurrentRequest.PlanningEngineer.Id;
                 this.CurrentRequest.PlanningEngineer = null;
             }
-
 
             this.CurrentRequest.UserID = App.CurrentUser.Id ?? 0;
             var response = false;
@@ -811,4 +807,7 @@ public class RequestsViewModel : ModuleViewModel
 
         return this.requestCommentService.InsertRequestComment(comment);
     }
+
+    public ObservableCollection<DeliverableDrawingType> AvailableDeliverableTypes { get; set; } = new();
+    public DeliverableDrawingType? SelectedDeliverableType { get => selectedDeliverableType; set => this.RaiseAndSetIfChanged(ref this.selectedDeliverableType, value); }
 }

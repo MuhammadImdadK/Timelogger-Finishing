@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ConsoleReportGenerator": {
+      "commandName": "Project",
+      "commandLineArgs": "g -i a.json -o dylan.eddies@entaingroup.com -y email -t IntegrationTest --email-subject \"$CI_PROJECT_NAME - Test Results\""
+    }
+  }
+}

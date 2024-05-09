@@ -28,7 +28,6 @@ public class DesignationManagementViewModel : ModuleViewModel
     private readonly IDesignationService designationService;
     private readonly IDesignationRateService designationRateService;
     private readonly IUserService userService;
-    private readonly UserManagementViewModel? userModel;
     private User currentUser;
     private string busyText = "Loading Designations";
     private bool isBusy = true;
@@ -38,7 +37,7 @@ public class DesignationManagementViewModel : ModuleViewModel
     private string searchTerm;
     private string primaryActionText = "Add";
 
-    public DesignationManagementViewModel(UserManagementViewModel? userModel = null)
+    public DesignationManagementViewModel()
     {
         this.designationService = (IDesignationService)App.Container.GetService(typeof(IDesignationService));
         this.designationRateService = (IDesignationRateService)App.Container.GetService(typeof(IDesignationRateService));
@@ -52,7 +51,6 @@ public class DesignationManagementViewModel : ModuleViewModel
         this.PerformSearchCommand = ReactiveCommand.Create(this.PerformSearch);
         this.CurrentUser = App.CurrentUser;
         this.LoadUsers();
-        this.userModel = userModel;
     }
 
     public ICommand AddUserCommand { get; }
@@ -353,14 +351,19 @@ public class DesignationManagementViewModel : ModuleViewModel
                     tb.Margin = new(5);
                     SukiHost.ShowToast(App.WorkspaceInstance, new("Successfully deleted designation", tb, TimeSpan.FromSeconds(5), null));
                     this.LoadUsers();
-                    this.userModel!.LoadUsers();
+                    this.UpdateUsers?.Invoke(this, EventArgs.Empty);
                 });
             });
         }
     }
 
+    public EventHandler UpdateUsers;
+
     private void CloseDialog()
     {
-        SukiHost.CloseDialog(App.WorkspaceInstance);
+        Dispatcher.UIThread.Invoke(() =>
+        {
+            SukiHost.CloseDialog(App.WorkspaceInstance);
+        });
     }
 }

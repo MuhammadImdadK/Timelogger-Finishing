@@ -13,11 +13,6 @@
              x:Class="Pec.ProjectManagement.Ui.Views.Designations.ConfirmDesignationDeletion"
              x:DataType="vm:DesignationManagementViewModel">
 
-  <Design.DataContext>
-    <!-- This only sets the DataContext for the previewer in an IDE,
-         to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-    <vm:DesignationManagementViewModel />
-  </Design.DataContext>
   <suki:GroupBox>
     <suki:GroupBox.Header>
       <StackPanel Orientation="Horizontal">

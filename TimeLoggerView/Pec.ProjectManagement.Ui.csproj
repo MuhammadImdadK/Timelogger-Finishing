@@ -29,6 +29,7 @@
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="11.0.6" />
     <PackageReference Include="Avalonia.Fonts.Inter" Version="11.0.6" />
+    <PackageReference Include="Avalonia.HtmlRenderer" Version="11.0.0" />
     <PackageReference Include="Avalonia.ReactiveUI" Version="11.0.6" />
     <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
     <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.0.6" />
@@ -47,11 +48,24 @@
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj" />
     <ProjectReference Include="..\Model\Model.csproj" />
+    <ProjectReference Include="..\ReportGenerator\ReportGenerator.csproj" />
     <ProjectReference Include="..\Service\Service.csproj" />
     <ProjectReference Include="..\Session\Session.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Views\DeliverableType\ConfirmDeliverableTypeDeletion.axaml.cs">
+      <DependentUpon>ConfirmDeliverableTypeDeletion.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\DeliverableType\CreateDeliverableTypeView.axaml.cs">
+      <DependentUpon>CreateDeliverableTypeView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\ActivityType\ConfirmActivityTypeDeletion.axaml.cs">
+      <DependentUpon>ConfirmActivityTypeDeletion.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\ActivityType\CreateActivityTypeView.axaml.cs">
+      <DependentUpon>CreateActivityTypeView.axaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\Projects\ProjectView.axaml.cs">
       <DependentUpon>ProjectView.axaml</DependentUpon>
     </Compile>

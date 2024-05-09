@@ -21,13 +21,13 @@
   </Design.DataContext>
   <ScrollViewer VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
     <suki:BusyArea IsBusy="{Binding IsBusy}" BusyText="{Binding BusyText}">
-      <suki:GlassCard VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="5">
+      <suki:GlassCard VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="10">
         <suki:GroupBox VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
           <suki:GroupBox.Header>
             <Grid ColumnDefinitions="*, Auto">
-              <TextBlock VerticalAlignment="Center">Requests</TextBlock>
+              <TextBlock VerticalAlignment="Center" FontWeight="Bold">Requests</TextBlock>
               <StackPanel Grid.Column="1" HorizontalAlignment="Right" Orientation="Horizontal">
-                <Button  Classes="Flat"  Command="{Binding ReloadRequestsCommand}">
+                <Button theme:ButtonExtensions.ShowProgress="{Binding IsBusy}"  Classes="Flat"  Command="{Binding ReloadRequestsCommand}">
                   <Image Height="16" IsHitTestVisible="False">
                     <Image.Source>
                       <i:IconImage Value="mdi-refresh" Brush="White" />

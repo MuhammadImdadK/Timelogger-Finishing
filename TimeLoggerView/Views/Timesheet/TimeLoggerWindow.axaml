@@ -31,7 +31,7 @@
     <Grid RowDefinitions="Auto,Auto">
       <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Visible" MaxHeight="480" IsVisible="{Binding !TimerRunning}">
         <StackPanel>
-          <Button Classes="Flat" Command="{Binding LoadDataCommand}">
+          <Button theme:ButtonExtensions.ShowProgress="{Binding IsBusy}" Classes="Flat" Command="{Binding LoadDataCommand}">
             <StackPanel Orientation="Horizontal">
               <Image>
                 <Image.Source>

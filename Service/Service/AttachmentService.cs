@@ -72,5 +72,20 @@ namespace Service.Service
                 return false;
             }
         }
+
+        public bool InsertManyAttachment(List<Drawing> toInsert)
+        {
+            try
+            {
+                repository.InsertModels(toInsert);
+                return repository.Save() > 0;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Failed to insert deliverable: {message} {exception}", ex.Message, ex);
+                return false;
+            }
+        }
+
     }
 }
