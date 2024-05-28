@@ -16,11 +16,20 @@
 
   <ItemGroup>
     <PackageReference Include="Avalonia.Desktop" Version="11.0.6" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
+    <PackageReference Include="NLog" Version="5.2.3" />
+    <PackageReference Include="NLog.Extensions.Logging" Version="5.2.3" />
     <PackageReference Include="Projektanker.Icons.Avalonia" Version="9.1.1" />
     <PackageReference Include="Projektanker.Icons.Avalonia.MaterialDesign" Version="9.1.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\TimeLoggerView\Pec.ProjectManagement.Ui.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="nlog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>

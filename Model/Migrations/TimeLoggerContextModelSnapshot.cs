@@ -22,6 +22,45 @@ namespace Model.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("Model.ModelSql.ActivityType", b =>
+                {
+                    b.Property<int?>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int?>("Id"));
+
+                    b.Property<DateTime?>("Created")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int?>("CreatedBy")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsDefault")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("Modified")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int?>("ModifiedBy")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedBy");
+
+                    b.HasIndex("ModifiedBy");
+
+                    b.ToTable("ActivityTypes");
+                });
+
             modelBuilder.Entity("Model.ModelSql.Audit", b =>
                 {
                     b.Property<int?>("Id")
@@ -81,6 +120,42 @@ namespace Model.Migrations
                     b.HasIndex("UserID");
 
                     b.ToTable("Audits");
+                });
+
+            modelBuilder.Entity("Model.ModelSql.DeliverableDrawingType", b =>
+                {
+                    b.Property<int?>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int?>("Id"));
+
+                    b.Property<DateTime?>("Created")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int?>("CreatedBy")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("Modified")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int?>("ModifiedBy")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedBy");
+
+                    b.HasIndex("ModifiedBy");
+
+                    b.ToTable("DeliverableDrawingTypes");
                 });
 
             modelBuilder.Entity("Model.ModelSql.Designation", b =>
@@ -156,15 +231,14 @@ namespace Model.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int?>("Id"));
 
+                    b.Property<int?>("ActivityTypeId")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime?>("Created")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int?>("CreatedBy")
                         .HasColumnType("integer");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
@@ -183,6 +257,8 @@ namespace Model.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ActivityTypeId");
 
                     b.HasIndex("CreatedBy");
 
@@ -266,6 +342,9 @@ namespace Model.Migrations
                     b.Property<string>("ProjectName")
                         .HasColumnType("text");
 
+                    b.Property<string>("ProjectPrefix")
+                        .HasColumnType("text");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CreatedBy");
@@ -296,6 +375,9 @@ namespace Model.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsNewTimeLog")
                         .HasColumnType("boolean");
 
                     b.Property<DateTime?>("Modified")
@@ -495,13 +577,13 @@ namespace Model.Migrations
                     b.Property<int?>("CreatedBy")
                         .HasColumnType("integer");
 
+                    b.Property<int?>("DeliverableDrawingTypeID")
+                        .HasColumnType("integer");
+
                     b.Property<int?>("DeliverableID")
                         .HasColumnType("integer");
 
-                    b.Property<int>("DisciplineType")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("DrawingType")
+                    b.Property<int?>("DisciplineType")
                         .HasColumnType("integer");
 
                     b.Property<TimeSpan>("Duration")
@@ -513,6 +595,12 @@ namespace Model.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
+                    b.Property<bool>("IsNewTimeLog")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsVisibleToUser")
+                        .HasColumnType("boolean");
+
                     b.Property<DateTime?>("Modified")
                         .HasColumnType("timestamp with time zone");
 
@@ -522,13 +610,13 @@ namespace Model.Migrations
                     b.Property<int>("ProjectID")
                         .HasColumnType("integer");
 
-                    b.Property<int>("ScopeType")
+                    b.Property<int?>("ScopeType")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("StartDateTime")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("TeamType")
+                    b.Property<int?>("TeamType")
                         .HasColumnType("integer");
 
                     b.Property<int?>("TimeLogStatus")
@@ -540,6 +628,8 @@ namespace Model.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CreatedBy");
+
+                    b.HasIndex("DeliverableDrawingTypeID");
 
                     b.HasIndex("DeliverableID");
 
@@ -624,6 +714,21 @@ namespace Model.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("Model.ModelSql.ActivityType", b =>
+                {
+                    b.HasOne("Model.ModelSql.User", "CreatedByUser")
+                        .WithMany()
+                        .HasForeignKey("CreatedBy");
+
+                    b.HasOne("Model.ModelSql.User", "ModifiedByUser")
+                        .WithMany()
+                        .HasForeignKey("ModifiedBy");
+
+                    b.Navigation("CreatedByUser");
+
+                    b.Navigation("ModifiedByUser");
+                });
+
             modelBuilder.Entity("Model.ModelSql.Audit", b =>
                 {
                     b.HasOne("Model.ModelSql.User", "CreatedByUser")
@@ -647,6 +752,21 @@ namespace Model.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Model.ModelSql.DeliverableDrawingType", b =>
+                {
+                    b.HasOne("Model.ModelSql.User", "CreatedByUser")
+                        .WithMany()
+                        .HasForeignKey("CreatedBy");
+
+                    b.HasOne("Model.ModelSql.User", "ModifiedByUser")
+                        .WithMany()
+                        .HasForeignKey("ModifiedBy");
+
+                    b.Navigation("CreatedByUser");
+
+                    b.Navigation("ModifiedByUser");
+                });
+
             modelBuilder.Entity("Model.ModelSql.DesignationRates", b =>
                 {
                     b.HasOne("Model.ModelSql.Designation", "Designation")
@@ -660,6 +780,10 @@ namespace Model.Migrations
 
             modelBuilder.Entity("Model.ModelSql.Drawing", b =>
                 {
+                    b.HasOne("Model.ModelSql.ActivityType", "ActivityType")
+                        .WithMany()
+                        .HasForeignKey("ActivityTypeId");
+
                     b.HasOne("Model.ModelSql.User", "CreatedByUser")
                         .WithMany()
                         .HasForeignKey("CreatedBy");
@@ -673,6 +797,8 @@ namespace Model.Migrations
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("ActivityType");
 
                     b.Navigation("CreatedByUser");
 
@@ -799,6 +925,10 @@ namespace Model.Migrations
                         .WithMany()
                         .HasForeignKey("CreatedBy");
 
+                    b.HasOne("Model.ModelSql.DeliverableDrawingType", "DeliverableDrawingType")
+                        .WithMany()
+                        .HasForeignKey("DeliverableDrawingTypeID");
+
                     b.HasOne("Model.ModelSql.Drawing", "Deliverable")
                         .WithMany()
                         .HasForeignKey("DeliverableID");
@@ -822,6 +952,8 @@ namespace Model.Migrations
                     b.Navigation("CreatedByUser");
 
                     b.Navigation("Deliverable");
+
+                    b.Navigation("DeliverableDrawingType");
 
                     b.Navigation("ModifiedByUser");
 

@@ -1,10 +1,11 @@
-﻿using Model.Interface;
+﻿using Microsoft.Extensions.Logging;
+using Model.Interface;
 using Model.ModelSql;
 using Service.Interface;
 
 namespace Service.Service
 {
-    public class AttachmentService(IRepository repository) : IAttachmentService
+    public class AttachmentService(IRepository repository, ILogger<AttachmentService> logger) : IAttachmentService
     {
         public List<Drawing> GetDrawings()
         {
@@ -32,6 +33,7 @@ namespace Service.Service
             }
             catch (Exception ex)
             {
+                logger.LogError("Failed to insert deliverable: {message} {exception}", ex.Message, ex);
                 return false;
             }
         }
@@ -44,8 +46,9 @@ namespace Service.Service
                 repository.Save();
                 return true;
             }
-            catch
+            catch (Exception ex)
             {
+                logger.LogError("Failed to update deliverable: {message} {exception}", ex.Message, ex);
                 return false;
             }
         }
@@ -64,8 +67,25 @@ namespace Service.Service
             }
             catch (Exception ex)
             {
+                logger.LogError("Failed to delete deliverable: {message} {exception}", ex.Message, ex);
+
                 return false;
             }
         }
+
+        public bool InsertManyAttachment(List<Drawing> toInsert)
+        {
+            try
+            {
+                repository.InsertModels(toInsert);
+                return repository.Save() > 0;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Failed to insert deliverable: {message} {exception}", ex.Message, ex);
+                return false;
+            }
+        }
+
     }
 }

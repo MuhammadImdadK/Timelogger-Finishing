@@ -9,6 +9,7 @@
              xmlns:objectModel="clr-namespace:System.Collections.ObjectModel;assembly=System"
              xmlns:theme="clr-namespace:SukiUI.Theme;assembly=SukiUI"
              xmlns:views="using:TimeLoggerView.Views"
+xmlns:modelsql="using:Model.ModelSql"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="TimeLoggerView.Views.UserManagementView"
              x:DataType="vm:UserManagementViewModel">
@@ -19,10 +20,13 @@
     <vm:UserManagementViewModel />
   </Design.DataContext>
   <ScrollViewer VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-    <suki:GlassCard VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="5">
-      <suki:GroupBox Header="User Management" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+    <suki:GlassCard VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="10">
+      <suki:GroupBox VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+        <suki:GroupBox.Header>
+          <TextBlock FontWeight="Bold" Text="System Management" />
+        </suki:GroupBox.Header>
         <TabControl VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-          <TabItem Header="Users" VerticalAlignment="Stretch">
+          <TabItem IsEnabled="{Binding IsAdminUser}" IsVisible="{Binding IsAdminUser}"  Header="Users" VerticalAlignment="Stretch">
             <Grid RowDefinitions="Auto,Auto,Auto,*" ColumnDefinitions="*, Auto, Auto">
               <TextBox Margin="0 10" HorizontalAlignment="Stretch" Watermark="Search" Text="{Binding SearchTerm}"  theme:TextBoxExtensions.AddDeleteButton="True"></TextBox>
               <Button Grid.Column="1" Classes="Flat" Margin="5 15" Command="{Binding PerformSearchCommand}">
@@ -49,7 +53,13 @@
                   <DataGridTextColumn Header="Username" Binding="{Binding Username}"/>
                   <DataGridTextColumn Header="First Name" Binding="{Binding FirstName}"/>
                   <DataGridTextColumn Header="Last Name" Binding="{Binding LastName}"/>
-                  <DataGridTextColumn Header="Designation" Binding="{Binding Designation}"/>
+                  <DataGridTemplateColumn Header="Designation">
+                    <DataGridTemplateColumn.CellTemplate>
+                      <DataTemplate x:DataType="modelsql:User">
+                        <TextBlock Text="{Binding Designation.Name}"/>
+                      </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                  </DataGridTemplateColumn>
                   <DataGridTextColumn Header="Email" Binding="{Binding Email}"/>
                   <DataGridTextColumn Header="Role" Binding="{Binding Role.Name}"/>
                   <DataGridTextColumn Header="Team" Binding="{Binding TeamType,  Converter={StaticResource enumConverter}}">
@@ -81,16 +91,16 @@
               </suki:BusyArea>
             </Grid>
           </TabItem>
-          <TabItem Header="Designations">
-            <Grid RowDefinitions="Auto,Auto,Auto,*" ColumnDefinitions="*, Auto, Auto">
-              <TextBox Margin="0 10" HorizontalAlignment="Stretch" Watermark="Search" Text="{Binding SearchTerm}"  theme:TextBoxExtensions.AddDeleteButton="True"></TextBox>
+          <TabItem IsEnabled="{Binding IsAdminUser}" IsVisible="{Binding IsAdminUser}" Header="Designations">
+            <Grid x:Name="DesignationsRoot"  RowDefinitions="Auto,Auto,Auto,*" ColumnDefinitions="*, Auto, Auto" DataContext="{Binding DesignationModel}">
+              <!--<TextBox Margin="0 10" HorizontalAlignment="Stretch" Watermark="Search" Text="{Binding SearchTerm}"  theme:TextBoxExtensions.AddDeleteButton="True"></TextBox>
               <Button Grid.Column="1" Classes="Flat" Margin="5 15" Command="{Binding PerformSearchCommand}">
                 <Image>
                   <Image.Source>
                     <i:IconImage Value="mdi-magnify" Brush="White" />
                   </Image.Source>
                 </Image>
-              </Button>
+              </Button>-->
               <Button Grid.Column="2" Classes="Flat" Margin="5 15" Background="#3a9c22" Command="{Binding AddUserCommand}">
                 <Image>
                   <Image.Source>
@@ -101,23 +111,126 @@
               <suki:BusyArea Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Name="BusyDesignations" Margin="10"
                        BusyText="{Binding BusyText}"
                        IsBusy="{Binding IsBusy}" VerticalAlignment="Stretch">
-                <DataGrid x:Name="DesignationTable" ItemsSource="{Binding Designations}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MinHeight="300"
+                <DataGrid x:Name="DesignationTable" ItemsSource="{Binding Users}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MinHeight="300"
                         IsReadOnly="True" AreRowDetailsFrozen="False">
                   <DataGrid.Columns>
-                    <DataGridTextColumn Header="Designation Name" Binding="{Binding EmployeeNumber}"/>
+                    <DataGridTextColumn Header="Designation Name" Binding="{Binding Name}"/>
                     <DataGridTemplateColumn Header="Actions">
                       <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                           <StackPanel Orientation="Horizontal">
-                            <Button  Margin="5" Classes="Flat" Click="Edit_Click">
-                              <Image Height="16" PointerPressed="Image_PointerPressed" IsHitTestVisible="False">
+                            <Button  Margin="5" Classes="Flat" Command="{Binding #DesignationsRoot((vm:DesignationManagementViewModel)DataContext).EditUserCommand}" CommandParameter="{Binding}">
+                              <Image Height="16" IsHitTestVisible="False">
                                 <Image.Source>
                                   <i:IconImage Value="mdi-pencil" Brush="White" />
                                 </Image.Source>
                               </Image>
                             </Button>
-                            <Button Margin="4" Background="{DynamicResource ErrorBrush}" Click="Delete_Click">
-                              <Image Height="16" PointerPressed="Image_PointerPressed" IsHitTestVisible="False">
+                            <Button Margin="4" Background="{DynamicResource ErrorBrush}" Command="{Binding #DesignationsRoot((vm:DesignationManagementViewModel)DataContext).DeleteUserCommand}" CommandParameter="{Binding}">
+                              <Image Height="16" IsHitTestVisible="False">
+                                <Image.Source>
+                                  <i:IconImage Value="mdi-delete" Brush="White" />
+                                </Image.Source>
+                              </Image>
+                            </Button>
+                          </StackPanel>
+                        </DataTemplate>
+                      </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                  </DataGrid.Columns>
+                </DataGrid>
+              </suki:BusyArea>
+            </Grid>
+          </TabItem>
+          <TabItem Header="Activity Types" IsSelected="{Binding !IsAdminUser, Mode=OneTime}">
+            <Grid x:Name="ActivityTypesRoot"  RowDefinitions="Auto,Auto,Auto,*" ColumnDefinitions="*, Auto, Auto" DataContext="{Binding ActivityModel}">
+              <!--<TextBox Margin="0 10" HorizontalAlignment="Stretch" Watermark="Search" Text="{Binding SearchTerm}"  theme:TextBoxExtensions.AddDeleteButton="True"></TextBox>
+              <Button Grid.Column="1" Classes="Flat" Margin="5 15" Command="{Binding PerformSearchCommand}">
+                <Image>
+                  <Image.Source>
+                    <i:IconImage Value="mdi-magnify" Brush="White" />
+                  </Image.Source>
+                </Image>
+              </Button>-->
+              <Button Grid.Column="2" Classes="Flat" Margin="5 15" Background="#3a9c22" Command="{Binding AddUserCommand}">
+                <Image>
+                  <Image.Source>
+                    <i:IconImage Value="mdi-checkbox-marked-circle-plus-outline" Brush="White" />
+                  </Image.Source>
+                </Image>
+              </Button>
+              <suki:BusyArea Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Name="BusyActivityTypes" Margin="10"
+                       BusyText="{Binding BusyText}"
+                       IsBusy="{Binding IsBusy}" VerticalAlignment="Stretch">
+                <DataGrid x:Name="ActivityTypeTable" ItemsSource="{Binding Users}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MinHeight="300"
+                        IsReadOnly="True" AreRowDetailsFrozen="False">
+                  <DataGrid.Columns>
+                    <DataGridTextColumn Header="Activity Type Name" Binding="{Binding Name}"/>
+                    <DataGridCheckBoxColumn Header="Added By Default" Binding="{Binding IsDefault}"/>
+                    <DataGridTemplateColumn Header="Actions">
+                      <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                          <StackPanel Orientation="Horizontal">
+                            <Button  Margin="5" Classes="Flat" Command="{Binding #ActivityTypesRoot((vm:ActivityTypeManagementViewModel)DataContext).EditUserCommand}" CommandParameter="{Binding}">
+                              <Image Height="16" IsHitTestVisible="False">
+                                <Image.Source>
+                                  <i:IconImage Value="mdi-pencil" Brush="White" />
+                                </Image.Source>
+                              </Image>
+                            </Button>
+                            <Button Margin="4" Background="{DynamicResource ErrorBrush}" Command="{Binding #ActivityTypesRoot((vm:ActivityTypeManagementViewModel)DataContext).DeleteUserCommand}" CommandParameter="{Binding}">
+                              <Image Height="16" IsHitTestVisible="False">
+                                <Image.Source>
+                                  <i:IconImage Value="mdi-delete" Brush="White" />
+                                </Image.Source>
+                              </Image>
+                            </Button>
+                          </StackPanel>
+                        </DataTemplate>
+                      </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                  </DataGrid.Columns>
+                </DataGrid>
+              </suki:BusyArea>
+            </Grid>
+          </TabItem>
+          <TabItem Header="Deliverable Types">
+            <Grid x:Name="DeliverableTypesRoot"  RowDefinitions="Auto,Auto,Auto,*" ColumnDefinitions="*, Auto, Auto" DataContext="{Binding DeliverablesModel}">
+              <!--<TextBox Margin="0 10" HorizontalAlignment="Stretch" Watermark="Search" Text="{Binding SearchTerm}"  theme:TextBoxExtensions.AddDeleteButton="True"></TextBox>
+              <Button Grid.Column="1" Classes="Flat" Margin="5 15" Command="{Binding PerformSearchCommand}">
+                <Image>
+                  <Image.Source>
+                    <i:IconImage Value="mdi-magnify" Brush="White" />
+                  </Image.Source>
+                </Image>
+              </Button>-->
+              <Button Grid.Column="2" Classes="Flat" Margin="5 15" Background="#3a9c22" Command="{Binding AddUserCommand}">
+                <Image>
+                  <Image.Source>
+                    <i:IconImage Value="mdi-shape-plus" Brush="White" />
+                  </Image.Source>
+                </Image>
+              </Button>
+              <suki:BusyArea Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Name="BusyDeliverableTypes" Margin="10"
+                       BusyText="{Binding BusyText}"
+                       IsBusy="{Binding IsBusy}" VerticalAlignment="Stretch">
+                <DataGrid x:Name="DeliverableTypeTable" ItemsSource="{Binding Users}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MinHeight="300"
+                        IsReadOnly="True" AreRowDetailsFrozen="False">
+                  <DataGrid.Columns>
+                    <DataGridTextColumn Header="Deliverable Type Name" Binding="{Binding Name}"/>
+                    <DataGridTemplateColumn Header="Actions">
+                      <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                          <StackPanel Orientation="Horizontal">
+                            <Button  Margin="5" Classes="Flat" Command="{Binding #DeliverableTypesRoot((vm:DeliverableDrawingTypeManagementViewModel)DataContext).EditUserCommand}" CommandParameter="{Binding}">
+                              <Image Height="16" IsHitTestVisible="False">
+                                <Image.Source>
+                                  <i:IconImage Value="mdi-pencil" Brush="White" />
+                                </Image.Source>
+                              </Image>
+                            </Button>
+                            <Button Margin="4" Background="{DynamicResource ErrorBrush}" Command="{Binding #DeliverableTypesRoot((vm:DeliverableDrawingTypeManagementViewModel)DataContext).DeleteUserCommand}" CommandParameter="{Binding}">
+                              <Image Height="16" IsHitTestVisible="False">
                                 <Image.Source>
                                   <i:IconImage Value="mdi-delete" Brush="White" />
                                 </Image.Source>

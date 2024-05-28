@@ -5,7 +5,7 @@ using Common.Enums;
 
 namespace Model.ModelSql
 {
-    public class DesignationRates
+    public class DesignationRates : ICloneable
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -32,6 +32,11 @@ namespace Model.ModelSql
         public TeamType TeamType { get; set; }
 
         [ForeignKey("DesignationID")]
-        public virtual Designation Designation { get; set; }
+        public virtual Designation? Designation { get; set; }
+
+        public object Clone()
+        {
+            return this.MemberwiseClone();
+        }
     }
 }

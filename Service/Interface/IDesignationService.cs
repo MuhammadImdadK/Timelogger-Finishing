@@ -9,4 +9,12 @@ namespace Service.Interface
         public bool UpdateDesignation(Designation designation);
         public bool DeleteDesignation(Designation designation);
     }
+    public interface IDesignationRateService
+    {
+        public List<DesignationRates> GetAllDesignationsRates();
+        public List<DesignationRates> GetAllRatesByDesignationId(int id);
+        public bool InsertDesignationRate(DesignationRates designationRate);
+        public bool UpdateDesignationRate(DesignationRates designationRate);
+        public bool DeleteDesignationRate(DesignationRates designationRates);
+    }
 }

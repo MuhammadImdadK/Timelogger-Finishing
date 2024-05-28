@@ -6,6 +6,8 @@
              xmlns:vm="clr-namespace:TimeLoggerView.ViewModels"
              xmlns:suki="clr-namespace:SukiUI.Controls;assembly=SukiUI"
              xmlns:models="clr-namespace:SukiUI.Models;assembly=SukiUI"
+             xmlns:enums="clr-namespace:Common.Enums;assembly=Common"
+             xmlns:modelEnums="clr-namespace:Common.Enums;assembly=Model"
              xmlns:objectModel="clr-namespace:System.Collections.ObjectModel;assembly=System"
              xmlns:theme="clr-namespace:SukiUI.Theme;assembly=SukiUI"
              xmlns:views="using:TimeLoggerView.Views"
@@ -15,81 +17,117 @@
   <ScrollViewer VerticalScrollBarVisibility="Visible" VerticalAlignment="Top" MaxHeight="500">
 
     <suki:BusyArea IsBusy="{Binding IsBusy}" BusyText="{Binding BusyText}">
-    <suki:GroupBox Margin="10" Header="Create Request" VerticalAlignment="Stretch">
-        
-      <Grid RowDefinitions="Auto Auto,*,*,Auto" ColumnDefinitions="*,*">
-        <TextBlock Text="{Binding ErrorText}" Foreground="{DynamicResource ErrorBrush}"></TextBlock>
-        <StackPanel Grid.Row="1" HorizontalAlignment="Left">
-          <TextBlock Margin="10">Assign To</TextBlock>
-          <ComboBox HorizontalAlignment="Left" x:Name="ProjectName" Margin="10 0 0 0" MinWidth="300" MaxWidth="425" ItemsSource="{Binding AvailablePlanningEngineers}" SelectedItem="{Binding CurrentRequest.PlanningEngineer}"></ComboBox>
-        </StackPanel>
-        <suki:GroupBox Margin="10" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" Header="Timings">
-          <!--<Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto">
-            <StackPanel HorizontalAlignment="Left">
-              <TextBlock Margin="10">Start Date</TextBlock>
-              <DatePicker Margin="10" MinWidth="200" MaxWidth="200" SelectedDate="{Binding CurrentRequest.StartTimeOffset}" />
-            </StackPanel>
-            <StackPanel HorizontalAlignment="Left" Grid.Column="1" Margin="10 10 0 0">
-              <TextBlock  Text="End Date">
-              </TextBlock>
-              <StackPanel Margin="0 10 0 0" Orientation="Horizontal">
-                <CheckBox Width="30" Height="30" Background="DarkGray" VerticalAlignment="Center" IsChecked="{Binding IsAddingEndTime}">
+      <suki:GroupBox Margin="10" Header="Create Request" VerticalAlignment="Stretch">
 
-                </CheckBox>
-                <DatePicker Margin="10" MinWidth="200" MaxWidth="200" SelectedDate="{Binding CurrentRequest.EndTimeOffset}" IsEnabled="{Binding IsAddingEndTime}" />
-                
+        <Grid RowDefinitions="Auto,Auto, Auto,*,*,Auto" ColumnDefinitions="*,*">
+          <TextBlock Text="{Binding ErrorText}" Foreground="{DynamicResource ErrorBrush}"></TextBlock>
+          <StackPanel Grid.Row="1" HorizontalAlignment="Left">
+            <TextBlock Margin="10">Assign To</TextBlock>
+            <ComboBox HorizontalAlignment="Left" x:Name="ProjectName" Margin="10 0 0 0" MinWidth="300" MaxWidth="425" ItemsSource="{Binding AvailablePlanningEngineers}" SelectedItem="{Binding CurrentRequest.PlanningEngineer}"></ComboBox>
+          </StackPanel>
+          <StackPanel Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center">
+            <CheckBox  VerticalAlignment="Center" Margin="10 38 0 0" IsChecked="{Binding IsNewTimeLog}">
+              <TextBlock >New Time Log?</TextBlock>
+
+            </CheckBox>
+          </StackPanel>
+
+          <suki:GroupBox Margin="10" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" Header="Details" IsVisible="{Binding IsNewTimeLog}">
+            <Grid Grid.Row="1" x:Name="MainView" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="*,*" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+              <StackPanel Margin="10" HorizontalAlignment="Left">
+                <TextBlock>Project</TextBlock>
+                <ComboBox MinWidth="200" MaxWidth="200" ItemsSource="{Binding AvailableProjects}" SelectedItem="{Binding SelectedProject}"></ComboBox>
               </StackPanel>
 
-            </StackPanel>
-            <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Left">
-              <TextBlock Margin="10">Duration</TextBlock>
-              <TimePicker Margin="10" MinWidth="200" SelectedTime="{Binding CurrentRequest.Timestamp}" />
-            </StackPanel>
-          </Grid>-->
-          <Grid Margin="10" IsVisible="{Binding EnteringTimeManually}" ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto">
-            <StackPanel HorizontalAlignment="Left">
-              <TextBlock Margin="10">Start Date</TextBlock>
-              <DatePicker Margin="10" MinWidth="200" MaxWidth="200" SelectedDate="{Binding StartDateTimeOffset}" />
-            </StackPanel>
-            <StackPanel Grid.Column="1" HorizontalAlignment="Left">
-              <TextBlock Margin="10">Starting Time</TextBlock>
-              <TimePicker Margin="10" MinWidth="200" SelectedTime="{Binding StartDateTimeSpan}" />
-            </StackPanel>
-            <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Left">
-              <TextBlock Margin="10">Time Taken</TextBlock>
-              <TimePicker Margin="10" MinWidth="200" HorizontalAlignment="Left" SelectedTime="{Binding Duration}" ClockIdentifier="24HourClock" />
-            </StackPanel>
-            <StackPanel Grid.Row="2">
-              <TextBlock Margin="10">End Date</TextBlock>
-              <TextBlock Margin="10" Text="{Binding EndDateLocalTime}"/>
-            </StackPanel>
-          </Grid>
-        </suki:GroupBox>
-        <suki:GroupBox Margin="10" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="3" Header="Details to Ammend">
-          <Grid RowDefinitions="Auto,Auto">
-            <!--<StackPanel Margin="10">
-              <TextBlock>Request Type</TextBlock>
-              <ComboBox Margin="10" ItemsSource="{Binding AvailableRequestTypes}" SelectedItem="{Binding SelectedRequestType}"></ComboBox>
-            </StackPanel>-->
-            <!--<StackPanel Margin="10" Grid.Row="1" IsVisible="{Binding IsAddingProjectRequest}">
-              <TextBlock>Project</TextBlock>
-              <ComboBox Margin="10" ItemsSource="{Binding AvailableProjects}" SelectedItem="{Binding CurrentRequest.Project}"></ComboBox>
-            </StackPanel>-->
-            <StackPanel Margin="10" Grid.Row="1" IsVisible="{Binding !IsAddingProjectRequest}">
-              <TextBlock>Time Log</TextBlock>
-              <ComboBox Margin="10" ItemsSource="{Binding AvailableTimelogs}" SelectedItem="{Binding CurrentRequest.TimeLog}"></ComboBox>
-            </StackPanel>
-          </Grid>        
-        </suki:GroupBox>
-        <StackPanel Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Right" Orientation="Horizontal">
-          <Button Command="{Binding CloseDialogCommand}">Cancel</Button>
-          <Button Margin="5 0 0 0" Classes="Flat" Command="{Binding SubmitCreateRequestCommand}">
-            <TextBlock Text="{Binding SubmitButtonText}"/>
-          </Button>
-        </StackPanel>
-      </Grid>
-    </suki:GroupBox>
-  </suki:BusyArea>
+              <StackPanel Grid.Row="1" Grid.Column="0" Margin="10" HorizontalAlignment="Left">
+                <TextBlock>Deliverable</TextBlock>
+                <AutoCompleteBox MinWidth="200" MaxWidth="200" ItemsSource="{Binding AvailableDeliverableTypes}" SelectedItem="{Binding SelectedDeliverableType}" />
+              </StackPanel>
+              
+              <StackPanel Grid.Row="1" Grid.Column="1" Margin="10" HorizontalAlignment="Left">
+                <TextBlock>Discipline Type</TextBlock>
+                <ComboBox MinWidth="200" MaxWidth="200" ItemsSource="{Binding AvailableDisciplineTypes}"  SelectedItem="{Binding DisciplineType}">
+                  <ComboBox.ItemTemplate>
+                    <DataTemplate x:DataType="modelEnums:DisciplineType">
+                      <TextBlock Text="{Binding, Converter={StaticResource enumConverter}}" />
+                    </DataTemplate>
+                  </ComboBox.ItemTemplate>
+                </ComboBox>
+              </StackPanel>
+
+              <StackPanel Grid.Row="0" Grid.Column="1" Margin="10" HorizontalAlignment="Left">
+                <TextBlock>Activity</TextBlock>
+                <ComboBox MinWidth="200" MaxWidth="200" ItemsSource="{Binding AvailableDeliverables}" SelectedItem="{Binding SelectedDeliverable}">
+                  <ComboBox.ItemTemplate>
+                    <DataTemplate x:DataType="modelEnums:DrawingType">
+                      <TextBlock Text="{Binding, Converter={StaticResource enumConverter}}" />
+                    </DataTemplate>
+                  </ComboBox.ItemTemplate>
+                </ComboBox>
+              </StackPanel>
+
+              <StackPanel Grid.Row="2" Grid.Column="0" Margin="10" HorizontalAlignment="Left">
+                <TextBlock>Scope Type</TextBlock>
+                <ComboBox MinWidth="200" MaxWidth="200" ItemsSource="{Binding AvailableScopeTypes}"  SelectedItem="{Binding ScopeType}">
+                  <ComboBox.ItemTemplate>
+                    <DataTemplate x:DataType="modelEnums:ScopeType">
+                      <TextBlock Text="{Binding, Converter={StaticResource enumConverter}}" />
+                    </DataTemplate>
+                  </ComboBox.ItemTemplate>
+                </ComboBox>
+              </StackPanel>
+
+              <StackPanel Grid.Row="2" Grid.Column="1" Margin="10" HorizontalAlignment="Left">
+                <TextBlock>Team Type</TextBlock>
+                <ComboBox MinWidth="200" MaxWidth="200" ItemsSource="{Binding AvailableTeamTypes}" SelectedItem="{Binding TeamType}">
+                  <ComboBox.ItemTemplate>
+                    <DataTemplate x:DataType="modelEnums:TeamType">
+                      <TextBlock Text="{Binding, Converter={StaticResource enumConverter}}" />
+                    </DataTemplate>
+                  </ComboBox.ItemTemplate>
+                </ComboBox>
+              </StackPanel>
+            </Grid>
+
+          </suki:GroupBox>
+
+          <suki:GroupBox Margin="10" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="3" Header="Timings">
+            <Grid Margin="10" IsVisible="{Binding EnteringTimeManually}" ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto">
+              <StackPanel HorizontalAlignment="Left">
+                <TextBlock Margin="10">Start Date</TextBlock>
+                <DatePicker Margin="10" MinWidth="200" MaxWidth="200" SelectedDate="{Binding StartDateTimeOffset}" />
+              </StackPanel>
+              <StackPanel Grid.Column="1" HorizontalAlignment="Left">
+                <TextBlock Margin="10">Starting Time</TextBlock>
+                <TimePicker Margin="10" MinWidth="200" SelectedTime="{Binding StartDateTimeSpan}" />
+              </StackPanel>
+              <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Left">
+                <TextBlock Margin="10">Time Taken</TextBlock>
+                <TimePicker Margin="10" MinWidth="200" HorizontalAlignment="Left" SelectedTime="{Binding Duration}" ClockIdentifier="24HourClock" />
+              </StackPanel>
+              <StackPanel Grid.Row="2">
+                <TextBlock Margin="10">End Date</TextBlock>
+                <TextBlock Margin="10" Text="{Binding EndDateLocalTime}"/>
+              </StackPanel>
+            </Grid>
+          </suki:GroupBox>
+          <suki:GroupBox Margin="10" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="4" Header="Details to Ammend" IsVisible="{Binding !IsNewTimeLog}">
+            <Grid RowDefinitions="Auto,Auto">
+              <StackPanel Margin="10" Grid.Row="1" IsVisible="{Binding !IsAddingProjectRequest}">
+                <TextBlock>Time Log</TextBlock>
+                <ComboBox Margin="10" ItemsSource="{Binding AvailableTimelogs}" SelectedItem="{Binding CurrentRequest.TimeLog}"></ComboBox>
+              </StackPanel>
+            </Grid>
+          </suki:GroupBox>
+          <StackPanel Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Right" Orientation="Horizontal">
+            <Button Command="{Binding CloseDialogCommand}">Cancel</Button>
+            <Button Margin="5 0 0 0" Classes="Flat" Command="{Binding SubmitCreateRequestCommand}">
+              <TextBlock Text="{Binding SubmitButtonText}"/>
+            </Button>
+          </StackPanel>
+        </Grid>
+      </suki:GroupBox>
+    </suki:BusyArea>
   </ScrollViewer>
 
 </UserControl>

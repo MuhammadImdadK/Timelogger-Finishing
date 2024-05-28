@@ -3,6 +3,101 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="TimeLoggerView.Views.ReportsMainView">
-  Report main view
+             x:Class="TimeLoggerView.Views.ReportsMainView"
+             xmlns:i="https://github.com/projektanker/icons.avalonia"
+             xmlns:vm="clr-namespace:TimeLoggerView.ViewModels"
+             xmlns:suki="clr-namespace:SukiUI.Controls;assembly=SukiUI"
+             xmlns:models="clr-namespace:SukiUI.Models;assembly=SukiUI"
+             xmlns:objectModel="clr-namespace:System.Collections.ObjectModel;assembly=System"
+             xmlns:theme="clr-namespace:SukiUI.Theme;assembly=SukiUI"
+             xmlns:views="using:TimeLoggerView.Views"
+             xmlns:av="clr-namespace:TheArtOfDev.HtmlRenderer.Avalonia;assembly=Avalonia.HtmlRenderer"
+             x:DataType="vm:ReportsViewModel">
+
+  <Design.DataContext>
+    <!-- This only sets the DataContext for the previewer in an IDE,
+         to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+    <vm:ReportsViewModel />
+  </Design.DataContext>
+  <ScrollViewer VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+    <suki:GlassCard Margin="10">
+      <suki:GroupBox>
+        <suki:GroupBox.Header>
+          <Grid ColumnDefinitions="*, Auto">
+            <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+              <TextBlock VerticalAlignment="Center" FontWeight="Bold" Text="Reports"/>
+              <Image Height="16" Margin="5 0 5 0">
+                <Image.Source>
+                  <i:IconImage Value="mdi-filter" Brush="White"></i:IconImage>
+                </Image.Source>
+              </Image>
+              <ComboBox SelectedIndex="{Binding SelectedReport}" SelectedValue="{Binding SelectedReportText}">
+                <ComboBoxItem>
+                  UEPDH Invoice
+                </ComboBoxItem>
+                <ComboBoxItem>
+                  DH Invoice
+                </ComboBoxItem>
+              </ComboBox>
+              <ComboBox SelectedIndex="{Binding SelectedTeam}" SelectedValue="{Binding SelectedTeamText}">
+                <ComboBoxItem>
+                  Core Team
+                </ComboBoxItem>
+                <ComboBoxItem>
+                  Additional Team
+                </ComboBoxItem>
+              </ComboBox>
+              <DatePicker Classes="Flat" DayVisible="False" SelectedDate="{Binding ReportDate}" />
+            </StackPanel>
+            <Button IsEnabled="{Binding !IsBusy}" theme:ButtonExtensions.ShowProgress="{Binding IsBusy}" MinWidth="170" Classes="Flat" Grid.Column="1" Command="{Binding ReloadRequestsCommand}">
+              <StackPanel Orientation="Horizontal">
+                <Image>
+                  <Image.Source>
+                    <i:IconImage Value="mdi-clock-start" Brush="White"/>
+                  </Image.Source>
+                </Image>
+                <TextBlock Margin="5 0 0 0" VerticalAlignment="Center" Text="Load Report"/>
+              </StackPanel>
+            </Button>
+          </Grid>
+        </suki:GroupBox.Header>
+        
+        <suki:BusyArea IsBusy="{Binding IsBusy}" BusyText="{Binding BusyText}">
+          <Grid>
+          <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,*" IsVisible="{Binding IsReportLoaded}">
+            <Label VerticalAlignment="Top">
+              <TextBlock Text="{Binding ReportString}"></TextBlock>
+            </Label>
+            <!--<Button  MinWidth="170" Classes="Flat" VerticalAlignment="Center" Grid.Column="1" Command="{Binding ExportToExcelCommand}">
+              <ToolTip.Tip>
+                <StackPanel>
+                  <TextBlock IsVisible="{Binding IsDataAvailable}">Export generated report to excel</TextBlock>
+                  <TextBlock IsVisible="{Binding !IsDataAvailable}">No data is available, so an export is not possible.</TextBlock>
+                </StackPanel>
+              </ToolTip.Tip>
+              <StackPanel Orientation="Horizontal">
+                <Image>
+                  <Image.Source>
+                    <i:IconImage Value="mdi-microsoft-excel" Brush="White" />
+                  </Image.Source>
+                </Image>
+                <TextBlock VerticalAlignment="Center" Margin="5 0 0 0">Export to excel</TextBlock>
+              </StackPanel>
+            </Button>-->
+            
+            <Grid IsVisible="{Binding !IsDataAvailable}" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
+              <Label>No data is available for the provided filters.</Label>
+            </Grid>
+            <Grid Margin="10" IsVisible="{Binding IsDataAvailable}" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
+              <av:HtmlPanel Background="#3c3c3c" Text="{Binding ReportHtml}"/>
+            </Grid>
+          </Grid>
+            <Grid IsVisible="{Binding !IsReportLoaded}">
+              <Label>Please load a report to view</Label>
+            </Grid>
+          </Grid>
+        </suki:BusyArea>
+      </suki:GroupBox>
+    </suki:GlassCard>
+  </ScrollViewer>
 </UserControl>

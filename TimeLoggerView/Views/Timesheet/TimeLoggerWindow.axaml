@@ -31,10 +31,20 @@
     <Grid RowDefinitions="Auto,Auto">
       <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Visible" MaxHeight="480" IsVisible="{Binding !TimerRunning}">
         <StackPanel>
-        <TextBlock Grid.Row="0" Text="{Binding ErrorText}" Foreground="{DynamicResource ErrorBrush}" />
-        <Grid x:Name="MainView" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-          <views:TimesheetEditorComponent DataContext="{Binding}"/>
-        </Grid>
+          <Button theme:ButtonExtensions.ShowProgress="{Binding IsBusy}" Classes="Flat" Command="{Binding LoadDataCommand}">
+            <StackPanel Orientation="Horizontal">
+              <Image>
+                <Image.Source>
+                  <i:IconImage Value="mdi-refresh" Brush="White" />
+                </Image.Source>
+              </Image>
+              <TextBlock VerticalAlignment="Center" FontWeight="Bold" Text="Refresh data" Margin="5 0 0 0"/>
+            </StackPanel>
+          </Button>
+          <TextBlock Grid.Row="0" Text="{Binding ErrorText}" Foreground="{DynamicResource ErrorBrush}" />
+          <Grid x:Name="MainView" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <views:TimesheetEditorComponent DataContext="{Binding}"/>
+          </Grid>
         </StackPanel>
       </ScrollViewer>
 
@@ -64,7 +74,8 @@
         </Border>
         <StackPanel Grid.Column="1" VerticalAlignment="Top" Margin="20 10 20 10">
           <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-            <TextBlock Text="ERF-"/>
+            <TextBlock Text="{Binding SelectedProject.ProjectPrefix}"/>
+            <TextBlock Text="-"/>
             <TextBlock Text="{Binding SelectedProject.ERFNumber}"/>
           </StackPanel>
           <TextBlock HorizontalAlignment="Center" FontSize="20" FontWeight="ExtraBold" Text="{Binding TimerString}"/>

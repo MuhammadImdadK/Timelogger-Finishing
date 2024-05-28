@@ -10,6 +10,21 @@ using System.Threading.Tasks;
 
 namespace Model.ModelSql
 {
+    public class ReportData
+    {
+        public TeamType TeamType { get; set; }
+        public IEnumerable<User> Users { get; set; } = new List<User>();
+        public IEnumerable<TimeLog> TimeLogs { get; set; } = new List<TimeLog>();
+        public IEnumerable<Project> Projects { get; set; } = new List<Project>();
+        public IEnumerable<Drawing> Activities { get; set; } = new List<Drawing>();
+        public IEnumerable<ActivityType> ActivityTypes { get; set; } = new List<ActivityType>();
+        public IEnumerable<DeliverableDrawingType> Deliverables { get; set; } = new List<DeliverableDrawingType>();
+        public IEnumerable<Designation> Designations { get; set; } = new List<Designation>();
+        public IEnumerable<DesignationRates> DesignationRates { get; set; } = new List<DesignationRates>();
+        public string Month { get; set; }
+        public DateTimeOffset StartDate { get; set; }
+    }
+
     public class Audit : BasicEntity
     {
         public int UserID { get; set; }

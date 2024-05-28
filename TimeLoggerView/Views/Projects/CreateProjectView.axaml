@@ -20,10 +20,12 @@
         <TextBlock Text="{Binding ErrorText}" Foreground="{DynamicResource ErrorBrush}"></TextBlock>
         <StackPanel Grid.Row="1" HorizontalAlignment="Left">
           <TextBlock Margin="10">
-            ERF Number
+            Project Number
           </TextBlock>
-          <TextBox x:Name="ERFNumber" theme:TextBoxExtensions.Prefix="ERF-" Margin="10 0 0 0" MinWidth="200" MaxWidth="200" Text="{Binding CurrentProject.ERFNumber}"></TextBox>
-
+          <StackPanel Orientation="Horizontal" Margin="10 0 0 0">
+            <TextBox x:Name="ERFPrefix" CornerRadius="5 0 0 5" Margin="0" MinWidth="55" MaxWidth="55" Watermark="ERF" Text="{Binding CurrentProject.ProjectPrefix}"></TextBox>
+            <TextBox x:Name="ERFNumber" CornerRadius=" 0 5 5 0" theme:TextBoxExtensions.Prefix="-" Margin="-10 0 0 0" MinWidth="155" MaxWidth="155" Text="{Binding CurrentProject.ERFNumber}"></TextBox>
+          </StackPanel>
         </StackPanel>
         <StackPanel Grid.Row="2" HorizontalAlignment="Left">
           <TextBlock Margin="10">Project Name</TextBlock>

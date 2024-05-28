@@ -29,6 +29,7 @@
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="11.0.6" />
     <PackageReference Include="Avalonia.Fonts.Inter" Version="11.0.6" />
+    <PackageReference Include="Avalonia.HtmlRenderer" Version="11.0.0" />
     <PackageReference Include="Avalonia.ReactiveUI" Version="11.0.6" />
     <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
     <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.0.6" />
@@ -36,6 +37,9 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
+    <PackageReference Include="NLog" Version="5.2.3" />
+    <PackageReference Include="NLog.Extensions.Logging" Version="5.2.3" />
     <PackageReference Include="Projektanker.Icons.Avalonia" Version="9.1.1" />
     <PackageReference Include="Projektanker.Icons.Avalonia.MaterialDesign" Version="9.1.1" />
     <PackageReference Include="SukiUI" Version="6.0.0-beta4" />
@@ -44,11 +48,24 @@
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj" />
     <ProjectReference Include="..\Model\Model.csproj" />
+    <ProjectReference Include="..\ReportGenerator\ReportGenerator.csproj" />
     <ProjectReference Include="..\Service\Service.csproj" />
     <ProjectReference Include="..\Session\Session.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Views\DeliverableType\ConfirmDeliverableTypeDeletion.axaml.cs">
+      <DependentUpon>ConfirmDeliverableTypeDeletion.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\DeliverableType\CreateDeliverableTypeView.axaml.cs">
+      <DependentUpon>CreateDeliverableTypeView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\ActivityType\ConfirmActivityTypeDeletion.axaml.cs">
+      <DependentUpon>ConfirmActivityTypeDeletion.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\ActivityType\CreateActivityTypeView.axaml.cs">
+      <DependentUpon>CreateActivityTypeView.axaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\Projects\ProjectView.axaml.cs">
       <DependentUpon>ProjectView.axaml</DependentUpon>
     </Compile>

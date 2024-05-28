@@ -35,10 +35,10 @@ namespace TimeLoggerView.Views.Timesheet
                 vm.SelectedProject = null;
                 vm.TeamType = TeamType.None;
                 vm.DisciplineType = DisciplineType.None;
-                vm.DrawingType = DrawingType.None;
                 vm.ScopeType = ScopeType.None;
                 vm.SelectedDeliverable = null;
                 vm.AvailableDeliverables.Clear();
+                vm.TimerString = "00:00:00";
             }
         }
         private bool _mouseDownForWindowMoving = false;

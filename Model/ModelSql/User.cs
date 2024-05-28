@@ -34,7 +34,7 @@ namespace Model.ModelSql
         public virtual Role Role { get; set; }
 
         [ForeignKey("DesignationID")]
-        public virtual Designation Designation { get; set; }
+        public virtual Designation? Designation { get; set; }
 
         public object Clone()
         {
