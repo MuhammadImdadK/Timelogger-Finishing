@@ -10,8 +10,16 @@ using System.Threading.Tasks;
 
 namespace Service.Service
 {
-    public class TimeLogService(IRepository repository, ILogger<TimeLogService> logger) : ITimeLogService
+    public class TimeLogService : ITimeLogService
     {
+
+        IRepository repository;
+        ILogger<TimeLogService> logger;
+        public TimeLogService(IRepository _repository, ILogger<TimeLogService> _logger)
+        {
+            repository = _repository;
+            logger = _logger;
+        }
         public List<TimeLog> GetTimeLogs()
         {
             List<TimeLog> timeLogs = repository.GetQueryableWithOutTracking<TimeLog>()

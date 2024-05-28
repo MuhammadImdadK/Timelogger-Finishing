@@ -2,7 +2,6 @@
 using Model.ModelSql;
 using NLog.Layouts;
 using static System.Formats.Asn1.AsnWriter;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Collections.Generic;
 using System.Diagnostics.Metrics;
 using System.Net.NetworkInformation;

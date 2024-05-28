@@ -5,8 +5,15 @@ using Service.Interface;
 
 namespace Service.Service
 {
-    public class DeliverableDrawingTypeService(IRepository repository, ILogger<AttachmentService> logger) : IDeliverableDrawingTypeService
+    public class DeliverableDrawingTypeService: IDeliverableDrawingTypeService
     {
+        IRepository repository;
+        ILogger<AttachmentService> logger;
+        public DeliverableDrawingTypeService(IRepository _repository, ILogger<AttachmentService> _logger)
+        {
+            repository = _repository;
+            logger = _logger;
+        }
         public bool DeleteDeliverableDrawingType(DeliverableDrawingType deliverableType)
         {
             try

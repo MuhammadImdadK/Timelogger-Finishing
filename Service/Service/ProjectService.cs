@@ -10,8 +10,15 @@ using System.Threading.Tasks;
 
 namespace Service.Service
 {
-    public class ProjectService(IRepository repository, ILogger<ProjectService> logger) : IProjectService
+    public class ProjectService : IProjectService
     {
+        IRepository repository;
+        ILogger<ProjectService> logger;
+        public ProjectService(IRepository _repository, ILogger<ProjectService> _logger)
+        {
+            repository = _repository;
+            logger = _logger;
+        }
         public int? GetLatestProjectId()
         {
             return GetProjects().Max(itm => itm.Id);

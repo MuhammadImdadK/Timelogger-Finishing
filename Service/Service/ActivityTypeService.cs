@@ -5,8 +5,15 @@ using Service.Interface;
 
 namespace Service.Service
 {
-    public class ActivityTypeService(IRepository repository, ILogger<AttachmentService> logger) : IActivityTypeService
+    public class ActivityTypeService : IActivityTypeService
     {
+        IRepository repository;
+        ILogger<AttachmentService> logger;
+        public ActivityTypeService(IRepository _repository, ILogger<AttachmentService> _logger)
+        {
+            repository = _repository;
+            logger = _logger;
+        }
         public bool DeleteActivityType(ActivityType activityType)
         {
             try

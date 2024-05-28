@@ -4,8 +4,13 @@ using Service.Interface;
 
 namespace Service.Service
 {
-    public class RequestCommentService(IRepository repository) : IRequestCommentService
+    public class RequestCommentService : IRequestCommentService
     {
+        IRepository repository;
+        public RequestCommentService(IRepository _repository)
+        {
+                repository=_repository;
+        }
         public List<RequestComment> GetRequestCommentsByRequestId(int projectId)
         {
             List<RequestComment> comments = repository.GetQueryableWithOutTracking<RequestComment>()

@@ -5,8 +5,15 @@ using Service.Interface;
 
 namespace Service.Service
 {
-    public class DesignationRateService(IRepository repository, ILogger<DesignationRateService> logger) : IDesignationRateService
+    public class DesignationRateService: IDesignationRateService
     {
+        IRepository repository;
+        ILogger<DesignationRateService> logger;
+        public DesignationRateService(IRepository _repository, ILogger<DesignationRateService> _logger)
+        {
+            repository = _repository;
+            logger = _logger;
+        }
         public bool DeleteDesignationRate(DesignationRates designationRates)
         {
             try

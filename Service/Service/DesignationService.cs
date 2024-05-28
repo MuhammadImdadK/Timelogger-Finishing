@@ -5,8 +5,15 @@ using Service.Interface;
 
 namespace Service.Service
 {
-    public class DesignationService(IRepository repository, ILogger<DesignationService> logger) : IDesignationService
+    public class DesignationService: IDesignationService
     {
+        IRepository repository;
+        ILogger<DesignationService> logger;
+        public DesignationService(IRepository _repository, ILogger<DesignationService> _logger)
+        {
+            repository = _repository;
+            logger = _logger;
+        }
         public bool DeleteDesignation(Designation designation)
         {
             try

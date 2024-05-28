@@ -10,8 +10,15 @@ using System.Threading.Tasks;
 
 namespace Service.Service
 {
-    public class RequestService(IRepository repository, ILogger<RequestService> logger) : IRequestService
+    public class RequestService: IRequestService
     {
+        IRepository repository;
+        ILogger<RequestService> logger;
+        public RequestService(IRepository _repository, ILogger<RequestService> _logger)
+        {
+            repository = _repository;
+            logger = _logger;
+        }
         public Request? GetRequestById(int id)
         {
             return GetRequests().FirstOrDefault(r => r.Id == id);

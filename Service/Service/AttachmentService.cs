@@ -1,12 +1,20 @@
 ﻿using Microsoft.Extensions.Logging;
 using Model.Interface;
 using Model.ModelSql;
+using NLog;
 using Service.Interface;
 
 namespace Service.Service
 {
-    public class AttachmentService(IRepository repository, ILogger<AttachmentService> logger) : IAttachmentService
+    public class AttachmentService : IAttachmentService
     {
+        IRepository repository;
+        ILogger<AttachmentService> logger;
+        public AttachmentService(IRepository _repository, ILogger<AttachmentService> _logger)
+        {
+            repository = _repository;
+            logger = _logger;
+        }
         public List<Drawing> GetDrawings()
         {
             List<Drawing> response = repository.GetQueryableWithOutTracking<Drawing>()
