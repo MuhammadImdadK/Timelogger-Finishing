@@ -16,20 +16,20 @@
              x:Class="TimeLoggerView.Views.ProjectMainView">
   <ScrollViewer VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
     <suki:BusyArea IsBusy="{Binding IsBusy}" BusyText="{Binding BusyText}">
-      <suki:GlassCard VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="5">
+      <suki:GlassCard VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="10">
         <suki:GroupBox VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
           <suki:GroupBox.Header>
             <Grid ColumnDefinitions="*, Auto">
-              <TextBlock VerticalAlignment="Center">Projects</TextBlock>
+              <TextBlock FontWeight="Bold" VerticalAlignment="Center">Projects</TextBlock>
               <StackPanel Grid.Column="1" Orientation="Horizontal">
-                <Button  Classes="Flat"  Command="{Binding LoadProjectCommand}">
+                <Button theme:ButtonExtensions.ShowProgress="{Binding IsBusy}" Classes="Flat"  Command="{Binding LoadProjectCommand}">
                   <Image Height="16" IsHitTestVisible="False">
                     <Image.Source>
                       <i:IconImage Value="mdi-refresh" Brush="White" />
                     </Image.Source>
                   </Image>
                 </Button>
-                <Button Margin="5 0 0 0" Classes="Flat" Background="#3a9c22" Command="{Binding CreateProjectCommand}">
+                <Button Margin="5 0 0 0" Classes="Flat" IsVisible="{Binding IsPlanningEngineer}" Background="#3a9c22" Command="{Binding CreateProjectCommand}">
                   <Image Height="16" IsHitTestVisible="False">
                     <Image.Source>
                       <i:IconImage Value="mdi-plus" Brush="White" />

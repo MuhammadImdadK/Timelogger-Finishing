@@ -1,4 +1,5 @@
 ﻿using Common.ViewModels;
+using Microsoft.Extensions.Logging;
 using Model.Interface;
 using Model.ModelSql;
 using Service.Interface;
@@ -13,14 +14,17 @@ namespace Service.Service
 {
     public class UserService : IUserService
     {
-        IRepository _repository;
-        public UserService(IRepository repository)
+        IRepository repository;
+        private readonly ILogger<UserService> logger;
+
+        public UserService(IRepository repository, ILogger<UserService> logger)
         {
-            _repository = repository;
+            this.repository = repository;
+            this.logger = logger;
         }
         public List<User> GetUsers(int skip = 0, int take = 0)
         {
-            List<User> response = _repository.GetQueryableWithOutTracking<User>()
+            List<User> response = repository.GetQueryableWithOutTracking<User>()
                 .OrderByDescending(x => x.Modified)
                 //.Skip(skip)
                 //.Take(take)
@@ -31,7 +35,7 @@ namespace Service.Service
 
         public User? GetUserById(int Id)
         {
-            User? response = _repository.GetQueryableWithOutTracking<User>()
+            User? response = repository.GetQueryableWithOutTracking<User>()
                 .Where(x => x.Id.Equals(Id))
                 .FirstOrDefault();
             return response;
@@ -39,27 +43,36 @@ namespace Service.Service
 
         public bool AddUser(User user)
         {
-            _repository.InsertModel(user);
-            return _repository.Save() > 0;
+            try
+            {
+                repository.InsertModel(user);
+                return repository.Save() > 0;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Failed to create user: {message} {exception}", ex.Message, ex);
+                return false;
+            }
         }
 
         public bool EditUser(User? user)
         {
             try
             {
-                _repository.UpdateRange(new List<User>() { user });
-                _repository.Save();
+                repository.UpdateRange(new List<User>() { user });
+                repository.Save();
                 return true;
             }
             catch (Exception ex)
             {
+                this.logger.LogError("Failed to edit user: {message} {exception}", ex.Message, ex);
                 return false;
             }
         }
 
         public List<DropdownModel> GetRolesForDropdown()
         {
-            return _repository.GetQueryableWithOutTracking<Role>().Where(x => x.IsActive.Equals(true))
+            return repository.GetQueryableWithOutTracking<Role>().Where(x => x.IsActive.Equals(true))
                   .Select(x => new DropdownModel
                   {
                       Id = x.Id,
@@ -69,12 +82,19 @@ namespace Service.Service
 
         public void DeleteUser(User? user)
         {
-            if (user == null)
+            try
             {
-                return;
-            }
+                if (user == null)
+                {
+                    return;
+                }
 
-            _repository.RemoveRange<User>(new List<User> { user });
+                repository.RemoveRange<User>(new List<User> { user });
+            }
+            catch (Exception ex)
+            {
+                this.logger.LogError("Failed to delete user: {message} {exception}", ex.Message, ex);
+            }
         }
 
         public List<User> SearchFor(string searchTerm)
@@ -84,8 +104,8 @@ namespace Service.Service
                 itm.FirstName.ToLower().Contains(searchTerm) ||
                 (itm.LastName?.ToLower().Contains(searchTerm) ?? false) ||
                 itm.Email.ToLower().Contains(searchTerm) ||
-                itm.EmployeeNumber.ToLower().Contains(searchTerm) ||
-                (itm.Designation?.ToLower().Contains(searchTerm) ?? false)).ToList();
+                itm.EmployeeNumber.ToLower().Contains(searchTerm)
+            ).ToList();
         }
     }
 }

@@ -14,15 +14,27 @@ namespace Model.ModelSql
 
     public class Request : BasicEntity
     {
+        [NotMapped]
+        public TimeLog? timeLog;
+        [NotMapped]
+        private Drawing? deliverable;
+        [NotMapped]
+        private User? planningEngineer;
+        [NotMapped]
+        private User user;
+
         public int UserID { get; set; }
         public int? PlanningEngineerID { get; set; }
         public int? ProjectID { get; set; }
         public int? TimeLogID { get; set; }
-
+        public int? DeliverableID { get; set; }
         public RequestType RequestType { get; set; } = RequestType.Project;
 
         [NotMapped]
         public DateTimeOffset? StartTimeOffset { get; set; } = DateTimeOffset.Now;
+
+        public bool IsNewTimeLog { get; set; }
+
         public DateTime StartTime { get; set; }
         [NotMapped]
         public string StartTimeLocalString => StartTime != null
@@ -40,15 +52,18 @@ namespace Model.ModelSql
 
         // Navigation properties
         [ForeignKey("UserID")]
-        public virtual User User { get; set; }
+        public virtual User User { get => user; set => user = value; }
 
         [ForeignKey("PlanningEngineerID")]
-        public virtual User? PlanningEngineer { get; set; }
+        public virtual User? PlanningEngineer { get => planningEngineer; set => planningEngineer = value; }
 
         [ForeignKey("ProjectID")]
         public virtual Project? Project { get; set; }
         [ForeignKey("TimeLogID")]
-        public virtual TimeLog? TimeLog { get; set; }
+        public virtual TimeLog? TimeLog { get => timeLog; set => timeLog = value; }
+
+        [ForeignKey("DeliverableID")]
+        public virtual Drawing? Deliverable { get => deliverable; set => deliverable = value; }
 
         [NotMapped]
         public List<RequestComment> RequestComments { get; set; }
@@ -66,8 +81,8 @@ namespace Model.ModelSql
                 return "Unknown request";
             }
             var timelog = TimeLog?.ToString().Replace("Not set", string.Empty);
-            var project = Project.ToString();
-            var user = User?.ToString();
+            var project = Project?.ToString() ?? "";
+            var user = User?.ToString() ?? "";
 
             return $"{user} {project} {timelog}".Trim();
         }

@@ -13,6 +13,7 @@ namespace Model.ModelSql
     public class Project : BasicEntity, ICloneable
     {
         public string? ProjectName { get; set; }
+        public string? ProjectPrefix { get; set; } = "ERF";
         public string? ERFNumber { get; set; }
         public string? Description { get; set; }
         public float ManhourBudget { get; set; }
@@ -26,7 +27,7 @@ namespace Model.ModelSql
 
         public override string ToString()
         {
-            return $"ERF-{ERFNumber} - {ProjectName}";
+            return $"{ProjectPrefix}-{ERFNumber} - {ProjectName}";
         }
     }
 }

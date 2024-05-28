@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input;
+using Common.Enums;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,6 +21,25 @@ namespace TimeLoggerView.Views.Timesheet
             MainViewModel.TimesheetManagement.OnCompactModeChanged += OnCompactModeChanged;
             MainViewModel.TimesheetManagement.OnTriggerWindowClose += OnTriggerWindowClose;
             this.DataContext = MainViewModel.TimesheetManagement;
+            if (MainViewModel.TimesheetManagement != null)
+            {
+                var vm = MainViewModel.TimesheetManagement;
+                vm.ErrorText = string.Empty;
+                vm.EndDateLocalTime = "00:00:00";
+                vm.CurrentTimeLog = null;
+                vm.CanRunTimeRecorder = true;
+                vm.Comment = string.Empty;
+                vm.StartDateTime = DateTime.Now.ToLocalTime();
+                vm.EndDateTime = null;
+                vm.Duration = null;
+                vm.SelectedProject = null;
+                vm.TeamType = TeamType.None;
+                vm.DisciplineType = DisciplineType.None;
+                vm.ScopeType = ScopeType.None;
+                vm.SelectedDeliverable = null;
+                vm.AvailableDeliverables.Clear();
+                vm.TimerString = "00:00:00";
+            }
         }
         private bool _mouseDownForWindowMoving = false;
         private PointerPoint _originalPoint;

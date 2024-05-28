@@ -23,8 +23,11 @@
     <vm:TimesheetViewModel />
   </Design.DataContext>
   <ScrollViewer VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-    <suki:GlassCard HorizontalAlignment="Stretch" Margin="5">
-      <suki:GroupBox Header="Time Sheets" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+    <suki:GlassCard HorizontalAlignment="Stretch" Margin="10">
+      <suki:GroupBox VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+        <suki:GroupBox.Header>
+          <TextBlock FontWeight="Bold" Text="Time Sheets"/>
+        </suki:GroupBox.Header>
         <ScrollViewer>
           <Grid RowDefinitions="Auto,Auto,Auto,*" ColumnDefinitions="*, Auto, Auto">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Margin="10">
@@ -54,11 +57,12 @@
                 <DataGrid.Columns>
                   <DataGridTextColumn Header="ERF No." Binding="{Binding Project.ERFNumber}"/>
                   <DataGridTextColumn Header="Project Name" Binding="{Binding Project.ProjectName}"/>
+                  <DataGridTextColumn Header="Activity" Binding="{Binding Deliverable.Name}"/>
+                  <DataGridTextColumn Header="Deliverable" Binding="{Binding DeliverableDrawingType.Name}"/>
                   <DataGridTextColumn Header="Start Date" Binding="{Binding StartDateTimeLocalString}"/>
                   <DataGridTextColumn Header="End Date" Binding="{Binding EndDateTimeLocalString}"/>
                   <DataGridTextColumn Header="Duration" Binding="{Binding Duration}"/>
                   <DataGridTextColumn Header="Team Type" Binding="{Binding TeamType, Converter={StaticResource enumConverter}}"/>
-                  <DataGridTextColumn Header="Drawing Type" Binding="{Binding DrawingType, Converter={StaticResource enumConverter}}"/>
                   <DataGridTextColumn Header="Comment" Binding="{Binding Comment}"/>
                   <DataGridTextColumn Header="User" IsVisible="{Binding #TimeLoggerViewPanel((vm:TimesheetViewModel)DataContext).IsPlanningEngineer}" Binding="{Binding User.Username}"/>
                   <DataGridTemplateColumn Header="Actions" IsVisible="{Binding #TimeLoggerViewPanel((vm:TimesheetViewModel)DataContext).IsPlanningEngineer}">

@@ -17,24 +17,39 @@ namespace Model.ModelSql
         public int UserID { get; set; }
         public int ProjectID { get; set; }
         public DateTime StartDateTime { get; set; }
+
+        public bool IsNewTimeLog { get; set; }
+        public bool IsVisibleToUser { get; set; }
+
+        public int? DeliverableID { get; set; }
+        public int? DeliverableDrawingTypeID { get; set; }
+
         [NotMapped]
         public string StartDateTimeLocalString => StartDateTime != null
             ? ((DateTime)StartDateTime).ToLocalTime().ToString("f", CultureInfo.CurrentCulture)
             : "Unknown";
+
         public DateTime? EndDateTime { get; set; }
+        
         [NotMapped]
         public string EndDateTimeLocalString => EndDateTime != null
         ? ((DateTime)EndDateTime).ToLocalTime().ToString("f", CultureInfo.CurrentCulture)
         : "Unknown";
+        
         public TimeSpan Duration { get; set; }
         public TimeLogStatus? TimeLogStatus { get; set; }
         public string? Comment { get; set; }
 
         //Other Fields
-        public DisciplineType  DisciplineType{ get; set; }
-        public DrawingType DrawingType { get; set; }
-        public ScopeType ScopeType { get; set; }
-        public TeamType TeamType { get; set; }
+        public DisciplineType? DisciplineType{ get; set; }
+        public ScopeType? ScopeType { get; set; }
+        public TeamType? TeamType { get; set; }
+
+        // ui fields 
+        [NotMapped]
+        public string ProjectNumber { get; set; }
+        [NotMapped]
+        public string ProjectPrefix { get; set; }
 
         // Navigation properties
         [ForeignKey("UserID")]
@@ -43,9 +58,15 @@ namespace Model.ModelSql
         [ForeignKey("ProjectID")]
         public virtual Project Project { get; set; }
 
+        [ForeignKey("DeliverableID")]
+        public virtual Drawing? Deliverable { get; set; }
+
+        [ForeignKey("DeliverableDrawingTypeID")]
+        public virtual DeliverableDrawingType? DeliverableDrawingType { get; set; }
+
         public override string ToString()
         {
-            return TimeLogStatus == null ? "Not set" : $"ERF-{ProjectID + 10001} - {StartDateTimeLocalString}";
+            return TimeLogStatus == null ? "Not set" : $"{ProjectPrefix}-{ProjectNumber} - {StartDateTimeLocalString}-{EndDateTimeLocalString}";
         }
     }
 }

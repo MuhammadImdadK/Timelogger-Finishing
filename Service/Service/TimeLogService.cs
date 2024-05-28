@@ -1,4 +1,5 @@
-﻿using Model.Interface;
+﻿using Microsoft.Extensions.Logging;
+using Model.Interface;
 using Model.ModelSql;
 using Service.Interface;
 using System;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Service.Service
 {
-    public class TimeLogService(IRepository repository) : ITimeLogService
+    public class TimeLogService(IRepository repository, ILogger<TimeLogService> logger) : ITimeLogService
     {
         public List<TimeLog> GetTimeLogs()
         {
@@ -38,6 +39,7 @@ namespace Service.Service
             }
             catch (Exception ex)
             {
+                logger.LogError("Failed to insert time log: {message} {exception}", ex.Message, ex);
                 return false;
             }
         }
@@ -50,8 +52,10 @@ namespace Service.Service
                 repository.Save();
                 return true;
             }
-            catch
+            catch(Exception ex)
             {
+                logger.LogError("Failed to update time log: {message} {exception}", ex.Message, ex);
+
                 return false;
             }
         }

@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Reactive;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -27,6 +28,7 @@ public class UserManagementViewModel : ViewModelBase
     private int skip = 0;
     private int take = 50;
     private readonly IUserService userService;
+    private readonly IDesignationService designationService;
     private User currentUser;
     private string busyText = "Loading Users";
     private bool isBusy = true;
@@ -35,10 +37,17 @@ public class UserManagementViewModel : ViewModelBase
     private User? modifyingUser;
     private string searchTerm;
     private string primaryActionText = "Add";
+    private Designation? selectedDesignation;
+    private DesignationManagementViewModel designationManagementViewModel;
+    private bool isAdminUser;
+    private bool isPlanUser;
+    private ActivityTypeManagementViewModel activityModel;
+    private DeliverableDrawingTypeManagementViewModel deliverablesModel;
 
     public UserManagementViewModel()
     {
         this.userService = (IUserService)App.Container.GetService(typeof(IUserService));
+        this.designationService = (IDesignationService)App.Container.GetService(typeof(IDesignationService));
         this.AddUserCommand = ReactiveCommand.Create(this.AddUser);
         this.EditUserCommand = ReactiveCommand.Create<User>(this.EditUser);
         this.DeleteUserCommand = ReactiveCommand.Create<User>(this.DeleteUser);
@@ -47,6 +56,17 @@ public class UserManagementViewModel : ViewModelBase
         this.CloseDialogCommand = ReactiveCommand.Create(this.CloseDialog);
         this.PerformSearchCommand = ReactiveCommand.Create(this.PerformSearch);
         this.CurrentUser = App.CurrentUser;
+        this.IsAdminUser = App.CurrentUser.RoleID == 1;
+        this.IsPlanUser = this.IsAdminUser || App.CurrentUser.RoleID == 2;
+        this.DesignationModel = new();
+        this.DesignationModel.UpdateUsers += OnUsersUpdated;
+        this.ActivityModel = new();
+        this.DeliverablesModel = new();
+        this.LoadUsers();
+    }
+
+    private void OnUsersUpdated(object sender, EventArgs e)
+    {
         this.LoadUsers();
     }
 
@@ -68,6 +88,11 @@ public class UserManagementViewModel : ViewModelBase
     public int Take { get => this.take; set => this.RaiseAndSetIfChanged(ref this.take, value); }
 
     public ObservableCollection<User> Users { get; set; } = new ObservableCollection<User>();
+    public ObservableCollection<Designation> Designations { get; set; } = new();
+    public Designation? SelectedDesignation { get => selectedDesignation; set => this.RaiseAndSetIfChanged(ref selectedDesignation, value); }
+    public DesignationManagementViewModel DesignationModel { get => this.designationManagementViewModel; set => this.RaiseAndSetIfChanged(ref this.designationManagementViewModel, value); }
+    public ActivityTypeManagementViewModel ActivityModel { get => this.activityModel; set => this.RaiseAndSetIfChanged(ref activityModel, value); }
+    public DeliverableDrawingTypeManagementViewModel DeliverablesModel { get => this.deliverablesModel; set => this.RaiseAndSetIfChanged(ref this.deliverablesModel, value); }
     public string SearchTerm { get => this.searchTerm; set => this.RaiseAndSetIfChanged(ref this.searchTerm, value); }
     public string BusyText { get => this.busyText; set => this.RaiseAndSetIfChanged(ref this.busyText, value); }
     public string PrimaryActionText { get => this.primaryActionText; set => this.RaiseAndSetIfChanged(ref this.primaryActionText, value); }
@@ -79,12 +104,16 @@ public class UserManagementViewModel : ViewModelBase
 
     public User? ModifyingUser { get => this.modifyingUser; set => this.RaiseAndSetIfChanged(ref this.modifyingUser, value); }
     public User CurrentUser { get => this.currentUser; set => this.RaiseAndSetIfChanged(ref this.currentUser, value); }
+    public bool IsAdminUser { get => isAdminUser; set => this.RaiseAndSetIfChanged(ref isAdminUser, value); }
+    public bool IsPlanUser { get => isPlanUser; set => this.RaiseAndSetIfChanged(ref isPlanUser, value); }
 
     private void AddUser()
     {
         this.ModifyingUser = new();
         this.IsEditing = true;
         this.ErrorText = string.Empty;
+        this.Designations.Clear();
+        this.Designations.AddRange(this.designationService.GetAllDesignations());
         var userEdit = new UserEditorView();
         this.PrimaryActionText = "Add User";
         this.ModifyingUser.Role = this.AvailableRoles.FirstOrDefault(itm => itm.Id == ModifyingUser.RoleID);
@@ -95,6 +124,9 @@ public class UserManagementViewModel : ViewModelBase
     private void EditUser(User user)
     {
         this.ModifyingUser = user.Clone() as User;
+        this.Designations.Clear();
+        this.Designations.AddRange(this.designationService.GetAllDesignations());
+        this.SelectedDesignation = this.Designations.FirstOrDefault(itm => itm.Id == (this.ModifyingUser?.DesignationID ?? 0));
         this.IsEditing = true;
         this.ErrorText = string.Empty;
         var userEdit = new UserEditorView();
@@ -113,19 +145,35 @@ public class UserManagementViewModel : ViewModelBase
         SukiHost.ShowDialog(App.WorkspaceInstance, deleteDialog, allowBackgroundClose: true);
     }
 
-    private void LoadUsers()
+    public void LoadUsers()
     {
         this.IsBusy = true;
         this.BusyText = "Loading User List";
         Task.Run(() =>
         {
             var result = this.userService.GetUsers(Skip, Take);
+            var designationsResult = this.designationService.GetAllDesignations();
+
+            lock (Designations)
+            {
+                Dispatcher.UIThread.Invoke(() =>
+                {
+                    this.Designations.Clear();
+                    this.Designations.AddRange(designationsResult);
+                });
+            }
+            var updated = new List<User>();
+            foreach(var user in result)
+            {
+                user.Designation = Designations.FirstOrDefault(itm => itm.Id == user.DesignationID);
+                updated.Add(user);
+            }
             lock (Users)
             {
                 Dispatcher.UIThread.Invoke(() =>
                 {
                     Users.Clear();
-                    Users.AddRange(result);
+                    Users.AddRange(updated);
                 });
             }
             Dispatcher.UIThread.Invoke(() => this.IsBusy = false);
@@ -151,7 +199,7 @@ public class UserManagementViewModel : ViewModelBase
         Task.Run(() =>
         {
             var results = this.userService.SearchFor(this.SearchTerm);
-            if(results.Count == 0)
+            if (results.Count == 0)
             {
                 Dispatcher.UIThread.Invoke(() =>
                 {
@@ -194,8 +242,8 @@ public class UserManagementViewModel : ViewModelBase
             {
                 this.ModifyingUser.RoleID = this.ModifyingUser.Role.Id;
             }
-            
-            if(string.IsNullOrWhiteSpace(this.ModifyingUser.EmployeeNumber))
+
+            if (string.IsNullOrWhiteSpace(this.ModifyingUser.EmployeeNumber))
             {
                 valid = false;
                 tempText += "- Employee number is required\n";
@@ -204,6 +252,11 @@ public class UserManagementViewModel : ViewModelBase
             {
                 valid = false;
                 tempText += "- Username is required\n";
+            }
+            if(((IUserService)App.Container.GetService(typeof(IUserService))).GetUsers().Any(itm => itm.Username.ToLower() == this.ModifyingUser.Username.ToLower()))
+            {
+                valid = false;
+                tempText += $"- Username '{this.ModifyingUser.Username}' is already taken.\n";
             }
             if (this.ModifyingUser.Id == null && string.IsNullOrEmpty(this.ModifyingUser.NewPassword))
             {
@@ -215,7 +268,8 @@ public class UserManagementViewModel : ViewModelBase
                 valid = false;
                 tempText += "- First Name is required\n";
             }
-            if (string.IsNullOrWhiteSpace(this.ModifyingUser.Email)){
+            if (string.IsNullOrWhiteSpace(this.ModifyingUser.Email))
+            {
                 valid = false;
                 tempText += "- Email is required\n";
             }
@@ -242,11 +296,21 @@ public class UserManagementViewModel : ViewModelBase
             this.ModifyingUser.Created = DateTime.UtcNow;
             this.ModifyingUser.Modified = DateTime.UtcNow;
             this.ModifyingUser.ModifiedBy = this.currentUser.Id;
+            this.ModifyingUser.Designation = null;
+            if (this.SelectedDesignation != null)
+            {
+                this.ModifyingUser.DesignationID = this.SelectedDesignation.Id;
+            }
             this.userService.AddUser(this.ModifyingUser!);
             this.IsEditing = false;
 
+
             Dispatcher.UIThread.Invoke(() =>
             {
+                if (App.WorkspaceInstance.DataContext is MainViewModel mvm)
+                {
+                    mvm.RequestsViewModel.ReloadRequestsCommand.Execute(Unit.Default);
+                }
                 var tb = new TextBlock();
                 tb.Text = $"User {ModifyingUser.Username} was created";
                 tb.Margin = new(5);
@@ -285,6 +349,11 @@ public class UserManagementViewModel : ViewModelBase
                 valid = false;
                 tempText += "- Username is required\n";
             }
+            if (((IUserService)App.Container.GetService(typeof(IUserService))).GetUsers().Any(itm => itm.Username.ToLower() == this.ModifyingUser.Username.ToLower()))
+            {
+                valid = false;
+                tempText += $"- Username '{this.ModifyingUser.Username}' is already taken.\n";
+            }
             if (string.IsNullOrWhiteSpace(this.ModifyingUser.FirstName))
             {
                 valid = false;
@@ -312,10 +381,15 @@ public class UserManagementViewModel : ViewModelBase
                 this.ModifyingUser.Password = hash;
                 this.ModifyingUser.Salt = salt;
             }
-            
+
             this.ModifyingUser.Modified = DateTime.UtcNow;
             this.ModifyingUser.ModifiedBy = this.currentUser.Id;
             this.ModifyingUser.Role = null;
+            this.ModifyingUser.Designation = null;
+            if (this.SelectedDesignation != null)
+            {
+                this.ModifyingUser.DesignationID = this.SelectedDesignation.Id;
+            }
 
             Thread.Sleep(1000);
             this.userService.EditUser(this.ModifyingUser);

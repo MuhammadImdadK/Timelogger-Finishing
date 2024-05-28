@@ -12,12 +12,19 @@ namespace Model.ModelSql
     public class Drawing:BasicEntity
     {
         public string Name { get; set; }
-        public string Description { get; set; }
+        //public string Description { get; set; }
         public int ProjectId { get; set; }
+        public int? ActivityTypeId { get; set; }
 
         [ForeignKey("ProjectId")]
         public virtual Project Project { get; set; }
+
+        [ForeignKey("ActivityTypeId")]
+        public virtual ActivityType? ActivityType { get; set; }
+
+        public override string ToString()
+        {
+            return Name;
+        }
     }
-
-
 }

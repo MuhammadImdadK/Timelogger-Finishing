@@ -1,5 +1,6 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using SukiUI.Controls;
 using System;
 using TimeLoggerView.ViewModels;
@@ -17,7 +18,10 @@ public partial class MainWindow : SukiWindow
     {
         if(this.DataContext is MainViewModel vm && vm.ShouldQuit)
         {
-            Environment.Exit(0);
+            if (App.Current?.ApplicationLifetime is ClassicDesktopStyleApplicationLifetime lt)
+            {
+                lt.TryShutdown();
+            }
         }
     }
 }

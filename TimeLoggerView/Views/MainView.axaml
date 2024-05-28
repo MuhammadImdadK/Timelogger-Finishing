@@ -56,11 +56,11 @@
           <views:ProjectMainView DataContext="{Binding ProjectManagement}" />
         </suki:SukiSideMenuItem.PageContent>
       </suki:SukiSideMenuItem>
-      <suki:SukiSideMenuItem Header="User Management" IsVisible="{Binding IsAdminUser}">
+      <suki:SukiSideMenuItem Header="Management" IsVisible="{Binding IsPlanUser}">
         <suki:SukiSideMenuItem.Icon>
           <Image>
             <Image.Source>
-              <i:IconImage Value="mdi-table-account" Brush="{DynamicResource ThemeAccentBrush}" />
+              <i:IconImage Value="mdi-tools" Brush="{DynamicResource ThemeAccentBrush}" />
             </Image.Source>
           </Image>
         </suki:SukiSideMenuItem.Icon>
@@ -91,6 +91,18 @@
         </suki:SukiSideMenuItem.Icon>
         <suki:SukiSideMenuItem.PageContent>
           <views:TimesheetMainView DataContext="{Binding TimesheetModel}" />
+        </suki:SukiSideMenuItem.PageContent>
+      </suki:SukiSideMenuItem>
+      <suki:SukiSideMenuItem Header="Reports">
+        <suki:SukiSideMenuItem.Icon>
+          <Image>
+            <Image.Source>
+              <i:IconImage Value="mdi-chart-box-multiple-outline" Brush="{DynamicResource ThemeAccentBrush}" />
+            </Image.Source>
+          </Image>
+        </suki:SukiSideMenuItem.Icon>
+        <suki:SukiSideMenuItem.PageContent>
+          <views:ReportsMainView DataContext="{Binding ReportsViewModel}"/>
         </suki:SukiSideMenuItem.PageContent>
       </suki:SukiSideMenuItem>
     </suki:SukiSideMenu.Items>

@@ -27,7 +27,13 @@
             <TextBlock>Project</TextBlock>
             <ComboBox MinWidth="200" MaxWidth="200" ItemsSource="{Binding Projects}" SelectedItem="{Binding SelectedProject}"></ComboBox>
           </StackPanel>
-          <StackPanel Grid.Column="1" Margin="10" HorizontalAlignment="Left">
+
+          <StackPanel Grid.Row="1" Grid.Column="0" Margin="10" HorizontalAlignment="Left">
+            <TextBlock>Deliverable</TextBlock>
+            <AutoCompleteBox Name="DeliverableAuto" GotFocus="AutoCompleteBox_GotFocus"  MinWidth="200" MaxWidth="200" ItemsSource="{Binding AvailableDeliverableTypes}" SelectedItem="{Binding SelectedDeliverableType}" />
+          </StackPanel>
+          
+          <StackPanel Grid.Row="1" Grid.Column="1" Margin="10" HorizontalAlignment="Left">
             <TextBlock>Discipline Type</TextBlock>
             <ComboBox MinWidth="200" MaxWidth="200" ItemsSource="{Binding AvailableDisciplineTypes}"  SelectedItem="{Binding DisciplineType}">
               <ComboBox.ItemTemplate>
@@ -38,9 +44,9 @@
             </ComboBox>
           </StackPanel>
 
-          <StackPanel Grid.Row="1" Margin="10" HorizontalAlignment="Left">
-            <TextBlock>Drawing Type</TextBlock>
-            <ComboBox MinWidth="200" MaxWidth="200" ItemsSource="{Binding AvailableDrawingTypes}" SelectedItem="{Binding DrawingType}">
+          <StackPanel Grid.Row="0" Grid.Column="1" Margin="10" HorizontalAlignment="Left">
+            <TextBlock>Activity</TextBlock>
+            <ComboBox MinWidth="200" MaxWidth="200" ItemsSource="{Binding AvailableDeliverables}" SelectedItem="{Binding SelectedDeliverable}">
               <ComboBox.ItemTemplate>
                 <DataTemplate x:DataType="modelEnums:DrawingType">
                   <TextBlock Text="{Binding, Converter={StaticResource enumConverter}}" />
@@ -48,7 +54,9 @@
               </ComboBox.ItemTemplate>
             </ComboBox>
           </StackPanel>
-          <StackPanel Grid.Row="1" Grid.Column="1" Margin="10" HorizontalAlignment="Left">
+
+          
+          <StackPanel Grid.Row="2" Grid.Column="0" Margin="10" HorizontalAlignment="Left">
             <TextBlock>Scope Type</TextBlock>
             <ComboBox MinWidth="200" MaxWidth="200" ItemsSource="{Binding AvailableScopeTypes}"  SelectedItem="{Binding ScopeType}">
               <ComboBox.ItemTemplate>
@@ -59,7 +67,7 @@
             </ComboBox>
           </StackPanel>
 
-          <StackPanel Grid.Row="2" Margin="10" HorizontalAlignment="Left">
+          <StackPanel Grid.Row="2" Grid.Column="1" Margin="10" HorizontalAlignment="Left">
             <TextBlock>Team Type</TextBlock>
             <ComboBox MinWidth="200" MaxWidth="200" ItemsSource="{Binding AvailableTeamTypes}" SelectedItem="{Binding TeamType}">
               <ComboBox.ItemTemplate>
@@ -96,7 +104,7 @@
             </Grid>
           </StackPanel>
           <Grid ColumnDefinitions="*, Auto" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="5">
-            <TextBlock Margin="10" VerticalAlignment="Center" FontSize="16" FontWeight="Bold" Text="{Binding TimerString}" />
+            <TextBlock x:Name="TimerString" Margin="10" VerticalAlignment="Center" FontSize="16" FontWeight="Bold" Text="{Binding TimerString}" />
             <StackPanel IsVisible="{Binding CanSave}" Grid.Column="1" Orientation="Horizontal">
               <Button IsVisible="{Binding CanRunTimeRecorder}" Command="{Binding RestartTimerCommand}" VerticalAlignment="Center">
                 Reset Timer

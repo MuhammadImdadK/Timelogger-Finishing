@@ -88,9 +88,9 @@
             <ColumnDefinition Width="*"/>
           </Grid.ColumnDefinitions>
           <StackPanel Grid.Column="0" Margin="10">
-            <TextBlock MinWidth="200" MaxWidth="200" Text="Designation"
+            <TextBlock MinWidth="200" MaxWidth="200" Text="Designation (Optional)"
                      />
-            <TextBox MinWidth="200" MaxWidth="200" Watermark="Designation (Optional)" Text="{Binding ModifyingUser.Designation}" x:Name="txtDesignation"/>
+            <ComboBox MinWidth="200" MaxWidth="200" ItemsSource="{Binding Designations}" SelectedItem="{Binding SelectedDesignation}" x:Name="txtDesignation"/>
           </StackPanel>
 
           <StackPanel Grid.Column="1" Margin="10">

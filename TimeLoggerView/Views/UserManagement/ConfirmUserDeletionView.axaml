@@ -36,7 +36,8 @@
           <TextBlock Text="{Binding ModifyingUser.Username}" Margin="2 0 0 0"></TextBlock>
           <TextBlock>?</TextBlock>
         </StackPanel>
-        <TextBlock>This action cannot be undone.</TextBlock>
+        <TextBlock>A user cannot be deleted if they have logged time, instead deactivate the account.</TextBlock>
+        <TextBlock FontWeight="Bold" Margin="0 10 0 0">This action cannot be undone.</TextBlock>
       </StackPanel>
       <StackPanel Margin="10" Grid.Row="1" HorizontalAlignment="Right" Orientation="Horizontal">
         <Button Command="{Binding CloseDialogCommand}">
