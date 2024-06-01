@@ -390,6 +390,7 @@ public class TimesheetViewModel : ModuleViewModel
         timer.Interval = TimeSpan.FromSeconds(1);
         timer.Tick += DispatcherTimer_Tick;
         timer.Start();
+
     }
 
     private void DispatcherTimer_Tick(object? sender, EventArgs e)

@@ -18,6 +18,12 @@ namespace Pec.ProjectManagement.Ui.Views
         public SplashWindow()
         {
             InitializeComponent();
+
+            IRepository repository = App.Container.GetService<IRepository>();
+
+            IConfigurationRoot config = App.Container.GetRequiredService<IConfigurationRoot>();
+            ILogger<DbContext> dbLogger = App.Container.GetService<ILogger<DbContext>>();
+            repository.RunMigrations(config, dbLogger);
         }
 
         private void Window_Loaded(object? sender, Avalonia.Interactivity.RoutedEventArgs e)

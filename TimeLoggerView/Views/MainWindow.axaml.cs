@@ -12,15 +12,19 @@ public partial class MainWindow : SukiWindow
     public MainWindow()
     {
         InitializeComponent();
+
     }
 
     private void SukiWindow_Closed(object? sender, System.EventArgs e)
     {
+       
         if(this.DataContext is MainViewModel vm && vm.ShouldQuit)
         {
             if (App.Current?.ApplicationLifetime is ClassicDesktopStyleApplicationLifetime lt)
             {
                 lt.TryShutdown();
+
+               
             }
         }
     }

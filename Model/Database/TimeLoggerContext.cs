@@ -44,7 +44,7 @@ namespace Model.Database
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            string connectionString;
+            string connectionString;//= "server=localhost;port=5432;User ID=postgres;password=root;database=TimeLogger8;";
             // Configure PostgreSQL connection string here
             if (ConfigurationManager.ConnectionStrings.Count > 0 && ConfigurationManager.ConnectionStrings["TimeLoggerDatabase"] != null)
             {
@@ -53,7 +53,9 @@ namespace Model.Database
             }
             else
             {
+
                 connectionString = this.configuration.GetConnectionString("TimeLoggerDatabase");
+                connectionString = "server=localhost;port=5432;User ID=postgres;password=root;database=TimeLogger8;";
                 optionsBuilder.UseNpgsql(connectionString);
             }
             if(this.logger != null)

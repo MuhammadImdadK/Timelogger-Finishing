@@ -15,6 +15,7 @@ namespace Model.Database
             services.AddDbContext<TimeLoggerContext>(x =>
             {
                 x.UseNpgsql(connectionString, s => s.MigrationsAssembly(typeof(RegisterRepository).Namespace));
+                
             }, ServiceLifetime.Transient);
         }
     }
