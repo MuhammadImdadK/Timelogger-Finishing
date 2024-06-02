@@ -60,7 +60,7 @@ namespace Model.Database
             }
             if(this.logger != null)
             {
-                var split = connectionString.Split("password=").FirstOrDefault();
+                var split = connectionString.Split(new string[] { "password=" }, StringSplitOptions.None).FirstOrDefault();
                 this.logger.LogInformation("Configured database is {database}", split);
             }
         }

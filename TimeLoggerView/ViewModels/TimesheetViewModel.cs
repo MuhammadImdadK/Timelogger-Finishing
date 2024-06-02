@@ -98,7 +98,7 @@ public class TimesheetViewModel : ModuleViewModel
             DataContext = this,
         };
 
-        SukiHost.ShowDialog(App.WorkspaceInstance, view, allowBackgroundClose: false);
+        SukiHost.ShowDialog(App.WorkspaceInstance,content: view, allowBackgroundClose: false);
     }
 
     private void ShowTimeLogger()

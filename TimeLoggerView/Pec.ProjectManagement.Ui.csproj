@@ -43,6 +43,7 @@
     <PackageReference Include="Projektanker.Icons.Avalonia" Version="9.1.1" />
     <PackageReference Include="Projektanker.Icons.Avalonia.MaterialDesign" Version="9.1.1" />
     <PackageReference Include="SukiUI" Version="6.0.0-beta4" />
+    <PackageReference Include="System.ComponentModel" Version="4.3.0" />
   </ItemGroup>
 
   <ItemGroup>
