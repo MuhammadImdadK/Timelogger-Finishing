@@ -215,8 +215,10 @@ public class TimesheetViewModel : ModuleViewModel
 
         var timeLog = new TimeLog();
 
+        Duration = TimeSpan.FromSeconds(Math.Truncate(Duration.Value.TotalSeconds));
         if (this.CurrentTimeLog == null)
         {
+
             timeLog = new TimeLog()
             {
                 Comment = this.Comment,
@@ -397,7 +399,60 @@ public class TimesheetViewModel : ModuleViewModel
     {
         if (this.Duration != null)
         {
-            this.Duration = ((TimeSpan)this.Duration).Add(TimeSpan.FromSeconds(1));
+            this.Duration = DateTime.UtcNow.Subtract(((DateTime)StartDateTime).ToUniversalTime());// ((TimeSpan)this.Duration).Add(TimeSpan.FromSeconds(1));
+            if (Duration.Value.Seconds %10==0)
+            {
+                Duration = TimeSpan.FromSeconds(Math.Truncate(Duration.Value.TotalSeconds));
+                var timeLog = new TimeLog();
+
+                if (this.CurrentTimeLog == null)
+                {
+                    timeLog = new TimeLog()
+                    {
+                        Comment = this.Comment,
+                        Created = DateTime.UtcNow,
+                        CreatedBy = App.CurrentUser.Id,
+                        Modified = DateTime.UtcNow,
+                        ModifiedBy = App.CurrentUser.Id,
+                        StartDateTime = StartDateTime != null ? ((DateTime)StartDateTime).ToUniversalTime() : DateTime.UtcNow,
+                        EndDateTime = EndDateTime != null ? ((DateTime)EndDateTime).ToUniversalTime() : DateTime.UtcNow,
+                        Duration = this.Duration ?? TimeSpan.Zero,
+                        ProjectID = this.SelectedProject?.Id ?? 0,
+                        TeamType = this.TeamType,
+                        DisciplineType = this.DisciplineType,
+                        ScopeType = this.ScopeType,
+                        TimeLogStatus = TimeLogStatus.None,
+                        IsActive = true,
+                        UserID = App.CurrentUser.Id ?? 0,
+                        DeliverableID = SelectedDeliverable?.Id ?? 0,
+                        DeliverableDrawingTypeID = SelectedDeliverableType.Id ?? 0,
+                        IsVisibleToUser = true,
+                        IsNewTimeLog = false,
+                    };
+
+                    this.timesheetService.InsertTimeLog(timeLog);
+                }
+                else
+                {
+                    timeLog = this.CurrentTimeLog;
+                    timeLog.Comment = this.Comment;
+                    timeLog.Modified = DateTime.UtcNow;
+                    timeLog.ModifiedBy = App.CurrentUser.Id;
+                    timeLog.StartDateTime = StartDateTime != null ? ((DateTime)StartDateTime).ToUniversalTime() : DateTime.UtcNow;
+                    timeLog.EndDateTime = EndDateTime != null ? ((DateTime)EndDateTime).ToUniversalTime() : DateTime.UtcNow;
+                    timeLog.Duration = this.Duration ?? TimeSpan.Zero;
+                    timeLog.ProjectID = this.SelectedProject?.Id ?? 0;
+                    timeLog.TeamType = this.TeamType;
+                    timeLog.DisciplineType = this.DisciplineType;
+                    timeLog.ScopeType = this.ScopeType;
+                    timeLog.TimeLogStatus = TimeLogStatus.None;
+                    timeLog.DeliverableDrawingTypeID = SelectedDeliverableType?.Id ?? 0;
+                    timeLog.DeliverableID = SelectedDeliverable?.Id ?? 0;
+
+                    this.timesheetService.UpdateTimeLog(timeLog);
+                }
+                CurrentTimeLog = timeLog;
+            }
         }
     }
 
